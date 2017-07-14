@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/huihong/healthydiet/adapter/FragmentPagerAdapter.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/huihong/healthydiet/adapter/NearbyFragmentPagerAdapter.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/huihong/healthydiet/adapter/RecommendFragmentPagerAdapter.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_left_in_activity.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_left_out_activity.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_right_in_activity.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_right_out_activity.xml" charset="UTF-8" />
+  </component>
+</project>

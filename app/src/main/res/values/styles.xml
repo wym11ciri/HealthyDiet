@@ -1,0 +1,37 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <style name="bottom_tab_textView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:textSize">8sp</item>
+    </style>
+
+    <style name="bottom_tab_imageView">
+
+        <item name="android:layout_width">26dp</item>
+        <item name="android:layout_height">26dp </item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">3dp</item>
+
+    </style>
+    <declare-styleable name="PageIndicator">
+        <attr name="indicator_spacing" format="dimension" />
+        <attr name="indicator_type" format="enum">
+            <enum name="circle" value="0" />
+            <enum name="fraction" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

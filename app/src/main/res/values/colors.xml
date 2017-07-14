@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#bababa</color>
+    <color name="colorPrimaryDark">#bababa</color>
+    <color name="colorAccent">#bababa</color>
+
+
+
+    <color name="tab_bottom_text_normal">#9B9B9B</color>
+    <color name="tab_bottom_text_select">#5BA438</color>
+
+    <color name="recommend_line_normal">#EDEDED</color>
+    <color name="recommend_line_select">#FF4300</color>
+
+    <color name="recommend_text_select">#212121</color>
+    <color name="recommend_text_normal">#969696</color>
+
+    <color name="recommend_type_text_select">#FF4300</color>
+    <color name="recommend_type_text_normal">#242424</color>
+
+    <color name="motion_normal">#5BA439</color>
+    <color name="motion_select">#ffffff</color>
+
+
+
+    <color name="line_chart_normal_color">#5E5E5E</color>
+    <color name="circle">#539F2F</color>
+
+
+    <color name="circle_ring_bg">#EEEEEE</color>
+
+    <color name="circle_color_01">#FD8002</color>
+    <color name="circle_color_02">#F6880D</color>
+    <color name="circle_color_03">#F38D11</color>
+    <color name="circle_color_04">#EF9318</color>
+    <color name="circle_color_05">#E49F26</color>
+    <color name="circle_color_06">#D3B33F</color>
+    <color name="circle_color_07">#C6C752</color>
+    <color name="circle_color_08">#BBD361</color>
+    <color name="circle_color_09">#B5D864</color>
+</resources>
