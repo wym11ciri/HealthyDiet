@@ -2,15 +2,18 @@ package com.huihong.healthydiet.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesActivity;
+import com.huihong.healthydiet.bean.RestaurantList;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
@@ -27,15 +30,16 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<String> mList;
+    private List<RestaurantList.ListDataBean> mList;
 
     private ItemOnClickListener mItemOnClickListener;
+
     public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
         mItemOnClickListener = pItemOnClickListener;
     }
 
 
-    public RvRecommendNearbyAdapter(Context pContext, List<String> pList) {
+    public RvRecommendNearbyAdapter(Context pContext, List<RestaurantList.ListDataBean> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -56,16 +60,47 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
     }
 
     @Override
-    public void onBindViewHolder(final RvRecommendNearbyViewHolder holder, int position) {
-//        holder.tvName.setText(mList.get(position));
+    public void onBindViewHolder(final RvRecommendNearbyViewHolder holder, final int position) {
 
-        ImageLoderUtil.showImage(mContext,"",holder.ivHead);
+
+        holder.name.setText(mList.get(position).getName());
+        holder.address.setText(mList.get(position).getAddress());
+        holder.sales.setText("本月销售" + mList.get(position).getSales() + "份");
+        holder.consumption.setText("人均 ￥ " + mList.get(position).getConsumption() + "");
+        holder.discount.setText(mList.get(position).getDiscount() + "");
+        int distance = (int) mList.get(position).getDistance();
+
+        if (distance > 1000) {
+            distance = distance / 1000;
+            holder.distance.setText("" + distance + "km");
+        } else {
+            holder.distance.setText("" + distance + "m");
+        }
+
+
+        ImageLoderUtil.showImage2(mContext, position, holder.ivHead);
 
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIn=new Intent(mContext, RecipesActivity.class);
+                Intent mIn = new Intent(mContext, RecipesActivity.class);
                 mContext.startActivity(mIn);
+            }
+        });
+
+        holder.ivPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mList.get(position).getPhone()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+//                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+mList.get(position).getPhone()));
+//                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//                    return;
+//                }
+//                mContext.startActivity(intent);
             }
         });
 //
@@ -98,18 +133,40 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
 
 class RvRecommendNearbyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName,tvTitle;
-    LinearLayout layoutMain;
 
-    RecyclerView rvArticleTag;
+    /**
+     * id : 3
+     * name : 餐厅2
+     * images : ["img//restaurant//restaurant3-1964553.jpg"]
+     * address : 拱墅区
+     * phone : 18857120151
+     * category : 2
+     * sales : 888
+     * consumption : 25
+     * discount : 优惠2|非常可疑
+     * distance : 1.1901423500846999E7
+     */
+
+    TextView tvName, tvTitle, name, images, address, phone, category, sales, consumption, discount, distance;
+    LinearLayout layoutMain;
+    ImageView ivPhone;
+
     SelectableRoundedImageView ivHead;
 
     RvRecommendNearbyViewHolder(View itemView) {
         super(itemView);
-        ivHead= (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
-        layoutMain= (LinearLayout) itemView.findViewById(R.id.layoutMain);
-//        rvArticleTag= (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-//        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-//        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
+        ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
+        layoutMain = (LinearLayout) itemView.findViewById(R.id.layoutMain);
+
+        name = (TextView) itemView.findViewById(R.id.name);//餐厅名称
+        address = (TextView) itemView.findViewById(R.id.address);//地址
+        sales = (TextView) itemView.findViewById(R.id.sales);//本月已售
+        consumption = (TextView) itemView.findViewById(R.id.consumption);//平均消费
+        discount = (TextView) itemView.findViewById(R.id.discount);//优惠
+        distance = (TextView) itemView.findViewById(R.id.distance);//距离
+
+        ivPhone = (ImageView) itemView.findViewById(R.id.ivPhone);
+
+
     }
 }

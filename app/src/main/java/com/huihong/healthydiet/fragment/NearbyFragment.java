@@ -52,6 +52,12 @@ public class NearbyFragment extends Fragment {
             mList.add("肯德基"+i);
         }
         rvNearby= (RecyclerView) mView.findViewById(R.id.rvNearby);
+
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+//        holder.rvArticleTag. setLayoutManager(linearLayoutManager);
+//        holder.rvArticleTag.setAdapter(new RvTypeAdapter(mContext,zz));
+
         rvNearby.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         mAdapter=new RvNearbyAdapter(getActivity(),mList);
 

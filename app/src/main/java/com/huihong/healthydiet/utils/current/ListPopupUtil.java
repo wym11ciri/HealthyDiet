@@ -6,8 +6,6 @@ import android.support.v7.widget.ListPopupWindow;
 import android.view.View;
 import android.widget.BaseAdapter;
 
-import com.huihong.healthydiet.utils.common.DensityUtils;
-
 
 /**
  * Created by zangyi_shuai_ge on 2017/6/20
@@ -38,10 +36,12 @@ public class ListPopupUtil {
         listPopupWindow.setHorizontalOffset(x);
         listPopupWindow.setVerticalOffset(y);
         //设置对话框的宽高
-        listPopupWindow.setWidth(DensityUtils.dp2px(mContext, w));
+        listPopupWindow.setWidth(mAnchorView.getMeasuredWidth());
         listPopupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         listPopupWindow.setModal(false);
 //        listPopupWindow.show();
+
+
         return listPopupWindow;
 
     }

@@ -1,21 +1,39 @@
 package com.huihong.healthydiet.activity;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.ListPopupWindow;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
+import com.huihong.healthydiet.mybean.Type;
+import com.huihong.healthydiet.adapter.LvPopTypeAdapter;
 import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
+import com.huihong.healthydiet.bean.DataDictionary;
 import com.huihong.healthydiet.fragment.RecommendNearbyFragment;
 import com.huihong.healthydiet.fragment.RecommendRecommendFragment;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
+import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.current.ListPopupUtil;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/12
@@ -23,6 +41,8 @@ import java.util.List;
  */
 
 public class RecommendActivity extends BaseTitleActivity implements View.OnClickListener {
+
+    private List<Type> mTypeList;
 
 
     private ViewPager vpRecommend;
@@ -37,11 +57,19 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
     private boolean isRight = true;
 
+
+
+    private  String GroupBy;
+    private  String TypeValue;
+    private int TypeId;
+
+
     //设置4个筛选按钮的监听回调
     public static RecommendActivity mRecommendActivity;
     private ScreenTypeListener mLeftScreenTypeListener;
     private ScreenTypeListener mRightScreenTypeListener;
     private TextView tvType01, tvType02, tvType03, tvType04;
+    private LinearLayout layoutType4;
 
     public void setLeftScreenTypeListener(ScreenTypeListener pScreenTypeListener) {
         mLeftScreenTypeListener = pScreenTypeListener;
@@ -59,14 +87,14 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
     @Override
     public void initUI() {
         mRecommendActivity = this;
-        setTitle("推荐饮食");
+
         vpRecommend = (ViewPager) findViewById(R.id.vpRecommend);
         mList = new ArrayList<>();
         mList.add(new RecommendNearbyFragment());
         mList.add(new RecommendRecommendFragment());
         mPagerAdapter = new RecommendFragmentPagerAdapter(getSupportFragmentManager(), mList);
         vpRecommend.setAdapter(mPagerAdapter);
-        vpRecommend.setCurrentItem(1);
+
 
         layoutLeft2 = (LinearLayout) findViewById(R.id.layoutLeft2);
         layoutRight = (LinearLayout) findViewById(R.id.layoutRight);
@@ -92,6 +120,9 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 restTab();
                 restType();
 
+                if(mListPopupWindow!=null){
+                    mListPopupWindow.dismiss();
+                }
                 if (position == 0) {
                     setTitle("附近餐厅");
                     isRight = false;
@@ -106,6 +137,12 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                     viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
                     ivRight.setImageResource(R.mipmap.restaurant_3);
                 }
+                if(mRightScreenTypeListener!=null){
+                    //切换完成变成默认排序
+                    mRightScreenTypeListener.screenType(isRight, GroupBy,0,true);
+                    mLeftScreenTypeListener.screenType(isRight,GroupBy,0,true);
+                }
+
 
             }
 
@@ -121,6 +158,8 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
         tvType02 = (TextView) findViewById(R.id.tvType02);
         tvType03 = (TextView) findViewById(R.id.tvType03);
         tvType04 = (TextView) findViewById(R.id.tvType04);
+        layoutType4= (LinearLayout) findViewById(R.id.layoutType04);
+        ivType= (ImageView) findViewById(R.id.ivType);
 
 
         View.OnClickListener typeListener = new View.OnClickListener() {
@@ -131,25 +170,46 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 if (mLeftScreenTypeListener != null && mRightScreenTypeListener != null) {
                     switch (v.getId()) {
                         case R.id.tvType01:
+                            if(mListPopupWindow!=null&&mListPopupWindow.isShowing()){
+                                mListPopupWindow.dismiss();
+                            }
+                            GroupBy="SuitMe";
                             tvType01.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-
-                            mLeftScreenTypeListener.screenType(isRight, "适合我的");
-                            mRightScreenTypeListener.screenType(isRight, "适合我的");
+                            mLeftScreenTypeListener.screenType(isRight, GroupBy,0,false);
+                            mRightScreenTypeListener.screenType(isRight, GroupBy,0,false);
                             break;
                         case R.id.tvType02:
+                            if(mListPopupWindow!=null&&mListPopupWindow.isShowing()){
+                                mListPopupWindow.dismiss();
+                            }
+                            GroupBy="SalesVolume";
                             tvType02.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                            mRightScreenTypeListener.screenType(isRight, "销量最高");
-                            mLeftScreenTypeListener.screenType(isRight, "销量最高");
+                            mRightScreenTypeListener.screenType(isRight, GroupBy,0,false);
+                            mLeftScreenTypeListener.screenType(isRight, GroupBy,0,false);
                             break;
                         case R.id.tvType03:
+                            if(mListPopupWindow!=null&&mListPopupWindow.isShowing()){
+                                mListPopupWindow.dismiss();
+                            }
+                            GroupBy="Distance";
                             tvType03.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                            mRightScreenTypeListener.screenType(isRight, "距离最近");
-                            mLeftScreenTypeListener.screenType(isRight, "距离最近");
+                            mRightScreenTypeListener.screenType(isRight, GroupBy,0,false);
+                            mLeftScreenTypeListener.screenType(isRight,GroupBy,0,false);
                             break;
-                        case R.id.tvType04:
+                        case R.id.layoutType04:
+
+                            GroupBy="Type";
                             tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                            mRightScreenTypeListener.screenType(isRight, "其他类型");
-                            mLeftScreenTypeListener.screenType(isRight, "其他类型");
+                            if(mListPopupWindow!=null ){
+                                if(mListPopupWindow.isShowing()){
+                                    mListPopupWindow.dismiss();
+                                }else {
+                                    showListPopup(layoutType4);
+                                }
+                            }else {
+                                showListPopup(layoutType4);
+                            }
+
                             break;
                     }
                 }
@@ -159,14 +219,48 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
         tvType01.setOnClickListener(typeListener);
         tvType02.setOnClickListener(typeListener);
         tvType03.setOnClickListener(typeListener);
-        tvType04.setOnClickListener(typeListener);
+//        tvType04.setOnClickListener(typeListener);
+        layoutType4.setOnClickListener(typeListener);
+
+        //判断是从哪个界面进来的
+        restTab();
+        restType();
+        String tag = getIntent().getStringExtra("tag");
+        if (tag.equals("1")) {
+            isRight = false;
+            tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
+            viewLeft.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
+            ivLeft.setImageResource(R.mipmap.restaurant_1);
+            setTitle("附近餐厅");
+            vpRecommend.setCurrentItem(0);
+        } else {
+            setTitle("推荐饮食");
+            vpRecommend.setCurrentItem(1);
+            isRight = true;
+            tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));
+            viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
+            ivRight.setImageResource(R.mipmap.restaurant_3);
+        }
+
+        mTypeList=new ArrayList<>();
+        getDataDictionary();
+
     }
 
+    ImageView ivType;
     private void restType() {
+
+
         tvType01.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
         tvType02.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
         tvType03.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
         tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
+        GroupBy="";
+        TypeValue="类型";
+        TypeId=0;
+        tvType04.setText("类型");
+
+        ivType.setImageResource(R.mipmap.up);
     }
 
     @Override
@@ -207,5 +301,87 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
         ivLeft.setImageResource(R.mipmap.restaurant_4);
         ivRight.setImageResource(R.mipmap.restaurant_2);
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
+    }
+
+    //获取餐厅类型
+    private void getDataDictionary(){
+        OkHttpUtils
+                .post()
+                .url(AppUrl.DATA_DICTIONARY)
+                .addParams("TypeValue", "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+
+                        Toast.makeText(RecommendActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("接口，获取餐厅类型:", response);
+
+                        Gson gson = new Gson();
+                        DataDictionary DataDictionary = gson.fromJson(response, DataDictionary.class);
+//
+                        int code = DataDictionary.getHttpCode();
+                        if (code == 200) {
+                            List<com.huihong.healthydiet.bean.DataDictionary.ListDataBean> ListData= DataDictionary.getListData();
+                            for (int i = 0; i <ListData.size() ; i++) {
+                                Type mType=new Type();
+                                mType.setId(ListData.get(i).getId());
+                                mType.setTypeValue(ListData.get(i).getTypeValue());
+                                mTypeList.add(mType);
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    private ListPopupWindow mListPopupWindow;//类型列表
+    private boolean popIsShow=false;
+
+    private void showListPopup(LinearLayout mTextView) {
+
+        if(mTypeList.size()>0){
+
+            if(mListPopupWindow==null){
+                LvPopTypeAdapter  mAdapter = new LvPopTypeAdapter(RecommendActivity.this, mTypeList);
+                mListPopupWindow = ListPopupUtil.showListPopup(RecommendActivity.this, mTextView, mAdapter, R.drawable.bg_03, 0, 2, 100, 0);
+                mListPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        mListPopupWindow.dismiss();
+                        mRightScreenTypeListener.screenType(isRight, GroupBy,mTypeList.get(position).getId(),false);
+                        mLeftScreenTypeListener.screenType(isRight, GroupBy,mTypeList.get(position).getId(),false);
+                        tvType04.setText(mTypeList.get(position).getTypeValue());
+                        TypeValue=mTypeList.get(position).getTypeValue();
+                        TypeId=mTypeList.get(position).getId();
+                    }
+                });
+                mListPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        ivType.setImageResource(R.mipmap.up);
+//                        Toast.makeText(RecommendActivity.this, "消失了", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                mListPopupWindow.setForceIgnoreOutsideTouch(true);
+            }
+            ivType.setImageResource(R.mipmap.down);
+            mListPopupWindow.show();
+
+        }
+
     }
 }

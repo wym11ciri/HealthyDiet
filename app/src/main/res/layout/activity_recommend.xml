@@ -80,8 +80,8 @@
 
                         <ImageView
                             android:id="@+id/ivRight"
-                            android:layout_width="23dp"
-                            android:layout_height="23dp"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:src="@mipmap/restaurant_2" />
@@ -128,7 +128,7 @@
                     android:textSize="12sp" />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="0.5dp"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="11dp"
                     android:layout_marginTop="11dp"
@@ -145,7 +145,7 @@
                     android:textSize="12sp" />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="0.5dp"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="11dp"
                     android:layout_marginTop="11dp"
@@ -162,21 +162,37 @@
                     android:textSize="12sp" />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="0.5dp"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="11dp"
                     android:layout_marginTop="11dp"
                     android:background="#A7A7A7" />
 
-                <TextView
-                    android:id="@+id/tvType04"
+                <LinearLayout
+                    android:id="@+id/layoutType04"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="类型"
-                    android:textColor="#272727"
-                    android:textSize="12sp" />
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tvType04"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="类型"
+                        android:textColor="#272727"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/ivType"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="2dp"
+                        android:src="@mipmap/up"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp" />
+                </LinearLayout>
+
 
             </LinearLayout>
 

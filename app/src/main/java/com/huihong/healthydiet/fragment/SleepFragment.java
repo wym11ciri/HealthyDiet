@@ -1,14 +1,17 @@
 package com.huihong.healthydiet.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.SleepSettingsActivity;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.view.TimeSelectView;
 
@@ -27,6 +30,8 @@ public class SleepFragment extends Fragment {
     private int endHour = 8;
     private int startMin = 0;
     private int endMin = 0;
+
+    private LinearLayout layoutSettings;
 
     @Nullable
     @Override
@@ -135,5 +140,14 @@ public class SleepFragment extends Fragment {
                 }
             }
         });
+        layoutSettings= (LinearLayout) mView.findViewById(R.id.layoutSettings);
+        layoutSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIn=new Intent(getActivity(), SleepSettingsActivity.class);
+                startActivity(mIn);
+            }
+        });
+
     }
 }

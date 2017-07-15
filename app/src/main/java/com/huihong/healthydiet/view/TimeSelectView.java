@@ -10,17 +10,16 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.utils.common.DensityUtils;
-import com.huihong.healthydiet.utils.common.LogUtil;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
+ * 自定义时间选择器View
  */
 
 public class TimeSelectView extends View {
@@ -29,35 +28,31 @@ public class TimeSelectView extends View {
     private Paint ringPaint;//外部圆环画笔
     private Paint circlePaint;//圆形画笔
 
-    private Paint touchPaint;
 
-    private int viewWidth;
-    private int ringRadius;
-
-
-    private int ringWidth = 60;
-
+    private int viewWidth;//拿到View的宽度
+    private int ringWidth;//圆环的宽度  即画笔的宽度  两个点击圆的直径
+    private int addWidth;//圆外 冗余的宽度
+    private int ringRadius;//圆环的半径
+    private RectF rect;//画圆弧的区域
+    //2个点击的圆
     private TouchCircle startCircle;//起点圆
     private TouchCircle endCircle;//终点圆
-
-    private int[] circleColors ;
-
-    private RectF rect;
-
-
-    private Bitmap startBitmap, endBitmap;
-
+    private Bitmap startBitmap, endBitmap;//点击圆图片
+    //画笔的渐变色
+    private int[] circleColors;
+    //设置启始 结束时间初始值
     private int startHour = 23;
     private int endHour = 8;
     private int startMin = 0;
     private int endMin = 0;
-
+    //圆环的滑动监听
     private CircleListener circleListener;
-    public void  setCircleListener(CircleListener circleListener){
-        this.circleListener=circleListener;
+
+    public void setCircleListener(CircleListener circleListener) {
+        this.circleListener = circleListener;
     }
 
-
+    //构造方法
     public TimeSelectView(Context context) {
         this(context, null);
     }
@@ -67,10 +62,10 @@ public class TimeSelectView extends View {
     }
 
 
-
     public TimeSelectView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        ringWidth= DensityUtils.dp2px(context,30);
+        ringWidth = DensityUtils.dp2px(context, 30);
+        addWidth = DensityUtils.dp2px(context, 15);
         //外圈背景颜色
         ringPaint = new Paint();
         ringPaint.setStyle(Paint.Style.STROKE);//描边
@@ -101,38 +96,22 @@ public class TimeSelectView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 
-        //获得该View距离父布局的距离
-
-        this.getTop();
-        this.getLeft();
-        LogUtil.i("获得该View距离父布局的距离" + this.getTop() + "===" + this.getLeft());
-
         viewWidth = w;
         ringRadius = w / 2 - ringWidth / 2;
-        LogUtil.i("zangyi", ringRadius + "zzzz");
         rect = new RectF(-ringRadius, -ringRadius, ringRadius, ringRadius);
-
-        if (circleColors.length > 1) {
-            LinearGradient lg = new LinearGradient(0, 0, 100, 100, circleColors, null, Shader.TileMode.MIRROR);  //
-//            circlePaint.setShader(new SweepGradient(0, 0, doughnutColors, null));
-            circlePaint.setShader(lg);
-        } else {
-            circlePaint.setColor(getResources().getColor(R.color.recommend_text_select));
-        }
-
-
-        float startAngel = (float) ((startHour-12 )* 360.0000001 / 12.00001 + startMin * 15.0000001 / 60.00001)-90;
-        float endAngel = (float) (endHour * 360.0000001 / 12.00001 + endMin * 15.000001 / 60.00001)-90;
-
+        //给画笔设置渐变色
+        LinearGradient lg = new LinearGradient(0, 0, 100, 100, circleColors, null, Shader.TileMode.MIRROR);
+        circlePaint.setShader(lg);
+        //计算初始角度
+        float startAngel = (float) ((startHour - 12) * 360.0000001 / 12.00001 + startMin * 15.0000001 / 60.00001) - 90;
+        float endAngel = (float) (endHour * 360.0000001 / 12.00001 + endMin * 15.000001 / 60.00001) - 90;
+        //构造2个点击事件
         startCircle = new TouchCircle(startAngel, ringWidth / 2, ringRadius);
         endCircle = new TouchCircle(endAngel, ringWidth / 2, ringRadius);
-
-
         //加载2张图片
-
         Bitmap bt1 = BitmapFactory.decodeResource(getResources(), R.mipmap.sleep_3);
         startBitmap = Bitmap.createScaledBitmap(bt1, ringWidth, ringWidth, false);
-        bt1.recycle();
+        bt1.recycle();//释放旧的图片资源
         Bitmap bt2 = BitmapFactory.decodeResource(getResources(), R.mipmap.sleep_4);
         endBitmap = Bitmap.createScaledBitmap(bt2, ringWidth, ringWidth, false);
         bt2.recycle();
@@ -144,52 +123,42 @@ public class TimeSelectView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.translate(viewWidth / 2, viewWidth / 2);//将canvas 原点平移到画布中心
-        canvas.drawCircle(0, 0, ringRadius, ringPaint);//绘制圆形背景
+        canvas.drawCircle(0, 0, ringRadius, ringPaint);//绘制外部灰色圆环背景
 
         //绘制圆弧
-//        canvas.drawArc(oval,0,140,false,backgroundPaint);
-        //绘制圆弧
-        //计算开始角度
-        float startAngle = startCircle.getAngle();
 
-        float endAngle = endCircle.getAngle() - startAngle;
+        float startAngle = startCircle.getAngle();//开始角度
+        float sweepAngle = endCircle.getAngle() - startAngle;//扫描的角度
 
-        LinearGradient lg = new LinearGradient((float) startCircle.getX(), (float) startCircle.getY()
-                , (float) endCircle.getX(), (float) endCircle.getY(), circleColors, null, Shader.TileMode.CLAMP );  //
-//            circlePaint.setShader(new SweepGradient(0, 0, doughnutColors, null));
-        circlePaint.setShader(lg);
-        LogUtil.i("jiaodu","startAngle"+startAngle+"endAngle"+endAngle);
-
-        if(endAngle<0){
-            endAngle=endAngle+360;
+        if (sweepAngle < 0) {
+            sweepAngle = sweepAngle + 360;
         }
 
-        canvas.drawArc(rect, startAngle, endAngle, false, circlePaint);
-        //绘制2张图片
+        //重新设置渐变色
+        LinearGradient lg = new LinearGradient(
+                (float) startCircle.getX(), (float) startCircle.getY(),
+                (float) endCircle.getX(), (float) endCircle.getY(),
+                circleColors, null, Shader.TileMode.CLAMP);  //
 
-        canvas.drawBitmap(startBitmap,(float) startCircle.getX()-ringWidth/2,(float) startCircle.getY()-ringWidth/2,null);
-        canvas.drawBitmap(endBitmap,(float) endCircle.getX()-ringWidth/2,(float) endCircle.getY()-ringWidth/2,null);
+        circlePaint.setShader(lg);
+
+
+        canvas.drawArc(rect, startAngle, sweepAngle, false, circlePaint);
+        //绘制2张可以点击的图片
+
+        canvas.drawBitmap(startBitmap, (float) startCircle.getX() - ringWidth / 2, (float) startCircle.getY() - ringWidth / 2, null);
+        canvas.drawBitmap(endBitmap, (float) endCircle.getX() - ringWidth / 2, (float) endCircle.getY() - ringWidth / 2, null);
     }
 
-    public  void init(float startAngle,float endAngle){
-//        startCircle.setAngle(250);
-//        endCircle.setAngle(0);
-//        invalidate();
-    }
 
-
-    private boolean shouldReDraw = false;
-    private boolean isStart = true;
+    private boolean shouldReDraw = false;//是否需要重新绘制  即按下的时候处于2个圆环里面
+    private boolean isStart = true;//是否在设置开始时间
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        //获取手指在屏幕上的坐标
-        float x = event.getX();
-        float y = event.getY();
-
-        //获取手指的操作--》按下、移动、松开
         int action = event.getAction();
+
         switch (action) {
             case MotionEvent.ACTION_DOWN://按下
                 //先把坐标移动到圆心处获得新的坐标
@@ -197,10 +166,10 @@ public class TimeSelectView extends View {
                 float getY = event.getY() - ringRadius;
                 //计算点击的坐标是否在2个圆内
 
-                if (getDistance(startCircle.getX(), startCircle.getY(), getX, getY) < startCircle.getR() + 30) {
-                    isStart = true;
-                    shouldReDraw = true;
-                } else if (getDistance(endCircle.getX(), endCircle.getY(), getX, getY) < endCircle.getR() + 30) {
+                if (getDistance(startCircle.getX(), startCircle.getY(), getX, getY) < startCircle.getR() + addWidth) {
+                    isStart = true;//在设置开始时间
+                    shouldReDraw = true;//需要重新绘制
+                } else if (getDistance(endCircle.getX(), endCircle.getY(), getX, getY) < endCircle.getR() + addWidth) {
                     shouldReDraw = true;
                     isStart = false;
                 } else {
@@ -214,27 +183,29 @@ public class TimeSelectView extends View {
                     float getY2 = event.getY() - ringRadius;
                     //反三角函数求角度
                     double a = Math.atan2(getY2, getX2);//给的是弧度
-                    float mAngle = (float) (360 * a / (2 * TouchCircle.PI));
+                    float mAngle = (float) (360 * a / (2 * TouchCircle.PI));//弧度转角度
                     if (isStart) {
                         startCircle.setAngle(mAngle);
                     } else {
                         endCircle.setAngle(mAngle);
                     }
-                    if(circleListener!=null){
-                        circleListener.move(isStart,mAngle,false);
+                    //通知更新时间
+                    if (circleListener != null) {
+                        circleListener.move(isStart, mAngle, false);
                     }
                     invalidate();
                 }
                 break;
             case MotionEvent.ACTION_UP://松开
-                //松开的时候把数据传递回来
-                Log.i("zangyi", "ACTION_UP");
-                if(shouldReDraw){
-                    if(circleListener!=null){
-                        circleListener.move(isStart,0,true);
+
+                if (shouldReDraw) {
+                    //松开的时候把数据传递回来
+                    if (circleListener != null) {
+                        //通知已经松开手指 结束本次操作了
+                        circleListener.move(isStart, 0, true);
                     }
                 }
-
+                //重置状态
                 shouldReDraw = false;
                 isStart = true;
                 break;

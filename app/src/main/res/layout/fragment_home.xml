@@ -38,8 +38,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_marginLeft="10dp"
                     android:src="@mipmap/home_3" />
 
@@ -69,7 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="分"
+                    android:text="积分"
                     android:textColor="#666666"
                     android:textSize="12sp" />
 
@@ -97,8 +97,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:text="今日已进行有氧运动"
                     android:textColor="#666666"
                     android:textSize="12sp" />
@@ -106,7 +106,7 @@
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.6" />
 
                 <View
                     android:layout_width="1dp"
@@ -117,11 +117,11 @@
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.5" />
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_marginRight="10dp"
                     android:src="@mipmap/home_5" />
             </LinearLayout>
@@ -129,6 +129,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
+                android:layout_marginBottom="4dp"
                 android:background="#ffffff"
                 android:orientation="horizontal">
 
@@ -180,11 +181,11 @@
                         android:layout_weight="1" />
 
                     <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
+                        android:layout_width="9dp"
+                        android:layout_height="9dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="10dp"
                         android:src="@mipmap/go" />
                 </LinearLayout>
 
@@ -193,10 +194,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="135dp"
+                android:layout_height="128dp"
                 android:background="#fff">
 
                 <android.support.v4.view.ViewPager
+
                     android:id="@+id/vpNearby"
                     android:layout_width="match_parent"
                     android:layout_height="120dp" />
@@ -238,7 +240,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="9dp"
                 android:background="#eeeeee" />
 
             <LinearLayout
@@ -267,7 +269,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="饮食推荐"
+                    android:text="推荐饮食"
                     android:textColor="#000000"
                     android:textSize="14sp" />
 
@@ -292,11 +294,11 @@
                         android:layout_weight="1" />
 
                     <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
+                        android:layout_width="9dp"
+                        android:layout_height="9dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="10dp"
                         android:src="@mipmap/go" />
                 </LinearLayout>
 
@@ -305,7 +307,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="216dp"
                 android:background="#fff"
                 android:orientation="horizontal">
 
@@ -323,12 +325,13 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
+                android:layout_height="9dp"
                 android:background="#eeeeee" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="#ffffff"
                 android:orientation="horizontal">
 
@@ -379,26 +382,26 @@
                         android:layout_weight="1" />
 
                     <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
+                        android:layout_width="9dp"
+                        android:layout_height="9dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="10dp"
                         android:src="@mipmap/go" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/lvRecord"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvRecord"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="16dp"
                 android:background="#eeeeee" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

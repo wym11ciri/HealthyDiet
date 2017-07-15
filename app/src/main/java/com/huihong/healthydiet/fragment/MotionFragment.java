@@ -102,10 +102,10 @@ public class MotionFragment extends Fragment {
         mChart.setTouchEnabled(true);
 
         // enable scaling and dragging
-        mChart.setDragEnabled(true);
+//        mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        // mChart.setScaleXEnabled(true);
-        // mChart.setScaleYEnabled(true);
+        mChart.setScaleXEnabled(true);
+        mChart.setScaleYEnabled(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
         mChart.setPinchZoom(true);
@@ -113,7 +113,7 @@ public class MotionFragment extends Fragment {
 
         XAxis xAxis = mChart.getXAxis();
 //        xAxis.enableGridDashedLine(10f, 10f, 0f);
-
+        xAxis.setGranularity(1f); //以1为单位跳跃
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(getResources().getColor(R.color.line_chart_normal_color));//设置字体颜色
         xAxis.setDrawGridLines(false);
@@ -123,7 +123,7 @@ public class MotionFragment extends Fragment {
 //        leftAxis.setDrawTopYLabelEntry(false);
         leftAxis.removeAllLimitLines(); // 移除所有限制线
         leftAxis.setAxisMaximum(200f);//设置最大值
-        leftAxis.setAxisMinimum(-50f);//设置最小值
+        leftAxis.setAxisMinimum(0f);//设置最小值
         //leftAxis.setYOffset(20f);
         //设置表格框框
 //        leftAxis.enableGridDashedLine(10f, 10f, 0f);
@@ -159,16 +159,14 @@ public class MotionFragment extends Fragment {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
 
-        for (int i = 0; i < count; i++) {
-
-            float val = (float) (Math.random() * range) + 3;
+        for (int i = 1; i < count; i++) {
+            float val = (int) (Math.random() * range) + 3;
             values.add(new Entry(i, val));
         }
 
         LineDataSet set1;
 
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
+        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
             set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
             set1.setValues(values);
             mChart.getData().notifyDataChanged();
@@ -202,9 +200,25 @@ public class MotionFragment extends Fragment {
 //                set1.setFillColor(Color.BLACK);
 //            }
 
+            LineDataSet set2;
+
+            ArrayList<Entry> values2 = new ArrayList<Entry>();
+            for (int i = 1; i < count; i++) {
+                values2.add(new Entry(i, 0));
+            }
+
+            set2 = new LineDataSet(values2, "DataSet 1");
+            set2.setColor(getResources().getColor(R.color.circle_zzzz));
+            set2.setCircleColor(getResources().getColor(R.color.circle_zzzz));
+            set2.setLineWidth(0.2f);
+            set2.setCircleRadius(3f);
+            set2.setDrawFilled(true);
+            set2.setDrawValues(false);
+            set2.setDrawCircleHole(false);
+
             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
             dataSets.add(set1); // add the datasets
-
+            dataSets.add(set2); // add the datasets
             // create a data object with the datasets
             LineData data = new LineData(dataSets);
 

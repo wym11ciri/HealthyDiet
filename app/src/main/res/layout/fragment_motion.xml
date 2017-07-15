@@ -50,20 +50,21 @@
                 android:textSize="11sp" />
 
             <TextView
-                android:background="@drawable/motion_bg_middle_normal"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="1dp"
                 android:id="@+id/tvSelectMiddle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1dp"
+                android:layout_marginTop="1dp"
                 android:layout_weight="1"
+                android:background="@drawable/motion_bg_middle_normal"
                 android:gravity="center"
                 android:text="月"
                 android:textColor="@color/motion_normal"
                 android:textSize="11sp" />
 
             <TextView
-               android:id="@+id/tvSelectRight"
+                android:id="@+id/tvSelectRight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

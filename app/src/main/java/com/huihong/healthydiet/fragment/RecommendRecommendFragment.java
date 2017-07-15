@@ -54,7 +54,7 @@ public class RecommendRecommendFragment extends Fragment {
 
         RecommendActivity.mRecommendActivity.setRightScreenTypeListener(new ScreenTypeListener() {
             @Override
-            public void screenType(boolean isRight, String type) {
+            public void screenType(boolean isRight, String type,int typeId,boolean isSwitch) {
                 LogUtil.i("zzzz",isRight+type);
                 if(isRight){
                     Toast.makeText(getActivity(), "推荐饮食收到"+type+"请求", Toast.LENGTH_SHORT).show();

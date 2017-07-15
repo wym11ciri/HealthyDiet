@@ -27,4 +27,16 @@ public class ImageLoderUtil {
                 .into(mImageView);
     }
 
+    //加载图片
+    public  static  void showImage2(Context mContext, int i, ImageView mImageView){
+
+        Glide
+                .with(mContext)
+                .load(MyApplication.mList.get(i%(MyApplication.mList.size()-1)))
+                .asBitmap()
+                .placeholder(R.mipmap.error_photo)
+                .error(R.mipmap.error_photo)
+                .into(mImageView);
+    }
+
 }

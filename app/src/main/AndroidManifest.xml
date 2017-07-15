@@ -3,6 +3,7 @@
     package="com.huihong.healthydiet">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,6 +24,7 @@
         <activity android:name=".activity.RecipesActivity"/>
         <activity android:name=".activity.RecipesDetailsActivity"/>
         <activity android:name=".activity.PayActivity"/>
+        <activity android:name=".activity.SleepSettingsActivity"/>
     </application>
 
 </manifest>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HealthyDiet</string>
+    <string name="service_error">服务器出现异常，请检查网络</string>
+    <string name="no_more_date">没有更多数据</string>
 </resources>

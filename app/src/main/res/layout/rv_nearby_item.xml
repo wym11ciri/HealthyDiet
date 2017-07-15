@@ -1,49 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
+    android:layout_width="94dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_height="110dp"
     android:orientation="vertical">
 
     <com.joooonho.SelectableRoundedImageView
         android:id="@+id/ivHead"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="94dp"
+        android:layout_height="82dp"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:scaleType="centerCrop"
-        app:sriv_left_bottom_corner_radius="0dip"
-        app:sriv_left_top_corner_radius="3dip"
-        app:sriv_right_bottom_corner_radius="0dip"
-        app:sriv_right_top_corner_radius="3dip"
+        app:sriv_left_bottom_corner_radius="2dip"
+        app:sriv_left_top_corner_radius="2dip"
+        app:sriv_right_bottom_corner_radius="2dip"
+        app:sriv_right_top_corner_radius="2dip"
         />
 
     <LinearLayout
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="4dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
         android:orientation="horizontal">
 
         <TextView
+            android:singleLine="true"
             android:id="@+id/tvName"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center|left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
             android:text="肯德基"
             android:textColor="#232323"
             android:textSize="13sp" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="1dp"/>
+
         <TextView
+            android:gravity="bottom"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="120m"
+            android:layout_height="match_parent"
+            android:text="200m"
             android:textColor="#6C6C6C"
             android:textSize="9sp" />
     </LinearLayout>

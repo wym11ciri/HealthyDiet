@@ -6,23 +6,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
+import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.activity.PayActivity;
 import com.huihong.healthydiet.activity.RecommendActivity;
-import com.huihong.healthydiet.adapter.LvRecordAdapter;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
+import com.huihong.healthydiet.adapter.RvRecordAdapter;
 import com.joooonho.SelectableRoundedImageView;
 import com.stx.xhb.xbanner.XBanner;
 
@@ -33,7 +32,7 @@ import java.util.List;
  * Created by zangyi_shuai_ge on 2017/7/10
  */
 
-public class Fragment01 extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
     private View mView;
@@ -51,9 +50,9 @@ public class Fragment01 extends Fragment implements View.OnClickListener {
     private List<String> recommendList;
 
     //饮食记录
-    private ListView lvRecord;
+    private RecyclerView rvRecord;
     private List<String> recordList;
-    private LvRecordAdapter mLvRecordAdapter;
+    private RvRecordAdapter mRvRecordAdapter;
 
     //3个跳转按钮
     private LinearLayout layoutNearby, layoutRecommend, layoutRecord;
@@ -97,7 +96,7 @@ public class Fragment01 extends Fragment implements View.OnClickListener {
 
         Glide
                 .with(getActivity())
-                .load("http://image.tianjimedia.com/uploadImages/2015/131/41/5CI8TD94WZ10.jpg")
+                .load(MyApplication.mList.get(2))
                 .asBitmap()
 //                .transform(new GlideRoundTransform(getActivity()))
                 .into(ivTest);
@@ -116,30 +115,32 @@ public class Fragment01 extends Fragment implements View.OnClickListener {
     }
 
     private void initRecord() {
-        lvRecord = (ListView) mView.findViewById(R.id.lvRecord);
+        rvRecord = (RecyclerView) mView.findViewById(R.id.rvRecord);
+        rvRecord.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recordList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             recordList.add("麦当劳" + i);
         }
-        mLvRecordAdapter = new LvRecordAdapter(getActivity(), recordList);
-        lvRecord.setAdapter(mLvRecordAdapter);
-
-
-        lvRecord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                jumpActivity(PayActivity.class);
-            }
-        });
+        mRvRecordAdapter = new RvRecordAdapter(getActivity(), recordList);
+        rvRecord.setAdapter(mRvRecordAdapter);
+//
+//
+//        lvRecord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                jumpActivity(PayActivity.class);
+//            }
+//        });
 
     }
 
     //饮食推荐
     private void initRecommend() {
         rvRecommend = (RecyclerView) mView.findViewById(R.id.rvRecommend);
+
         recommendList = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            recommendList.add("KFC" + i);
+            recommendList.add("桂花莲子糯米八宝粥" + i);
         }
         rvRecommend.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRvRecommendAdapter = new RvRecommendAdapter(getActivity(), recommendList);
@@ -204,10 +205,11 @@ public class Fragment01 extends Fragment implements View.OnClickListener {
     private void initBanner() {
         mBannerNet = (XBanner) mView.findViewById(R.id.banner_1);
         final List<String> imgesUrl = new ArrayList<>();
-        imgesUrl.add("http://image.tianjimedia.com/uploadImages/2015/131/41/5CI8TD94WZ10.jpg");
-        imgesUrl.add("http://img.taopic.com/uploads/allimg/110604/2014-11060416241547.jpg");
-        imgesUrl.add("http://www.qiwen007.com/images/image/2016/1212/6361714777668259239190221.jpg");
-        imgesUrl.add("http://image.tianjimedia.com/uploadImages/2014/351/53/0Y94V9AVTL1Y.jpg");
+        imgesUrl.add(MyApplication.mList.get(0));
+        imgesUrl.add(MyApplication.mList.get(1));
+        imgesUrl.add(MyApplication.mList.get(2));
+        imgesUrl.add(MyApplication.mList.get(3));
+
         //添加广告数据
         mBannerNet.setData(imgesUrl, null);//第二个参数为提示文字资源集合
         mBannerNet.setmAdapter(new XBanner.XBannerAdapter() {
@@ -223,11 +225,11 @@ public class Fragment01 extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.layoutNearby:
 //                jumpActivity(MainActivity.class);
-                jumpActivity(RecommendActivity.class);
+                jumpActivity2("1");
                 break;
 
             case R.id.layoutRecommend:
-                jumpActivity(RecommendActivity.class);
+                jumpActivity2("2");
                 break;
             case R.id.layoutRecord:
 //                jumpActivity(MainActivity.class);
@@ -238,6 +240,12 @@ public class Fragment01 extends Fragment implements View.OnClickListener {
 
     private void jumpActivity(Class<?> cls) {
         Intent mIntent = new Intent(getActivity(), cls);
+        startActivity(mIntent);
+    }
+
+    private void jumpActivity2(String tag) {
+        Intent mIntent = new Intent(getActivity(), RecommendActivity.class);
+        mIntent.putExtra("tag",tag);
         startActivity(mIntent);
     }
 }

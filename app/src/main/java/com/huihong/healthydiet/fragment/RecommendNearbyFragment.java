@@ -13,10 +13,12 @@ import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
+import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
+import com.huihong.healthydiet.bean.RestaurantList;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -36,11 +38,18 @@ public class RecommendNearbyFragment extends Fragment {
     private View mView;
 
     //列表加载页数
-    private int unm = 0;
-    //列表
-    private LRecyclerView recyclerView;
-    private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private RvRecommendNearbyAdapter mRvRecommendAdapter;
+    private int num = 0;
+
+
+
+
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Nullable
     @Override
@@ -58,10 +67,21 @@ public class RecommendNearbyFragment extends Fragment {
         initRecyclerView();
         RecommendActivity.mRecommendActivity.setLeftScreenTypeListener(new ScreenTypeListener() {
             @Override
-            public void screenType(boolean isRight, String type) {
+            public void screenType(boolean isRight, String type,int typeId,boolean isSwitch) {
                 LogUtil.i("zzzz", isRight + type);
                 if (!isRight) {
-                    Toast.makeText(getActivity(), "附近餐厅收到" + type + "请求", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "附近餐厅收到" + type + "请求"+typeId, Toast.LENGTH_SHORT).show();
+
+                    if(!isSwitch){
+                        num =1;
+                        recommendList.clear();
+                        mLRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+
+                    GroupBy=type;
+                    TypeValue=typeId+"";
+
+                    getInfo(num);
                 }
             }
         });
@@ -69,20 +89,18 @@ public class RecommendNearbyFragment extends Fragment {
     }
 
 
+    //列表
+    private LRecyclerView recyclerView;
+    private LRecyclerViewAdapter mLRecyclerViewAdapter;
+    private RvRecommendNearbyAdapter mRvRecommendAdapter;
+    private List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> recommendList;
+
     private void initRecyclerView() {
 
 
-
-
-
-        List<String> recommendList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            recommendList.add("KFC" + i);
-        }
+        recommendList = new ArrayList<>();
         recyclerView = (LRecyclerView) mView.findViewById(R.id.recyclerView);
-
         mRvRecommendAdapter = new RvRecommendNearbyAdapter(getActivity(), recommendList);
-
         mLRecyclerViewAdapter = new LRecyclerViewAdapter(mRvRecommendAdapter);
         recyclerView.setAdapter(mLRecyclerViewAdapter);
 
@@ -92,62 +110,78 @@ public class RecommendNearbyFragment extends Fragment {
 //        //防止item位置互换
 //        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-
-//        mLRecyclerViewAdapter.addHeaderView(new SampleHeader(this));
-
         recyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                mCurrentCounter = 0;
-//                mDataAdapter.clear();
-//                requestData();
+                num = 1;
+                recommendList.clear();
+                mLRecyclerViewAdapter.notifyDataSetChanged();
+                getInfo(num);
             }
         });
 
+        //加载更多
         recyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-//                if (mCurrentCounter < TOTAL_COUNTER) {
-//                    // loading more
-//                    requestData();
-//                } else {
-//                    //the end
-//                    mRecyclerView.setNoMore(true);
-//                }
+                getInfo(num);
             }
         });
 
 
-//        recyclerView.refresh();
+//       recyclerView.refresh();
 
 
+        getInfo(1);
+
+
+    }
+
+    private  String GroupBy="";
+    private  String TypeValue="";
+
+    //获取餐厅列表信息
+    private void getInfo(int num) {
 
 
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_RESTAURANT_LIST_INFO)
-                .addParams("CoordX", "2")
-                .addParams("CoordY", "2")
-                .addParams("GroupBy", "Distance")
-                .addParams("PageNo", "1")
-                .addParams("TypeValue", "")
-//                .addParams("ispregnant", pregnant)
-//                .addParams("address", address)
-//                .addParams("telphone", phoneNum)
+                .addParams("CoordX", "120.132566")//用户坐标
+                .addParams("CoordY", "30.267515")
+                .addParams("GroupBy", GroupBy)//筛选方式
+                .addParams("PageNo", num + "")//页数
+                .addParams("TypeValue", TypeValue)
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.i("jiekou2"+e);
+                        recyclerView.refreshComplete(1);
+                        LogUtil.i("error" + e);
+                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-
-                        LogUtil.i("jiekou",response);
+                        LogUtil.i("接口，餐厅列表:", response);
+                        recyclerView.refreshComplete(1);
+                        Gson gson = new Gson();
+                        RestaurantList RestaurantList = gson.fromJson(response, RestaurantList.class);
+                        int code = RestaurantList.getHttpCode();
+                        if (code == 200) {
+                            RecommendNearbyFragment.this.num++;
+                            List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> mListData = RestaurantList.getListData();//拿到餐厅列表
+//                            recommendList.clear();
+                            recommendList.addAll(mListData);
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
+                        } else if (code == 300) {
+                            Toast.makeText(getActivity(), R.string.no_more_date, Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                 });
 
     }
+
+
 }
