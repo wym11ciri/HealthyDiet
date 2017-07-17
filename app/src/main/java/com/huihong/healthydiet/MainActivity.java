@@ -1,5 +1,6 @@
 package com.huihong.healthydiet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
@@ -12,10 +13,11 @@ import android.widget.TextView;
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
 import com.huihong.healthydiet.fragment.ArticleFragment;
-import com.huihong.healthydiet.fragment.HomeFragment;
 import com.huihong.healthydiet.fragment.Fragment02;
+import com.huihong.healthydiet.fragment.HomeFragment;
 import com.huihong.healthydiet.fragment.MotionFragment;
 import com.huihong.healthydiet.fragment.SleepFragment;
+import com.huihong.healthydiet.service.AlarmClockService;
 import com.huihong.healthydiet.widget.MyViewPager;
 
 import java.util.ArrayList;
@@ -35,8 +37,22 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
+        setupService();
     }
+    /**
+     * 开启计步服务
+     */
+    private void setupService() {
+        Intent intent = new Intent(this, AlarmClockService.class);
+//        isBind = bindService(intent, conn, Context.BIND_AUTO_CREATE);
+        startService(intent);
 
+
+//        Intent intent2 = new Intent(this, StepService.class);
+//        isBind = bindService(intent, conn, Context.BIND_AUTO_CREATE);
+//        startService(intent2);
+
+    }
     private void initUI() {
         layoutTab01 = (RelativeLayout) findViewById(R.id.layoutTab01);
         layoutTab02 = (RelativeLayout) findViewById(R.id.layoutTab02);

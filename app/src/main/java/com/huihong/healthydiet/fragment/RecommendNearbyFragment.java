@@ -38,11 +38,7 @@ public class RecommendNearbyFragment extends Fragment {
     private View mView;
 
     //列表加载页数
-    private int num = 0;
-
-
-
-
+    private int num = 1;
 
 
     @Override
@@ -127,14 +123,8 @@ public class RecommendNearbyFragment extends Fragment {
                 getInfo(num);
             }
         });
-
-
-//       recyclerView.refresh();
-
-
-        getInfo(1);
-
-
+       recyclerView.refresh();
+//        getInfo(1);
     }
 
     private  String GroupBy="";

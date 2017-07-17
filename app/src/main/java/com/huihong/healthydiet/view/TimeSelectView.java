@@ -16,6 +16,7 @@ import android.view.View;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.utils.common.DensityUtils;
+import com.huihong.healthydiet.utils.common.SPUtils;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -90,6 +91,11 @@ public class TimeSelectView extends View {
                 getResources().getColor(R.color.circle_color_02),
                 getResources().getColor(R.color.circle_color_01),
         };
+
+        startHour = (int) SPUtils.get(context, "startHour", 23);
+        startMin = (int) SPUtils.get(context, "startMin", 0);
+        endHour = (int) SPUtils.get(context, "endHour", 8);
+        endMin = (int) SPUtils.get(context, "endMin", 0);
     }
 
 

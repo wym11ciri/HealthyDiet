@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesActivity;
 import com.huihong.healthydiet.bean.RestaurantList;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
-import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -77,13 +77,21 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
             holder.distance.setText("" + distance + "m");
         }
 
+        Glide
+                .with(mContext)
+                .load(mList.get(position).getImages().get(0))
+                .asBitmap()
+                .error(R.mipmap.error_photo)
+                .into(holder.ivHead);
 
-        ImageLoderUtil.showImage2(mContext, position, holder.ivHead);
+
+//        ImageLoderUtil.showImage2(mContext, position, holder.ivHead);
 
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent mIn = new Intent(mContext, RecipesActivity.class);
+                mIn.putExtra("id",mList.get(position).getId());
                 mContext.startActivity(mIn);
             }
         });

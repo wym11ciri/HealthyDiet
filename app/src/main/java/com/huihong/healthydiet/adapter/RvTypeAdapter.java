@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
@@ -24,10 +24,10 @@ public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeViewHolder> {
     private List<String> mList;
 
     private ItemOnClickListener mItemOnClickListener;
+
     public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
         mItemOnClickListener = pItemOnClickListener;
     }
-
 
     public RvTypeAdapter(Context pContext, List<String> pList) {
         mList = pList;
@@ -51,28 +51,26 @@ public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeViewHolder> {
 
     @Override
     public void onBindViewHolder(final RvTypeViewHolder holder, int position) {
-//        holder.tvName.setText(mList.get(position));
-
-//        Glide
-//                .with(mContext)
-//                .load("http://www.qiwen007.com/images/image/2016/1212/6361714777668259239190221.jpg")
-//                .asBitmap()
-//                .into( holder.ivHead);
-//        holder.tvTag.setText(mList.get(position));
-
-        mList.get(position);
-
-
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
-
+        String type = mList.get(position);
+        if (type.equals("平和质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_1);
+        } else if (type.equals("气郁质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_2);
+        } else if (type.equals("阴虚质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_8);
+        } else if (type.equals("痰湿质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_5);
+        } else if (type.equals("阳虚质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_9);
+        } else if (type.equals("特禀质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_6);
+        } else if (type.equals("湿热质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_4);
+        } else if (type.equals("气虚质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_2);
+        } else if (type.equals("血瘀质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_7);
+        }
     }
 
     @Override
@@ -82,18 +80,10 @@ public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeViewHolder> {
 }
 
 class RvTypeViewHolder extends RecyclerView.ViewHolder {
-
-    TextView tvTag,tvTitle;
-//    LinearLayout mLinearLayout;
-
-//    RecyclerView rvArticleTag;
-//    SelectableRoundedImageView ivHead;
+    ImageView ivType;
 
     RvTypeViewHolder(View itemView) {
         super(itemView);
-//        tvTag= (TextView) itemView.findViewById(R.id.tvTag);
-//        rvArticleTag= (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-//        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-//        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
+        ivType = (ImageView) itemView.findViewById(R.id.ivType);
     }
 }

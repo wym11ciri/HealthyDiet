@@ -5,14 +5,21 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.mInterface.SwitchListener;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/15
+ * 切换按钮控件
  */
 
 public class SwitchImageView extends android.support.v7.widget.AppCompatImageView implements View.OnClickListener {
 
     private boolean isChoose;
+    private SwitchListener mSwitchListener;
+
+    public void setmSwitchListener(SwitchListener mSwitchListener) {
+        this.mSwitchListener = mSwitchListener;
+    }
 
 
     public SwitchImageView(Context context) {
@@ -39,6 +46,8 @@ public class SwitchImageView extends android.support.v7.widget.AppCompatImageVie
             isChoose = true;
             this.setImageResource(R.mipmap.switch_1);
         }
-
+        if (mSwitchListener != null) {
+            mSwitchListener.mSwitch(isChoose);
+        }
     }
 }

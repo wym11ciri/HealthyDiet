@@ -1,5 +1,9 @@
 package com.huihong.healthydiet.utils.current;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+
 /**
  * Created by zangyi_shuai_ge on 2017/6/20
  * Dialog 工具类
@@ -16,31 +20,31 @@ public class DialogUtil {
 //     * 返回一个 AlertDialog
 //     */
 //
-//    public static AlertDialog createAlertDialog(Context mContext, String title, String message
-//            , String rightText, DialogInterface.OnClickListener rightOnClickListener
-//            , String leftText, DialogInterface.OnClickListener leftOnClickListener
-//            , boolean isCancelable) {
+    public static AlertDialog createAlertDialog(Context mContext, String title, String message
+            , String rightText, DialogInterface.OnClickListener rightOnClickListener
+            , String leftText, DialogInterface.OnClickListener leftOnClickListener
+            , boolean isCancelable) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(rightText, rightOnClickListener);
+        builder.setNegativeButton(leftText, leftOnClickListener);
+        builder.setCancelable(isCancelable);
+        return builder.create();
+    }
 //
-//        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-//        builder.setTitle(title);
-//        builder.setMessage(message);
-//        builder.setPositiveButton(rightText, rightOnClickListener);
+    public AlertDialog createAlertDialog(Context mContext, String title, String message
+            , String rightText, DialogInterface.OnClickListener rightOnClickListener
+            , boolean isCancelable) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(rightText, rightOnClickListener);
 //        builder.setNegativeButton(leftText, leftOnClickListener);
-//        builder.setCancelable(isCancelable);
-//        return builder.create();
-//    }
-//
-//    public AlertDialog createAlertDialog(Context mContext, String title, String message
-//            , String rightText, DialogInterface.OnClickListener rightOnClickListener
-//            , boolean isCancelable) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-//        builder.setTitle(title);
-//        builder.setMessage(message);
-//        builder.setPositiveButton(rightText, rightOnClickListener);
-////        builder.setNegativeButton(leftText, leftOnClickListener);
-//        builder.setCancelable(isCancelable);
-//        return builder.create();
-//    }
+        builder.setCancelable(isCancelable);
+        return builder.create();
+    }
 //
 //    //自定义一个AlertDialog
 //

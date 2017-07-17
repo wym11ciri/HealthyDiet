@@ -9,11 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.SleepSettingsActivity;
 import com.huihong.healthydiet.mInterface.CircleListener;
+import com.huihong.healthydiet.mInterface.SwitchListener;
+import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.view.TimeSelectView;
+import com.huihong.healthydiet.widget.SwitchImageView;
+
+import java.util.ArrayList;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -31,7 +38,17 @@ public class SleepFragment extends Fragment {
     private int startMin = 0;
     private int endMin = 0;
 
+    private int _DH = 0;
+    private int _DM = 0;
+
     private LinearLayout layoutSettings;
+
+
+    //是否开启闹铃切换按钮
+    private SwitchImageView mSwitchImageView;
+
+
+    private  TextView tvWeek;
 
     @Nullable
     @Override
@@ -47,25 +64,126 @@ public class SleepFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-//        mTimeSelectView.init(startAngel, endAngel);
     }
 
     private void initUI() {
-        mTimeSelectView = (TimeSelectView) mView.findViewById(R.id.mTimeSelectView);
+        tvWeek= (TextView) mView.findViewById(R.id.tvWeek);
+
+        initTimeSelectView();//初始化自定义时间选择器
+        initSettingLayout();//初始化设置按钮布局
 
 
+    }
+
+    //初始化设置按钮布局
+    private void initSettingLayout() {
+        mSwitchImageView = (SwitchImageView) mView.findViewById(R.id.mSwitchImageView);
+        mSwitchImageView.setmSwitchListener(new SwitchListener() {
+            @Override
+            public void mSwitch(boolean isChoose) {
+                if (isChoose) {
+                    Toast.makeText(getActivity(), "打开", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "关闭", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
 
-        tvTimeStart = (TextView) mView.findViewById(R.id.tvTimeStart);
-        tvTimeEnd = (TextView) mView.findViewById(R.id.tvTimeEnd);
+        layoutSettings = (LinearLayout) mView.findViewById(R.id.layoutSettings);
+        layoutSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIn = new Intent(getActivity(), SleepSettingsActivity.class);
+                startActivityForResult(mIn, 10086);
+            }
+        });
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086) {
+            if (resultCode == 10086) {
+                LogUtil.i("valueString",data.getStringExtra("valueString"));
+                String text = "";
+                ArrayList<Integer> valueList = data.getIntegerArrayListExtra("valueList");
+                for (int i = 0; i < valueList.size(); i++) {
+                    if (valueList.get(i) == 1) {
+                        text = text +" "+ getWeek(i);
+                    }
+                }
+                tvWeek.setText(text);
+            }
+        }
+
+
+    }
+
+    private String getWeek(int i) {
+
+        switch (i) {
+            case 0:
+                return "周一";
+            case 1:
+                return "周二";
+            case 2:
+                return "周三";
+            case 3:
+                return "周四";
+            case 4:
+                return "周五";
+            case 5:
+                return "周六";
+            case 6:
+                return "周日";
+        }
+        return " ";
+    }
+
+    //初始化时间选择器及其附属控件
+    private void initTimeSelectView() {
+        startHour = (int) SPUtils.get(getActivity(), "startHour", 23);
+        startMin = (int) SPUtils.get(getActivity(), "startMin", 0);
+        endHour = (int) SPUtils.get(getActivity(), "endHour", 8);
+        endMin = (int) SPUtils.get(getActivity(), "endMin", 0);
+        _DH = (int) SPUtils.get(getActivity(), "_DH", 9);
+        _DM = (int) SPUtils.get(getActivity(), "_DM", 0);
+
+        mTimeSelectView = (TimeSelectView) mView.findViewById(R.id.mTimeSelectView);//时间选择器
+        tvTimeStart = (TextView) mView.findViewById(R.id.tvTimeStart);//开始时间
+        tvTimeEnd = (TextView) mView.findViewById(R.id.tvTimeEnd);//结束时间
+        //时间差
         tvDHour = (TextView) mView.findViewById(R.id.tvDHour);
         tvDMin = (TextView) mView.findViewById(R.id.tvDMin);
+
+        if (startMin < 10) {
+            tvTimeStart.setText(startHour + ":0" + startMin);
+        } else {
+            tvTimeStart.setText(startHour + ":" + startMin);
+        }
+
+        if (endHour < 10) {
+            if (endMin < 10) {
+                tvTimeEnd.setText("0" + endHour + ":0" + endMin);
+            } else {
+                tvTimeEnd.setText("0" + endHour + ":" + endMin);
+            }
+        } else {
+            if (endMin < 10) {
+                tvTimeEnd.setText(endHour + ":0" + endMin);
+            } else {
+                tvTimeEnd.setText(endHour + ":" + endMin);
+            }
+        }
+        tvDHour.setText("" + _DH);
+        tvDMin.setText("" + _DM);
 
         mTimeSelectView.setCircleListener(new CircleListener() {
             @Override
             public void move(boolean isSetStart, float mAngle, boolean isEnd) {
-
 
                 if (mAngle < 0) {
                     mAngle = mAngle + 360;
@@ -93,7 +211,7 @@ public class SleepFragment extends Fragment {
                             tvTimeStart.setText(hour + ":" + min);
                         }
                     } else {
-                        //就寝时间需要加上12小时
+                        //起床时间需要加上12小时
                         int a = (int) mAngle / 30;//获得小时
                         int hour = a + 3;
                         if (hour > 12) {
@@ -119,35 +237,30 @@ public class SleepFragment extends Fragment {
                     int startHour1 = 24 - startHour - 1;//剩余多少小时
                     int startMin1 = 60 - startMin;
 
-
-//                    int start=12*60-((60-startMin)+(12-(startHour-12))*60);
-//                    int end=endHour*60+endMin;
-//
-//                    int _D=start+end;
-//
-//                    int _H=_D/60;
-//                    int _M=_D%60;
-                    int _DH = startHour1 + endHour;
-                    int _DM = startMin1 + endMin;
-                    if (_DM > 60) {
+                    _DH = startHour1 + endHour;
+                    _DM = startMin1 + endMin;
+                    if (_DM >= 60) {
                         _DM = _DM - 60;
                         _DH++;
                     }
-
                     tvDHour.setText("" + _DH);
                     tvDMin.setText("" + _DM);
 
+                } else {
+                    //把时间保存起来
+                    //就寝时间
+                    SPUtils.put(getActivity(), "startHour", startHour);
+                    SPUtils.put(getActivity(), "startMin", startMin);
+                    //起床时间
+                    SPUtils.put(getActivity(), "endHour", endHour);
+                    SPUtils.put(getActivity(), "endMin", endMin);
+                    //时间差
+                    SPUtils.put(getActivity(), "_DH", _DH);
+                    SPUtils.put(getActivity(), "_DM", _DM);
+
+                    LogUtil.i("就寝时间：" + startHour + ":" + startMin + "睡眠时间" + endHour + ":" + endMin + "时间差：" + _DH + "小时" + _DM + "分钟");
                 }
             }
         });
-        layoutSettings= (LinearLayout) mView.findViewById(R.id.layoutSettings);
-        layoutSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mIn=new Intent(getActivity(), SleepSettingsActivity.class);
-                startActivity(mIn);
-            }
-        });
-
     }
 }

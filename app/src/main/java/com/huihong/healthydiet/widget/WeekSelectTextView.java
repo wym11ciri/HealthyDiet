@@ -59,7 +59,7 @@ public class WeekSelectTextView extends android.support.v7.widget.AppCompatTextV
 
     }
 
-    public boolean getChoose(boolean isChoose) {
+    public boolean getChoose() {
         return isChoose;
     }
 }
