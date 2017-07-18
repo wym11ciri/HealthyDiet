@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.bean.MaterialInfo;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
-import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
 
@@ -24,15 +24,16 @@ public class RvMaterialAdapter extends RecyclerView.Adapter<RvMaterialViewHolder
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<String> mList;
+    private List<MaterialInfo> mList;
 
     private ItemOnClickListener mItemOnClickListener;
+
     public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
         mItemOnClickListener = pItemOnClickListener;
     }
 
 
-    public RvMaterialAdapter(Context pContext, List<String> pList) {
+    public RvMaterialAdapter(Context pContext, List<MaterialInfo> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -54,36 +55,31 @@ public class RvMaterialAdapter extends RecyclerView.Adapter<RvMaterialViewHolder
 
     @Override
     public void onBindViewHolder(final RvMaterialViewHolder holder, int position) {
-        holder.tvName.setText(mList.get(position));
 
-//        Glide
-//                .with(mContext)
-//                .load("http://www.qiwen007.com/images/image/2016/1212/6361714777668259239190221.jpg")
-//                .asBitmap()
-//                .into( holder.ivHead);
+        holder.tvFoodInfo.setText(mList.get(position).getFoodInfo());
 
-//        ImageLoderUtil.showImage(mContext,"",holder.ivHead);
+        String RecipeItemName = mList.get(position).getRecipeItemName();
+        holder.tvRecipeItemName.setText(RecipeItemName);
+        if (RecipeItemName.trim().equals("")) {
+            holder.ivLine.setVisibility(View.INVISIBLE);
+        } else {
+            holder.ivLine.setVisibility(View.VISIBLE);
+        }
 
-//
-//      List<String> zz=new ArrayList<>();
-//        for (int i = 0; i <7 ; i++) {
-//            zz.add("红烧啊");
-//        }
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-//        holder.rvArticleTag. setLayoutManager(linearLayoutManager);
-//        holder.rvArticleTag.setAdapter(new RvTagAdapter(mContext,zz));
-
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
-
+        int like = mList.get(position).getWhetherLike();
+        if (like == 0) {
+            //都不喜欢
+            holder.iv01.setImageResource(R.mipmap.recipes_1);
+            holder.iv02.setImageResource(R.mipmap.recipes_6);
+        } else if (like == 1) {
+            //不喜欢
+            holder.iv01.setImageResource(R.mipmap.recipes_1);
+            holder.iv02.setImageResource(R.mipmap.recipes_2);
+        } else if (like == 2) {
+            //喜欢
+            holder.iv01.setImageResource(R.mipmap.recipes_5);
+            holder.iv02.setImageResource(R.mipmap.recipes_6);
+        }
     }
 
     @Override
@@ -92,19 +88,23 @@ public class RvMaterialAdapter extends RecyclerView.Adapter<RvMaterialViewHolder
     }
 }
 
-class   RvMaterialViewHolder extends RecyclerView.ViewHolder {
+class RvMaterialViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName,tvTitle;
-    LinearLayout mLinearLayout;
+//    private String RecipeItemName;
+//    private String FoodInfo;
+//    private boolean WhetherLike;
+//    private int id;
 
-    RecyclerView rvArticleTag;
-    SelectableRoundedImageView ivHead;
+    TextView tvRecipeItemName, tvFoodInfo;
+    ImageView iv01, iv02, ivLine;
+
 
     RvMaterialViewHolder(View itemView) {
         super(itemView);
-//        ivHead= (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
-//        rvArticleTag= (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-        tvName = (TextView) itemView.findViewById(R.id.tvName);
-//        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
+        tvRecipeItemName = (TextView) itemView.findViewById(R.id.tvRecipeItemName);
+        tvFoodInfo = (TextView) itemView.findViewById(R.id.tvFoodInfo);
+        iv01 = (ImageView) itemView.findViewById(R.id.iv01);
+        iv02 = (ImageView) itemView.findViewById(R.id.iv02);
+        ivLine = (ImageView) itemView.findViewById(R.id.ivLine);
     }
 }

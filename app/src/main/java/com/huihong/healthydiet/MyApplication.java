@@ -1,6 +1,10 @@
 package com.huihong.healthydiet;
 
 import android.app.Application;
+import android.app.Service;
+import android.os.Vibrator;
+
+import com.baidu.mapapi.SDKInitializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +16,19 @@ import java.util.List;
 public class MyApplication extends Application {
 
   public  static List<String > mList;
-
+    public LocationService locationService;
+    public Vibrator mVibrator;
     @Override
     public void onCreate() {
         super.onCreate();
+        /***
+         * 初始化定位sdk，建议在Application中创建
+         */
+        locationService = new LocationService(getApplicationContext());
+        mVibrator =(Vibrator)getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+        SDKInitializer.initialize(getApplicationContext());
+
+
         mList=new ArrayList<>();
         mList.add("http://t1.niutuku.com/960/10/10-221576.jpg");
         mList.add("http://pica.nipic.com/2007-12-23/20071223014647_2.jpg");

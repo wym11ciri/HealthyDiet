@@ -180,7 +180,6 @@ public class RecipesActivity extends BaseTitleActivity {
                                     tvDistance.setText(mDistance + "m");
                                 }
 
-
                                 ImageView ivPhone = (ImageView) findViewById(R.id.ivPhone);
                                 ivPhone.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -196,16 +195,9 @@ public class RecipesActivity extends BaseTitleActivity {
                                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                                 rvDetailPhoto.setLayoutManager(linearLayoutManager);
                                 rvDetailPhoto.setAdapter(new RvDetailRecipesAdapter(RecipesActivity.this, images));
-
-
                             }
-
                         }
-
-
                     }
                 });
-
-
     }
 }

@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -41,4 +46,6 @@ dependencies {
     compile 'com.github.jdsjlzx:LRecyclerView:1.4.3'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.google.code.gson:gson:2.8.1'
+    compile files('libs/BaiduLBS_Android.jar')
+
 }

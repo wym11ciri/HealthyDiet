@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.fragment;
+package com.huihong.healthydiet.fragment.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
 import com.huihong.healthydiet.adapter.RvRecordAdapter;
+import com.huihong.healthydiet.fragment.NearbyFragment;
 import com.joooonho.SelectableRoundedImageView;
 import com.stx.xhb.xbanner.XBanner;
 
@@ -34,9 +35,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
-
     private View mView;
-
 
     //附近餐厅
     private ViewPager vpNearby;
@@ -56,7 +55,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     //3个跳转按钮
     private LinearLayout layoutNearby, layoutRecommend, layoutRecord;
-
 
     @Nullable
     @Override
@@ -90,7 +88,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         initRecommend();
         initRecord();
         initJump();
-
 
         SelectableRoundedImageView ivTest = (SelectableRoundedImageView) mView.findViewById(R.id.image0);
 
@@ -245,7 +242,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void jumpActivity2(String tag) {
         Intent mIntent = new Intent(getActivity(), RecommendActivity.class);
-        mIntent.putExtra("tag",tag);
+        mIntent.putExtra("tag", tag);
         startActivity(mIntent);
     }
+
+
 }

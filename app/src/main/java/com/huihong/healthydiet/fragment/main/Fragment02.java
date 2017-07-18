@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.fragment;
+package com.huihong.healthydiet.fragment.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
+import com.huihong.healthydiet.fragment.NearbyFragment;
 import com.stx.xhb.xbanner.XBanner;
 
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ public class Fragment02 extends Fragment {
     private RecyclerView rvRecommend;
     private List<String> recommendList;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class Fragment02 extends Fragment {
 //        initUI();
         return mView;
     }
+
 
     @Override
     public void onResume() {

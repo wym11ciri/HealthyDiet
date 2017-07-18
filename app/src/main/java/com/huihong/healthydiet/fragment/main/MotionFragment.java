@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.fragment;
+package com.huihong.healthydiet.fragment.main;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -41,6 +41,9 @@ public class MotionFragment extends Fragment {
     private View.OnClickListener onClickListener;
 
     private TextView tvStepCount;
+
+
+
 
     @Nullable
     @Override

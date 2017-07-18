@@ -16,4 +16,7 @@ public class AppUrl {
     public static final String GET_RESTAURANT_INFO_BY_ID = BASE_URL + "API/Restaurant/GetRestaurantInfoById";//获取餐厅详情 上面那部分
     public static final String RECIPE_LIST_INFO_BY_DRID = BASE_URL + "API/Recipe/RecipeListInfoByDRId";//获取餐厅详情 下面列表部分
 
+    public static final String RECIPE_ITEM_INFO = BASE_URL + "API/Recipe/RecipeItemInfo";//菜谱详情页面
+
+
 }

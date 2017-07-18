@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.fragment;
+package com.huihong.healthydiet.fragment.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +16,8 @@ import com.huihong.healthydiet.adapter.RvArticleAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 /**
  * Created by zangyi_shuai_ge on 2017/7/11
  */
@@ -28,6 +30,10 @@ public class ArticleFragment extends Fragment {
 //    private LvArticleAdapter mLvArticleAdapter;
 
     private RecyclerView recyclerView;
+
+
+
+
 
     @Nullable
     @Override
@@ -42,7 +48,7 @@ public class ArticleFragment extends Fragment {
                 recommendList.add("KFC" + i);
             }
 
-            recyclerView  .setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             RvArticleAdapter mRvRecommendAdapter = new RvArticleAdapter(getActivity(), recommendList);
             recyclerView.setAdapter(mRvRecommendAdapter);
 

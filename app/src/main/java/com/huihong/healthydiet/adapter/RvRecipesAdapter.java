@@ -64,7 +64,7 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
     public void onBindViewHolder(final RvRecipesViewHolder holder, final int position) {
 
 
-        List<String> mImages = mList.get(position).getImages();
+        final List<String> mImages = mList.get(position).getImages();
         if (mImages.size() > 0) {
             Glide
                     .with(mContext)
@@ -88,7 +88,6 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
 
 
         List<RecipeListInfoByDRId.ListDataBean.FoodRecipeBean> mFoodRecipe = mList.get(position).getFoodRecipe();
-        int a = mFoodRecipe.size();
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(mContext);
         linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         holder.rvFoodRecipe.setLayoutManager(linearLayoutManager2);
@@ -108,8 +107,8 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
             @Override
             public void onClick(View v) {
                 Intent mIn = new Intent(mContext, RecipesDetailsActivity.class);
+                mIn.putExtra("RecipeId",mList.get(position).getId()+"");
                 mContext.startActivity(mIn);
-
             }
         });
 

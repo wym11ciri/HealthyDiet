@@ -10,24 +10,26 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvRecipeItemName"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="主食"
             android:textColor="#000000"
             android:textSize="14sp" />
 
-        <View
+        <ImageView
+            android:id="@+id/ivLine"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
-            android:background="#7A7A7A" />
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/line_vertical" />
 
         <TextView
+            android:id="@+id/tvFoodInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -41,6 +43,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/iv01"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
@@ -49,6 +52,7 @@
             android:src="@mipmap/recipes_1" />
 
         <ImageView
+            android:id="@+id/iv02"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"

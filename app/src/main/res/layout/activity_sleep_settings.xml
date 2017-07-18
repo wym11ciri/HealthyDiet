@@ -211,13 +211,14 @@
         android:background="#eeeeee" />
 
     <LinearLayout
+        android:id="@+id/layoutTime01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_bg_white_gray"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:paddingBottom="9dp"
+        android:paddingTop="9dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -234,6 +235,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/ivTime01"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center"
@@ -248,13 +250,14 @@
         android:background="#eeeeee" />
 
     <LinearLayout
+        android:id="@+id/layoutTime02"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_bg_white_gray"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:paddingBottom="9dp"
+        android:paddingTop="9dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -271,6 +274,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/ivTime02"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center"
@@ -285,13 +289,14 @@
         android:background="#eeeeee" />
 
     <LinearLayout
+        android:id="@+id/layoutTime03"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_bg_white_gray"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:paddingBottom="9dp"
+        android:paddingTop="9dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -308,6 +313,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/ivTime03"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center"
@@ -322,13 +328,14 @@
         android:background="#eeeeee" />
 
     <LinearLayout
+        android:id="@+id/layoutTime04"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_bg_white_gray"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:paddingBottom="9dp"
+        android:paddingTop="9dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -345,6 +352,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/ivTime04"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center"

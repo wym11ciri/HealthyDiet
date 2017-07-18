@@ -5,16 +5,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.eicky.ViewPagerGallery;
+import com.google.gson.Gson;
+import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvMaterialAdapter;
 import com.huihong.healthydiet.adapter.RvTagAdapter;
+import com.huihong.healthydiet.bean.MaterialInfo;
+import com.huihong.healthydiet.bean.RecipeItemInfo;
+import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.widget.PageIndicator;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/13
@@ -22,13 +32,16 @@ import java.util.List;
 
 public class RecipesDetailsActivity extends BaseTitleActivity {
 
+    //画廊展示
     private ViewPagerGallery gallery;
-    PageIndicator mPageIndicator;
+    private PageIndicator mPageIndicator;
 
 
     private RecyclerView rvMaterial;
     private RvMaterialAdapter mRvMaterialAdapter;
     private List<String> materialList;
+
+    private String RecipeId = "";
 
     @Override
     public int setLayoutId() {
@@ -38,90 +51,27 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
     @Override
     public void initUI() {
 
+
         setTitle("鸡蛋蔬菜沙拉");
+        RecipeId = getIntent().getStringExtra("RecipeId");
+        if (!RecipeId.equals("")) {
+            //从接口读取信息
+            getInfo();
 
-        gallery = (ViewPagerGallery) findViewById(R.id.gallery);
-        List<Integer> list = new ArrayList<>();
-        for (int i = 1; i < 9; i++) {
-//      int id = getResources().getIdentifier("img" + i, "mipmap", getPackageName());
-            list.add(i);
         }
-        gallery.setImgResources(list);
 
 
-        mPageIndicator = (com.huihong.healthydiet.widget.PageIndicator) findViewById(R.id.PageIndicator);
-        mPageIndicator.setViewPager(gallery);//给ViewPager设置指示器
-        mPageIndicator.setIndicatorType(PageIndicator.IndicatorType.CIRCLE);
-//        gallery.setCurrentItem(1);
-//        ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
-//        vp.setOffscreenPageLimit(10);
-//
-//        //左右都缩进一个合适的值
-//        vp.setPageMargin((int) (-getResources().getDisplayMetrics().widthPixels / 3 * 2 * 0.9));
-//
-//        //中间大 ,两边大小渐变的动画变化,最大1.4倍
-//        vp.setPageTransformer(true, new ViewPager.PageTransformer() {
-//            public void transformPage(View page, float position) {
-//
-//                if (position < -1) {
-//                    // This page is way off-screen to the left.
-//                } else if (position <= 1) {
-//
-//                    if (position < 0) {
-//                        if (position < -0.4f)
-//                            position = -0.4f;
-//                        page.setScaleY(1.4f + position);
-//                        page.setScaleX(1.4f + position);
-//                    } else {
-//                        if (position > 0.4)
-//                            position = 0.4f;
-//                        page.setScaleY(1.4f - position);
-//                        page.setScaleX(1.4f - position);
-//                    }
-//
-//                } else {
-//                    // This page is way off-screen to the right.
-//                }
-//
-//            }
-//        });
-//
-//        //new6个Fragment
-//        final ArrayList<FragmentPage> list = new ArrayList<>();
-//        for (int i = 0; i < 6; i++) {
-//            list.add(new FragmentPage());
-//        }
-//
-//        //
-//        //设置Adapter
-//        vp.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-//            public Fragment getItem(int position) {
-//                return list.get(position);
-//            }
-//
-//            public int getCount() {
-//                return list.size();
-//            }
-//        });
         initMaterial();
 
 
-        List<String> zz = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            zz.add("红烧啊");
-        }
-        RecyclerView rvArticleTag = (RecyclerView) findViewById(R.id.rvArticleTag);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(RecipesDetailsActivity.this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvArticleTag.setLayoutManager(linearLayoutManager);
-        rvArticleTag.setAdapter(new RvTagAdapter(RecipesDetailsActivity.this, zz));
 
 
-        ImageView ivBuy= (ImageView) findViewById(R.id.ivBuy);
+
+        ImageView ivBuy = (ImageView) findViewById(R.id.ivBuy);
         ivBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIn=new Intent(RecipesDetailsActivity.this,PayActivity.class);
+                Intent mIn = new Intent(RecipesDetailsActivity.this, PayActivity.class);
                 startActivity(mIn);
             }
         });
@@ -132,20 +82,85 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 //        rvTag.setAdapter(new RvTypeAdapter(RecipesDetailsActivity.this, zz));
 
 
+    }
+
+    private void getInfo() {
+
+        OkHttpUtils
+                .post()
+                .url(AppUrl.RECIPE_ITEM_INFO)
+                .addParams("RecipeId", RecipeId)//用户坐标
+                .addParams("UserId", "2")//用户坐标
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("接口，菜谱详情", e + "");
+                        Toast.makeText(RecipesDetailsActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("接口，菜谱详情", response + "");
+                        Gson gson = new Gson();
+                        RecipeItemInfo mRecipeItemInfo = gson.fromJson(response, RecipeItemInfo.class);
+                        int code = mRecipeItemInfo.getHttpCode();
+                        if (code == 200) {
+                            List<RecipeItemInfo.ListDataBean> mListData = mRecipeItemInfo.getListData();
+                            if (mListData.size() > 0) {
+                                RecipeItemInfo.ListDataBean mListDataBean = mListData.get(0);
+
+                                //设置画廊
+                                gallery = (ViewPagerGallery) findViewById(R.id.gallery);
+                                gallery.setImgResources(mListDataBean.getImages());
+                                //画廊下面的指示器
+                                mPageIndicator = (com.huihong.healthydiet.widget.PageIndicator) findViewById(R.id.PageIndicator);
+                                mPageIndicator.setViewPager(gallery);//给ViewPager设置指示器
+                                mPageIndicator.setIndicatorType(PageIndicator.IndicatorType.CIRCLE);
+                                //设置标题
+                                setTitle(mListDataBean.getName() + "");
+                                //获取材料列表
+                                List<MaterialInfo> MaterialInfoList = new ArrayList<>();
+                                List<RecipeItemInfo.ListDataBean.FoodRecipeBean> mFoodRecipe = mListDataBean.getFoodRecipe();
+                                for (int i = 0; i < mFoodRecipe.size(); i++) {
+                                    String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
+                                    List<RecipeItemInfo.ListDataBean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
+                                    for (int j = 0; j < getListFood.size(); j++) {
+                                        MaterialInfo materialInfo = new MaterialInfo();
+                                        if (j == 0) {
+                                            materialInfo.setRecipeItemName(RecipeItemName);
+                                        } else {
+                                            materialInfo.setRecipeItemName("");
+                                        }
+                                        materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
+                                        materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
+                                        MaterialInfoList.add(materialInfo);
+                                    }
+                                }
+
+                                rvMaterial = (RecyclerView) findViewById(R.id.rvMaterial);
+                                mRvMaterialAdapter = new RvMaterialAdapter(RecipesDetailsActivity.this, MaterialInfoList);
+                                rvMaterial.setLayoutManager(new LinearLayoutManager(RecipesDetailsActivity.this, LinearLayoutManager.VERTICAL, false));
+                                rvMaterial.setAdapter(mRvMaterialAdapter);
+
+                                //设置Tag列表
+                                List<String> mTags = mListDataBean.getTags();
+                                RecyclerView rvArticleTag = (RecyclerView) findViewById(R.id.rvArticleTag);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(RecipesDetailsActivity.this);
+                                linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                                rvArticleTag.setLayoutManager(linearLayoutManager);
+                                rvArticleTag.setAdapter(new RvTagAdapter(RecipesDetailsActivity.this, mTags));
+
+                            }
+                        }
+                    }
+                });
 
     }
 
     private void initMaterial() {
-        rvMaterial = (RecyclerView) findViewById(R.id.rvMaterial);
-        materialList = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            materialList.add("主食" + i);
-        }
-        mRvMaterialAdapter = new RvMaterialAdapter(RecipesDetailsActivity.this, materialList);
 
-        rvMaterial.setLayoutManager(new LinearLayoutManager(RecipesDetailsActivity.this, LinearLayoutManager.VERTICAL, false));
-
-        rvMaterial.setAdapter(mRvMaterialAdapter);
 //        mLvMaterialAdapter=new LvMaterialAdapter(RecipesDetailsActivity.this,materialList);
 //        rvMaterial.setAdapter(mLvMaterialAdapter);
     }
@@ -161,4 +176,6 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
     public void initOnClickListener() {
 
     }
+
+
 }

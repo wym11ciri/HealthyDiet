@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
-import com.huihong.healthydiet.fragment.ArticleFragment;
-import com.huihong.healthydiet.fragment.Fragment02;
-import com.huihong.healthydiet.fragment.HomeFragment;
-import com.huihong.healthydiet.fragment.MotionFragment;
-import com.huihong.healthydiet.fragment.SleepFragment;
+import com.huihong.healthydiet.fragment.main.ArticleFragment;
+import com.huihong.healthydiet.fragment.main.Fragment02;
+import com.huihong.healthydiet.fragment.main.HomeFragment;
+import com.huihong.healthydiet.fragment.main.MotionFragment;
+import com.huihong.healthydiet.fragment.main.SleepFragment;
 import com.huihong.healthydiet.service.AlarmClockService;
 import com.huihong.healthydiet.widget.MyViewPager;
 

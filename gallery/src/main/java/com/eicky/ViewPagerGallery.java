@@ -98,43 +98,29 @@ public class ViewPagerGallery extends ViewPager {
         this.setOffscreenPageLimit(views.size());
     }
 
-    public void setImgResources(List<Integer> imgResources) {
-        if (imgResources == null)
-            throw new RuntimeException("Fuck, imgResources is null");
-        List<View> views = new ArrayList<>();
-        for (int i = 0; i < imgResources.size(); i++) {
-//            int id = imgResources.get(i);
-            final ImageView imageView = new ImageView(mContext);
-            //imageView.setLayoutParams(mLayoutParams);
-            if (isShadow) {
-//                Glide.with(mContext).load(id).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>() {
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                        imageView.setImageBitmap(ImgUtils.getReverseBitmapById(resource, mContext));
-//                    }
-//                });
-            } else
+    public void setImgResources(List<String> imgResources) {
+
+        if (imgResources != null && imgResources.size() > 0) {
+            List<View> views = new ArrayList<>();
+            for (int i = 0; i < imgResources.size(); i++) {
+                final ImageView imageView = new ImageView(mContext);
+
                 Glide
                         .with(mContext)
-                        .load("http://img.sc115.com/uploads/sc/jpgs/05/xpic6826_sc115.com.jpg")
+                        .load(imgResources.get(i))
                         .centerCrop()
                         .into(imageView);
 
-            if (mGalleryOnClickListener != null) {
-                final int finalI = i;
-                imageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mGalleryOnClickListener.onClick(finalI);
-                    }
-                });
+                views.add(imageView);
             }
-            views.add(imageView);
+            this.setAdapter(new ViewPagerGalleryAdapter(views));
+            init();
+            if (imgResources.size() > 3) {
+                this.setCurrentItem(1);
+            }
+            this.setOffscreenPageLimit(views.size());
         }
-        this.setAdapter(new ViewPagerGalleryAdapter(views));
-        init();
-        this.setCurrentItem(1);
-        this.setOffscreenPageLimit(views.size());
+
     }
 
     public void setOnClickListener(GalleryOnClickListener galleryOnClickListener) {

@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.fragment;
+package com.huihong.healthydiet.fragment.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,18 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.SleepSettingsActivity;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.mInterface.SwitchListener;
+import com.huihong.healthydiet.utils.StringUtil;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.view.TimeSelectView;
 import com.huihong.healthydiet.widget.SwitchImageView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -50,6 +50,10 @@ public class SleepFragment extends Fragment {
 
     private  TextView tvWeek;
 
+
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,26 +71,41 @@ public class SleepFragment extends Fragment {
     }
 
     private void initUI() {
-        tvWeek= (TextView) mView.findViewById(R.id.tvWeek);
-
+        initWeekText();
         initTimeSelectView();//初始化自定义时间选择器
         initSettingLayout();//初始化设置按钮布局
+    }
 
-
+    private void initWeekText() {
+        tvWeek= (TextView) mView.findViewById(R.id.tvWeek);
+        String valueString = (String) SPUtils.get(getActivity(), "weekValueString", "0,0,0,0,0,0,0,");
+        List<Boolean> cacheValueList = StringUtil.getWeekList(valueString);
+        String text = "";
+        for (int i = 0; i < cacheValueList.size(); i++) {
+            if(cacheValueList.get(i)){
+                text=text+getWeek(i)+" ";
+            }
+        }
+        tvWeek.setText(text);
     }
 
     //初始化设置按钮布局
     private void initSettingLayout() {
         mSwitchImageView = (SwitchImageView) mView.findViewById(R.id.mSwitchImageView);
+
+
+        //从缓存中拿取
+        boolean AlarmOpen= (boolean) SPUtils.get(getActivity(),"AlarmOpen",false);
+        mSwitchImageView.setChoose(AlarmOpen);
+
         mSwitchImageView.setmSwitchListener(new SwitchListener() {
             @Override
             public void mSwitch(boolean isChoose) {
                 if (isChoose) {
-                    Toast.makeText(getActivity(), "打开", Toast.LENGTH_SHORT).show();
+                    SPUtils.put(getActivity(),"AlarmOpen",true);
                 } else {
-                    Toast.makeText(getActivity(), "关闭", Toast.LENGTH_SHORT).show();
+                    SPUtils.put(getActivity(),"AlarmOpen",false);
                 }
-
             }
         });
 
@@ -107,13 +126,13 @@ public class SleepFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10086) {
             if (resultCode == 10086) {
-                LogUtil.i("valueString",data.getStringExtra("valueString"));
+                String valueString=data.getStringExtra("valueString");
+                List<Boolean> cacheValueList = StringUtil.getWeekList(valueString);
                 String text = "";
-                ArrayList<Integer> valueList = data.getIntegerArrayListExtra("valueList");
-                for (int i = 0; i < valueList.size(); i++) {
-                    if (valueList.get(i) == 1) {
-                        text = text +" "+ getWeek(i);
-                    }
+                for (int i = 0; i < cacheValueList.size(); i++) {
+                  if(cacheValueList.get(i)){
+                      text=text+getWeek(i)+" ";
+                  }
                 }
                 tvWeek.setText(text);
             }

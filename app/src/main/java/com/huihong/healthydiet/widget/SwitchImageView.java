@@ -50,4 +50,13 @@ public class SwitchImageView extends android.support.v7.widget.AppCompatImageVie
             mSwitchListener.mSwitch(isChoose);
         }
     }
+
+    public void setChoose(boolean  isOpen){
+        this.isChoose=isOpen;
+        if (isChoose) {
+            this.setImageResource(R.mipmap.switch_1);
+        } else {
+            this.setImageResource(R.mipmap.switch_2);
+        }
+    }
 }
