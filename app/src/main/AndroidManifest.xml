@@ -37,7 +37,7 @@
             android:enabled="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2"></action>
+                <action android:name="com.baidu.location.service_v2.2"/>
             </intent-filter>
         </service>
         <meta-data
@@ -45,7 +45,7 @@
             android:value="O825eovBkI8hGCE2j3Syn9zlYtyE5cop" />  <!--http://lbsyun.baidu.com/apiconsole/key-->
 
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -57,6 +57,16 @@
         <activity android:name=".activity.RecipesDetailsActivity" />
         <activity android:name=".activity.PayActivity" />
         <activity android:name=".activity.SleepSettingsActivity" />
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.RegisterSuccessfulActivity"/>
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.SearchActivity"/>
+        <activity android:name=".activity.BodyDataActivity"/>
+        <activity android:name=".activity.PersonalPreferenceActivity"/>
+        <activity android:name=".activity.SearchResultActivity"/>
+        <activity android:name=".activity.PayOnlineActivity"/>
+
 
 
         <service

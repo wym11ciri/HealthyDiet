@@ -16,6 +16,7 @@ import android.view.View;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.utils.common.DensityUtils;
+import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 
 /**
@@ -200,9 +201,12 @@ public class TimeSelectView extends View {
                         circleListener.move(isStart, mAngle, false);
                     }
                     invalidate();
+//                    return true;
                 }
                 break;
             case MotionEvent.ACTION_UP://松开
+
+                LogUtil.i("zzzzzzzzzzzzzzzzzzzzzzz");
 
                 if (shouldReDraw) {
                     //松开的时候把数据传递回来

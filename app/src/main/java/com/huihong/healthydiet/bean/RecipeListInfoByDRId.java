@@ -8,10 +8,11 @@ import java.util.List;
 
 public class RecipeListInfoByDRId {
 
+
     /**
      * HttpCode : 200
      * Message :
-     * ListData : [{"id":1,"name":"食谱1","foodRecipe":[{"RecipeItemName":"主食","ListFood":"萝卜 270g"},{"RecipeItemName":"配菜","ListFood":"青菜 100g, 鸡肉 80g"}],"Constitution":["气虚质","痰湿质","阴虚质"],"images":["http://106.14.218.31:8081/img//recipe//recipe1-1986270.jpg"],"sales":1,"price":"66"},{"id":2,"name":"食谱21","foodRecipe":[{"RecipeItemName":"配菜","ListFood":"牛肉 1001g, 鸡肉 300g"},{"RecipeItemName":"主食","ListFood":"萝卜 99g, 青菜 111g"}],"Constitution":["阳虚质","血瘀质","气虚质"],"images":null,"sales":2,"price":"99"}]
+     * ListData : [{"id":7,"name":"食谱4","foodRecipe":[{"RecipeItemName":"配菜","ListFood":"萝卜 11g, 海参 22g"},{"RecipeItemName":"主食","ListFood":"鸡肉 33g, 牛肉 44g"}],"Constitution":["平和质","气郁质","阴虚质"],"images":"http://106.14.218.31:8081/img//recipe//recipe7-19818599.jpg","sales":11,"price":"11.00"}]
      */
 
     private int HttpCode;
@@ -44,31 +45,30 @@ public class RecipeListInfoByDRId {
 
     public static class ListDataBean {
         /**
-         * id : 1
-         * name : 食谱1
-         * foodRecipe : [{"RecipeItemName":"主食","ListFood":"萝卜 270g"},{"RecipeItemName":"配菜","ListFood":"青菜 100g, 鸡肉 80g"}]
-         * Constitution : ["气虚质","痰湿质","阴虚质"]
-         * images : ["http://106.14.218.31:8081/img//recipe//recipe1-1986270.jpg"]
-         * sales : 1
-         * price : 66
+         * id : 7
+         * name : 食谱4
+         * foodRecipe : [{"RecipeItemName":"配菜","ListFood":"萝卜 11g, 海参 22g"},{"RecipeItemName":"主食","ListFood":"鸡肉 33g, 牛肉 44g"}]
+         * Constitution : ["平和质","气郁质","阴虚质"]
+         * images : http://106.14.218.31:8081/img//recipe//recipe7-19818599.jpg
+         * sales : 11
+         * price : 11.00
          */
 
         private int id;
         private String name;
+        private String images;
         private int sales;
         private String price;
         private List<FoodRecipeBean> foodRecipe;
         private List<String> Constitution;
-        private List<String> images;
-
-        private boolean isShow=false;
-
-        public void setShow(boolean isShow) {
-            this.isShow=isShow;
-        }
+        private  boolean isShow=false;
 
         public boolean isShow() {
-            return  isShow;
+            return isShow;
+        }
+
+        public void setShow(boolean show) {
+            isShow = show;
         }
 
         public int getId() {
@@ -85,6 +85,14 @@ public class RecipeListInfoByDRId {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getImages() {
+            return images;
+        }
+
+        public void setImages(String images) {
+            this.images = images;
         }
 
         public int getSales() {
@@ -119,18 +127,10 @@ public class RecipeListInfoByDRId {
             this.Constitution = Constitution;
         }
 
-        public List<String> getImages() {
-            return images;
-        }
-
-        public void setImages(List<String> images) {
-            this.images = images;
-        }
-
         public static class FoodRecipeBean {
             /**
-             * RecipeItemName : 主食
-             * ListFood : 萝卜 270g
+             * RecipeItemName : 配菜
+             * ListFood : 萝卜 11g, 海参 22g
              */
 
             private String RecipeItemName;

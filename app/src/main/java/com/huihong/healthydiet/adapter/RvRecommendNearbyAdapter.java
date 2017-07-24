@@ -77,9 +77,10 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
             holder.distance.setText("" + distance + "m");
         }
 
+
         Glide
                 .with(mContext)
-                .load(mList.get(position).getImages().get(0))
+                .load(mList.get(position).getImages())
                 .asBitmap()
                 .error(R.mipmap.error_photo)
                 .into(holder.ivHead);
@@ -91,7 +92,7 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
             @Override
             public void onClick(View v) {
                 Intent mIn = new Intent(mContext, RecipesActivity.class);
-                mIn.putExtra("id",mList.get(position).getId());
+                mIn.putExtra("id", mList.get(position).getId());
                 mContext.startActivity(mIn);
             }
         });

@@ -72,6 +72,7 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
             @Override
             public void onClick(View v) {
                 Intent mIn = new Intent(RecipesDetailsActivity.this, PayActivity.class);
+                mIn.putExtra("RecipeId",RecipeId);
                 startActivity(mIn);
             }
         });

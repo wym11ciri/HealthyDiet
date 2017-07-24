@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -87,6 +88,14 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
     @Override
     public void initUI() {
         mRecommendActivity = this;
+
+        setRightOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent=new Intent(RecommendActivity.this,SearchActivity.class);
+                startActivity(mIntent);
+            }
+        });
 
         vpRecommend = (ViewPager) findViewById(R.id.vpRecommend);
         mList = new ArrayList<>();

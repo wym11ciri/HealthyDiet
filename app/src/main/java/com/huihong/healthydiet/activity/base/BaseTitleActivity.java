@@ -38,7 +38,7 @@ public abstract class BaseTitleActivity extends BaseActivity {
 
 //        layoutHead = (RelativeLayout) findViewById(R.id.layoutHead);
         tvTitle = (TextView) findViewById(R.id.tvTitle);//标题
-//        layoutRight = (LinearLayout) findViewById(R.id.layoutRight);//右侧按钮
+        layoutRight = (LinearLayout) findViewById(R.id.layoutTopRight);//右侧按钮
         layoutLeft = (LinearLayout) findViewById(R.id.layoutLeft);//左侧按钮
 //        ivLeft = (ImageView) findViewById(R.id.ivLeft);//左侧图标
 //        ivRight = (ImageView) findViewById(R.id.ivRight);//右侧图标
@@ -116,6 +116,7 @@ public abstract class BaseTitleActivity extends BaseActivity {
     }
 
     public void setRightOnClickListener(View.OnClickListener onClickListener) {
+        layoutRight.setVisibility(View.VISIBLE);
         layoutRight.setOnClickListener(onClickListener);
     }
 

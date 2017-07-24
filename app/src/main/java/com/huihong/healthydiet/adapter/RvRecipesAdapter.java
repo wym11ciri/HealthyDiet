@@ -64,15 +64,13 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
     public void onBindViewHolder(final RvRecipesViewHolder holder, final int position) {
 
 
-        final List<String> mImages = mList.get(position).getImages();
-        if (mImages.size() > 0) {
-            Glide
-                    .with(mContext)
-                    .load(mImages.get(0))
-                    .asBitmap()
-                    .error(R.mipmap.error_photo)
-                    .into(holder.ivHead);
-        }
+        Glide
+                .with(mContext)
+                .load(mList.get(position).getImages())
+                .asBitmap()
+                .error(R.mipmap.error_photo)
+                .into(holder.ivHead);
+
 
         holder.tvName.setText(mList.get(position).getName());
         holder.tvPrice.setText(mList.get(position).getPrice());
@@ -107,7 +105,7 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
             @Override
             public void onClick(View v) {
                 Intent mIn = new Intent(mContext, RecipesDetailsActivity.class);
-                mIn.putExtra("RecipeId",mList.get(position).getId()+"");
+                mIn.putExtra("RecipeId", mList.get(position).getId() + "");
                 mContext.startActivity(mIn);
             }
         });
@@ -126,12 +124,12 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
         holder.layoutIsShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mList.get(position).isShow()){
+                if (mList.get(position).isShow()) {
                     mList.get(position).setShow(false);
                     holder.rvFoodRecipe.setVisibility(View.GONE);
                     holder.ivIsShow.setImageResource(R.mipmap.restaurant_12);
                     holder.viewLine.setVisibility(View.GONE);
-                }else {
+                } else {
                     mList.get(position).setShow(true);
                     holder.rvFoodRecipe.setVisibility(View.VISIBLE);
                     holder.ivIsShow.setImageResource(R.mipmap.restaurant_11);
@@ -171,7 +169,7 @@ class RvRecipesViewHolder extends RecyclerView.ViewHolder {
         tvSales = (TextView) itemView.findViewById(R.id.tvSales);
         layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
         viewLine = itemView.findViewById(R.id.viewLine);
-        ivIsShow= (ImageView) itemView.findViewById(R.id.ivIsShow);
-        layoutIsShow= (LinearLayout) itemView.findViewById(R.id.layoutIsShow);
+        ivIsShow = (ImageView) itemView.findViewById(R.id.ivIsShow);
+        layoutIsShow = (LinearLayout) itemView.findViewById(R.id.layoutIsShow);
     }
 }

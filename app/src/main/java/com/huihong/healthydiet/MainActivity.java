@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
 import com.huihong.healthydiet.fragment.main.ArticleFragment;
-import com.huihong.healthydiet.fragment.main.Fragment02;
+import com.huihong.healthydiet.fragment.main.MyFragment;
 import com.huihong.healthydiet.fragment.main.HomeFragment;
 import com.huihong.healthydiet.fragment.main.MotionFragment;
 import com.huihong.healthydiet.fragment.main.SleepFragment;
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         mViewPager = (MyViewPager) findViewById(R.id.mViewPager);
         mList = new ArrayList<>();
 
-        mList.add(new Fragment02());
+        mList.add(new MyFragment());
         mList.add(new ArticleFragment());
         mList.add(new HomeFragment());
         mList.add(new MotionFragment());

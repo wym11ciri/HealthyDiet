@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class SleepFragment extends Fragment {
 
 
 
+    private NestedScrollView mNestedScrollView;
 
 
     @Nullable
@@ -71,6 +73,7 @@ public class SleepFragment extends Fragment {
     }
 
     private void initUI() {
+        mNestedScrollView= (NestedScrollView) mView.findViewById(R.id.mNestedScrollView);
         initWeekText();
         initTimeSelectView();//初始化自定义时间选择器
         initSettingLayout();//初始化设置按钮布局
@@ -204,11 +207,13 @@ public class SleepFragment extends Fragment {
             @Override
             public void move(boolean isSetStart, float mAngle, boolean isEnd) {
 
+
                 if (mAngle < 0) {
                     mAngle = mAngle + 360;
                 }
 
                 if (!isEnd) {
+                    mNestedScrollView.requestDisallowInterceptTouchEvent(true);
                     if (isSetStart) {
 
                         //就寝时间需要加上12小时
@@ -266,6 +271,7 @@ public class SleepFragment extends Fragment {
                     tvDMin.setText("" + _DM);
 
                 } else {
+                    mNestedScrollView.requestDisallowInterceptTouchEvent(false);
                     //把时间保存起来
                     //就寝时间
                     SPUtils.put(getActivity(), "startHour", startHour);

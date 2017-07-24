@@ -11,13 +11,13 @@ public class GetRestaurantInfoById {
 
 
     /**
-     * HttpCode : 0
-     * Message : null
-     * ListData : [{"id":98,"name":"餐厅7","images":["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg"],"address":"杭州市拱墅区浙大网新智慧立方","phone":"18857120152","category":"5","sales":5,"consumption":7,"discount":"满100减200|满100减200","distance":0.5675}]
+     * HttpCode : 200
+     * Message :
+     * ListData : [{"id":98,"name":"餐厅7","images":["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg","http://106.14.218.31:8081/img//restaurant//restaurant98-19834101.jpg"],"address":"杭州市拱墅区浙大网新智慧立方","phone":"18857120152","category":"西餐","sales":5,"consumption":7,"discount":"满100减200|满100减200","distance":0}]
      */
 
     private int HttpCode;
-    private Object Message;
+    private String Message;
     private List<ListDataBean> ListData;
 
     public int getHttpCode() {
@@ -28,11 +28,11 @@ public class GetRestaurantInfoById {
         this.HttpCode = HttpCode;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return Message;
     }
 
-    public void setMessage(Object Message) {
+    public void setMessage(String Message) {
         this.Message = Message;
     }
 
@@ -48,14 +48,14 @@ public class GetRestaurantInfoById {
         /**
          * id : 98
          * name : 餐厅7
-         * images : ["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg"]
+         * images : ["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg","http://106.14.218.31:8081/img//restaurant//restaurant98-19834101.jpg"]
          * address : 杭州市拱墅区浙大网新智慧立方
          * phone : 18857120152
-         * category : 5
+         * category : 西餐
          * sales : 5
          * consumption : 7
          * discount : 满100减200|满100减200
-         * distance : 0.5675
+         * distance : 0
          */
 
         private int id;
@@ -66,7 +66,7 @@ public class GetRestaurantInfoById {
         private int sales;
         private int consumption;
         private String discount;
-        private double distance;
+        private int distance;
         private List<String> images;
 
         public int getId() {
@@ -133,11 +133,11 @@ public class GetRestaurantInfoById {
             this.discount = discount;
         }
 
-        public double getDistance() {
+        public int getDistance() {
             return distance;
         }
 
-        public void setDistance(double distance) {
+        public void setDistance(int distance) {
             this.distance = distance;
         }
 

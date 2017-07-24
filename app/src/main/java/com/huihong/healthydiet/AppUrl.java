@@ -18,5 +18,8 @@ public class AppUrl {
 
     public static final String RECIPE_ITEM_INFO = BASE_URL + "API/Recipe/RecipeItemInfo";//菜谱详情页面
 
+    public static final String RECIPE_ITEM_INFO_FOR_PAY = BASE_URL + "API/Recipe/RecipeItemInfoForPay";//菜谱详情页面
+
+
 
 }
