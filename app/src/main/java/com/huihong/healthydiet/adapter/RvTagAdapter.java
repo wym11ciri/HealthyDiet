@@ -51,27 +51,7 @@ public class RvTagAdapter extends RecyclerView.Adapter<RvTagViewHolder> {
 
     @Override
     public void onBindViewHolder(final RvTagViewHolder holder, int position) {
-//        holder.tvName.setText(mList.get(position));
-
-//        Glide
-//                .with(mContext)
-//                .load("http://www.qiwen007.com/images/image/2016/1212/6361714777668259239190221.jpg")
-//                .asBitmap()
-//                .into( holder.ivHead);
         holder.tvTag.setText(mList.get(position));
-
-
-
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
-
     }
 
     @Override
@@ -83,16 +63,9 @@ public class RvTagAdapter extends RecyclerView.Adapter<RvTagViewHolder> {
 class RvTagViewHolder extends RecyclerView.ViewHolder {
 
     TextView tvTag,tvTitle;
-//    LinearLayout mLinearLayout;
-
-//    RecyclerView rvArticleTag;
-//    SelectableRoundedImageView ivHead;
 
     RvTagViewHolder(View itemView) {
         super(itemView);
         tvTag= (TextView) itemView.findViewById(R.id.tvTag);
-//        rvArticleTag= (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-//        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-//        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
     }
 }

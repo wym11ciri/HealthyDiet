@@ -17,8 +17,8 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
-import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
-import com.huihong.healthydiet.bean.RestaurantList;
+import com.huihong.healthydiet.adapter.RvRecommendRecommendAdapter;
+import com.huihong.healthydiet.bean.RecipeListByGPS;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -31,28 +31,20 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/12
- * 附近餐厅界面
  */
 
-public class RecommendNearbyFragment extends Fragment {
-    private View mView;
+public class RecommendRecipeListFragment extends Fragment {
 
-    //列表加载页数
+    private View mView;
     private int num = 1;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_recommend2, null);
+            mView = inflater.inflate(R.layout.fragment_recommend_recipe_list, null);
             initUI();
         }
 
@@ -61,23 +53,22 @@ public class RecommendNearbyFragment extends Fragment {
 
     private void initUI() {
         initRecyclerView();
-        RecommendActivity.mRecommendActivity.setLeftScreenTypeListener(new ScreenTypeListener() {
-            @Override
-            public void screenType(boolean isRight, String type,int typeId,boolean isSwitch) {
-                LogUtil.i("zzzz", isRight + type);
-                if (!isRight) {
-                    Toast.makeText(getActivity(), "附近餐厅收到" + type + "请求"+typeId, Toast.LENGTH_SHORT).show();
 
-                    if(!isSwitch){
-                        num =1;
+
+        RecommendActivity.mRecommendActivity.setRightScreenTypeListener(new ScreenTypeListener() {
+            @Override
+            public void screenType(boolean isRight, String type, int typeId, boolean isSwitch) {
+                if (isRight) {
+                    if (!isSwitch) {
+                        num = 1;
                         recommendList.clear();
                         mLRecyclerViewAdapter.notifyDataSetChanged();
                     }
 
-                    GroupBy=type;
-                    TypeValue=typeId+"";
+                    GroupBy = type;
+                    TypeValue = typeId + "";
 
-                    getInfo(num);
+//                    getInfo(num);
                 }
             }
         });
@@ -85,27 +76,23 @@ public class RecommendNearbyFragment extends Fragment {
     }
 
 
-    //列表
+    //列表参数
     private LRecyclerView recyclerView;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private RvRecommendNearbyAdapter mRvRecommendAdapter;
-    private List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> recommendList;
+    private RvRecommendRecommendAdapter mRvRecommendAdapter;
+    private List<RecipeListByGPS.ListDataBean> recommendList;
 
     private void initRecyclerView() {
 
-
         recommendList = new ArrayList<>();
         recyclerView = (LRecyclerView) mView.findViewById(R.id.recyclerView);
-        mRvRecommendAdapter = new RvRecommendNearbyAdapter(getActivity(), recommendList);
+        mRvRecommendAdapter = new RvRecommendRecommendAdapter(getActivity(), recommendList);
         mLRecyclerViewAdapter = new LRecyclerViewAdapter(mRvRecommendAdapter);
         recyclerView.setAdapter(mLRecyclerViewAdapter);
 
-        //setLayoutManager
-//        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager( 2, StaggeredGridLayoutManager.VERTICAL);
-//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        //防止item位置互换
-//        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+
         recyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -123,25 +110,27 @@ public class RecommendNearbyFragment extends Fragment {
                 getInfo(num);
             }
         });
-       recyclerView.refresh();
-//        getInfo(1);
+        recyclerView.refresh();
+
+
     }
 
-    private  String GroupBy="";
-    private  String TypeValue="";
+    private String GroupBy = "";
+    private String TypeValue = "";
 
     //获取餐厅列表信息
     private void getInfo(int num) {
 
-
+//
         OkHttpUtils
                 .post()
-                .url(AppUrl.GET_RESTAURANT_LIST_INFO)
+                .url(AppUrl.RECIPE_LIST_BY_GPS)
                 .addParams("CoordX", "120.132566")//用户坐标
                 .addParams("CoordY", "30.267515")
                 .addParams("GroupBy", GroupBy)//筛选方式
                 .addParams("PageNo", num + "")//页数
                 .addParams("TypeValue", TypeValue)
+                .addParams("UserId", "2")
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -153,14 +142,14 @@ public class RecommendNearbyFragment extends Fragment {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("接口，餐厅列表:", response);
+                        LogUtil.i("接口，推荐饮食列表:", response);
                         recyclerView.refreshComplete(1);
                         Gson gson = new Gson();
-                        RestaurantList RestaurantList = gson.fromJson(response, RestaurantList.class);
-                        int code = RestaurantList.getHttpCode();
+                        RecipeListByGPS mRecipeListByGPS = gson.fromJson(response, RecipeListByGPS.class);
+                        int code = mRecipeListByGPS.getHttpCode();
                         if (code == 200) {
-                            RecommendNearbyFragment.this.num++;
-                            List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> mListData = RestaurantList.getListData();//拿到餐厅列表
+                            RecommendRecipeListFragment.this.num++;
+                            List<RecipeListByGPS.ListDataBean> mListData = mRecipeListByGPS.getListData();//拿到餐厅列表
 //                            recommendList.clear();
                             recommendList.addAll(mListData);
                             mLRecyclerViewAdapter.notifyDataSetChanged();
@@ -172,6 +161,4 @@ public class RecommendNearbyFragment extends Fragment {
                 });
 
     }
-
-
 }

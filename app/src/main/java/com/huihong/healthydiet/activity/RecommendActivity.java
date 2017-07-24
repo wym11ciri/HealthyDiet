@@ -19,13 +19,13 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
-import com.huihong.healthydiet.mybean.Type;
 import com.huihong.healthydiet.adapter.LvPopTypeAdapter;
 import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
 import com.huihong.healthydiet.bean.DataDictionary;
-import com.huihong.healthydiet.fragment.RecommendNearbyFragment;
-import com.huihong.healthydiet.fragment.RecommendRecommendFragment;
+import com.huihong.healthydiet.fragment.RecommendNearbyListFragment;
+import com.huihong.healthydiet.fragment.RecommendRecipeListFragment;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
+import com.huihong.healthydiet.mybean.Type;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.current.ListPopupUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -99,8 +99,9 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
         vpRecommend = (ViewPager) findViewById(R.id.vpRecommend);
         mList = new ArrayList<>();
-        mList.add(new RecommendNearbyFragment());
-        mList.add(new RecommendRecommendFragment());
+        mList.add(new RecommendNearbyListFragment());
+//        mList.add(new RecommendNearbyListFragment());
+        mList.add(new RecommendRecipeListFragment());
         mPagerAdapter = new RecommendFragmentPagerAdapter(getSupportFragmentManager(), mList);
         vpRecommend.setAdapter(mPagerAdapter);
 

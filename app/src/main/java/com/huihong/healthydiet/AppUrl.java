@@ -21,5 +21,5 @@ public class AppUrl {
     public static final String RECIPE_ITEM_INFO_FOR_PAY = BASE_URL + "API/Recipe/RecipeItemInfoForPay";//菜谱详情页面
 
 
-
+    public static final String RECIPE_LIST_BY_GPS = BASE_URL + "API/Recipe/RecipeListByGPS";//推荐饮食列表
 }

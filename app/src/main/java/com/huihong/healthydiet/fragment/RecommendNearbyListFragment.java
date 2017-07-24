@@ -16,8 +16,10 @@ import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
 import com.huihong.healthydiet.bean.RestaurantList;
+import com.huihong.healthydiet.mInterface.ScreenTypeListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -32,18 +34,12 @@ import okhttp3.Call;
  * 附近餐厅界面
  */
 
-public class SearchResultLeftFragment extends Fragment {
+public class RecommendNearbyListFragment extends Fragment {
     private View mView;
 
     //列表加载页数
     private int num = 1;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Nullable
     @Override
@@ -54,11 +50,31 @@ public class SearchResultLeftFragment extends Fragment {
             initUI();
         }
 
-       return mView;
+        return mView;
     }
 
     private void initUI() {
         initRecyclerView();
+        RecommendActivity.mRecommendActivity.setLeftScreenTypeListener(new ScreenTypeListener() {
+            @Override
+            public void screenType(boolean isRight, String type,int typeId,boolean isSwitch) {
+                if (!isRight) {
+                    Toast.makeText(getActivity(), "附近餐厅收到" + type + "请求"+typeId, Toast.LENGTH_SHORT).show();
+
+                    if(!isSwitch){
+                        num =1;
+                        recommendList.clear();
+                        mLRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+
+                    GroupBy=type;
+                    TypeValue=typeId+"";
+
+                    getInfo(num);
+                }
+            }
+        });
+
     }
 
 
@@ -66,7 +82,7 @@ public class SearchResultLeftFragment extends Fragment {
     private LRecyclerView recyclerView;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
     private RvRecommendNearbyAdapter mRvRecommendAdapter;
-    private List<RestaurantList.ListDataBean> recommendList;
+    private List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> recommendList;
 
     private void initRecyclerView() {
 
@@ -109,13 +125,13 @@ public class SearchResultLeftFragment extends Fragment {
 
     //获取餐厅列表信息
     private void getInfo(int num) {
-
+//        120.110569,30.338419
 
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_RESTAURANT_LIST_INFO)
-                .addParams("CoordX", "120.132566")//用户坐标
-                .addParams("CoordY", "30.267515")
+                .addParams("CoordX", "120.110569")//用户坐标
+                .addParams("CoordY", "30.338419")
                 .addParams("GroupBy", GroupBy)//筛选方式
                 .addParams("PageNo", num + "")//页数
                 .addParams("TypeValue", TypeValue)
@@ -136,7 +152,7 @@ public class SearchResultLeftFragment extends Fragment {
                         RestaurantList RestaurantList = gson.fromJson(response, RestaurantList.class);
                         int code = RestaurantList.getHttpCode();
                         if (code == 200) {
-                            SearchResultLeftFragment.this.num++;
+                            RecommendNearbyListFragment.this.num++;
                             List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> mListData = RestaurantList.getListData();//拿到餐厅列表
 //                            recommendList.clear();
                             recommendList.addAll(mListData);
