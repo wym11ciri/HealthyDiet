@@ -66,7 +66,7 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
 
         Glide
                 .with(mContext)
-                .load(mList.get(position).getImages())
+                .load(mList.get(position).getTitleImage())
                 .asBitmap()
                 .error(R.mipmap.error_photo)
                 .into(holder.ivHead);

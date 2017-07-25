@@ -47,5 +47,5 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.google.code.gson:gson:2.8.1'
     compile files('libs/BaiduLBS_Android.jar')
-
+    compile project(':dialog-picker')
 }

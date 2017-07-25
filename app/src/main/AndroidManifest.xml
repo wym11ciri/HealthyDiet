@@ -66,6 +66,7 @@
         <activity android:name=".activity.PersonalPreferenceActivity"/>
         <activity android:name=".activity.SearchResultActivity"/>
         <activity android:name=".activity.PayOnlineActivity"/>
+        <activity android:name=".activity.MajorTestActivity"/>
 
 
 

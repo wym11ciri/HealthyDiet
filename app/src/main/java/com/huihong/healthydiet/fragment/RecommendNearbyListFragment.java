@@ -31,7 +31,7 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/12
- * 附近餐厅界面
+ * 附近餐厅列表界面
  */
 
 public class RecommendNearbyListFragment extends Fragment {
@@ -57,18 +57,18 @@ public class RecommendNearbyListFragment extends Fragment {
         initRecyclerView();
         RecommendActivity.mRecommendActivity.setLeftScreenTypeListener(new ScreenTypeListener() {
             @Override
-            public void screenType(boolean isRight, String type,int typeId,boolean isSwitch) {
+            public void screenType(boolean isRight, String type, int typeId, boolean isSwitch) {
                 if (!isRight) {
-                    Toast.makeText(getActivity(), "附近餐厅收到" + type + "请求"+typeId, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "附近餐厅收到" + type + "请求" + typeId, Toast.LENGTH_SHORT).show();
 
-                    if(!isSwitch){
-                        num =1;
+                    if (!isSwitch) {
+                        num = 1;
                         recommendList.clear();
                         mLRecyclerViewAdapter.notifyDataSetChanged();
                     }
 
-                    GroupBy=type;
-                    TypeValue=typeId+"";
+                    GroupBy = type;
+                    TypeValue = typeId + "";
 
                     getInfo(num);
                 }
@@ -116,17 +116,14 @@ public class RecommendNearbyListFragment extends Fragment {
                 getInfo(num);
             }
         });
-       recyclerView.refresh();
-//        getInfo(1);
+        recyclerView.refresh();
     }
 
-    private  String GroupBy="";
-    private  String TypeValue="";
+    private String GroupBy = "";
+    private String TypeValue = "";
 
     //获取餐厅列表信息
     private void getInfo(int num) {
-//        120.110569,30.338419
-
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_RESTAURANT_LIST_INFO)

@@ -18,8 +18,16 @@ public class AppUrl {
 
     public static final String RECIPE_ITEM_INFO = BASE_URL + "API/Recipe/RecipeItemInfo";//菜谱详情页面
 
-    public static final String RECIPE_ITEM_INFO_FOR_PAY = BASE_URL + "API/Recipe/RecipeItemInfoForPay";//菜谱详情页面
+    public static final String RECIPE_ITEM_INFO_FOR_PAY = BASE_URL + "API/Recipe/RecipeItemInfoForPay";
 
 
-    public static final String RECIPE_LIST_BY_GPS = BASE_URL + "API/Recipe/RecipeListByGPS";//推荐饮食列表
+    public static final String RECIPE_LIST_BY_GPS = BASE_URL + "API/Recipe/RecipeListByGPS";
+
+    public static final String GET_QUESTION_PROFESSION_LIST = BASE_URL + "Api/Question/GetQuestionProfessionList";
+
+    public static final String GET_QUESTION_PROFESSION_LIST2 = BASE_URL + "Api/Question/GetSubmitQusttion";
+
+
+
+
 }

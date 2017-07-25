@@ -15,9 +15,17 @@ import java.util.List;
 
 public class MyApplication extends Application {
 
-  public  static List<String > mList;
+    public static List<String> mList;
     public LocationService locationService;
     public Vibrator mVibrator;
+
+
+    public  static  String address;
+
+    public  static double Latitude;//经度
+    public static double Longitude;//纬度
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -25,11 +33,11 @@ public class MyApplication extends Application {
          * 初始化定位sdk，建议在Application中创建
          */
         locationService = new LocationService(getApplicationContext());
-        mVibrator =(Vibrator)getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
         SDKInitializer.initialize(getApplicationContext());
 
 
-        mList=new ArrayList<>();
+        mList = new ArrayList<>();
         mList.add("http://t1.niutuku.com/960/10/10-221576.jpg");
         mList.add("http://pica.nipic.com/2007-12-23/20071223014647_2.jpg");
         mList.add("http://i1.sinaimg.cn/travel/2014/0806/U7398P704DT20140806142406.jpg");
@@ -40,8 +48,6 @@ public class MyApplication extends Application {
         mList.add("http://img0.imgtn.bdimg.com/it/u=1834721349,965661657&fm=26&gp=0.jpg");
         mList.add("http://img4.imgtn.bdimg.com/it/u=3703792495,3164631985&fm=26&gp=0.jpg");
         mList.add("http://img0.imgtn.bdimg.com/it/u=5051244,3664524996&fm=26&gp=0.jpg");
-
-
 
 
     }

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fff"
+    android:id="@+id/layoutMain"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -239,10 +240,10 @@
                 <!--android:layout_marginRight="10dp" />-->
 
                 <com.huihong.healthydiet.widget.HorizontalListView
-                    android:layout_gravity="center_vertical"
                     android:id="@+id/mHorizontalListView"
                     android:layout_width="match_parent"
-                    android:layout_height="16dp" />
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical" />
             </LinearLayout>
 
 

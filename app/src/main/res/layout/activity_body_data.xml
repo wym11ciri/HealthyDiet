@@ -27,6 +27,7 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/ivBoy"
                 android:layout_width="74dp"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/body_3" />
@@ -37,6 +38,7 @@
                 android:layout_weight="0.6" />
 
             <ImageView
+                android:id="@+id/ivGirl"
                 android:layout_width="74dp"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/body_5" />
@@ -70,8 +72,10 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/tvBirthday"
+                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="2017年7月14日"
@@ -115,7 +119,8 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="165cm"
@@ -203,8 +208,11 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/tvLabour"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="一般"
@@ -220,7 +228,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvRegister"
+        android:id="@+id/tvSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"

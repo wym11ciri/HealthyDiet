@@ -1,15 +1,18 @@
 package com.huihong.healthydiet.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.bean.RecipeListByGPS;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.widget.HorizontalListView;
@@ -57,19 +60,15 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
     }
 
     @Override
-    public void onBindViewHolder(final RvRecommendRecommendViewHolder holder, int position) {
+    public void onBindViewHolder(final RvRecommendRecommendViewHolder holder, final int position) {
 //        holder.tvName.setText(mList.get(position));
-
-
         Glide
                 .with(mContext)
-                .load(mList.get(position).getImages())
+                .load(mList.get(position).getTitleImage())
                 .asBitmap()
                 .error(R.mipmap.error_photo)
                 .into(holder.ivHead);
 
-
-//
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
 //        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 //        holder.rvArticleTag.setLayoutManager(linearLayoutManager);
@@ -77,32 +76,20 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
 
         holder.mHorizontalListView.setAdapter(new LvTagAdapter(mContext, mList.get(position).getTags()));
 
-//
         holder.name.setText(mList.get(position).getName());
-        holder.sales.setText(mList.get(position).getSales()+"");
-        holder.price.setText(mList.get(position).getPrice()+"");
+        holder.sales.setText(mList.get(position).getSales() + "份");
+        holder.price.setText(mList.get(position).getPrice() + "");
         holder.Restaurant_Name.setText(mList.get(position).getRestaurant_Name());
         holder.Restaurant_Address.setText(mList.get(position).getRestaurant_Address());
 
-//        holder.name.setText(mList.get(position).getName());
-
-
-//        holder.ivHead.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent mi = new Intent(mContext, RecipesDetailsActivity.class);
-//                mContext.startActivity(mi);
-//            }
-//        });
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
+        holder.layoutMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(mContext, RecipesDetailsActivity.class);
+                mIntent.putExtra("RecipeId",mList.get(position).getId()+"");
+                mContext.startActivity(mIntent);
+            }
+        });
 
     }
 
@@ -129,19 +116,19 @@ class RvRecommendRecommendViewHolder extends RecyclerView.ViewHolder {
      */
 
 
-
-    TextView name, ConstitutionPercentagesales,sales,price,Restaurant_Name,Restaurant_Address;
+    TextView name, sales, price, Restaurant_Name, Restaurant_Address;
     LinearLayout mLinearLayout;
 
     RecyclerView rvArticleTag;
     SelectableRoundedImageView ivHead;
     HorizontalListView mHorizontalListView;
+    RelativeLayout layoutMain;
 
     RvRecommendRecommendViewHolder(View itemView) {
         super(itemView);
         ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
 //        rvArticleTag = (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-        mHorizontalListView= (HorizontalListView) itemView.findViewById(R.id.mHorizontalListView);
+        mHorizontalListView = (HorizontalListView) itemView.findViewById(R.id.mHorizontalListView);
 
         name = (TextView) itemView.findViewById(R.id.name);
 //        ConstitutionPercentagesales = (TextView) itemView.findViewById(R.id.ConstitutionPercentagesales);
@@ -151,7 +138,6 @@ class RvRecommendRecommendViewHolder extends RecyclerView.ViewHolder {
         Restaurant_Address = (TextView) itemView.findViewById(R.id.Restaurant_Address);
 
 
-
-//        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
+        layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
     }
 }

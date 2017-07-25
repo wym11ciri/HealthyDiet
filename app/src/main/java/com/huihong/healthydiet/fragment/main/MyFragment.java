@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.BodyDataActivity;
+import com.huihong.healthydiet.activity.MajorTestActivity;
 import com.huihong.healthydiet.activity.PersonalPreferenceActivity;
 import com.huihong.healthydiet.activity.SettingsActivity;
 
@@ -21,7 +22,7 @@ import com.huihong.healthydiet.activity.SettingsActivity;
 public class MyFragment extends Fragment {
     private View mView;
     private LinearLayout layoutSettings;
-    private  LinearLayout layoutBodyData;
+    private  LinearLayout layoutBodyData,layoutMajorTest;
 
     private  LinearLayout   layoutLike;
 
@@ -59,5 +60,17 @@ public class MyFragment extends Fragment {
                 startActivity(mIntent);
             }
         });
+
+        layoutMajorTest= (LinearLayout) mView.findViewById(R.id.layoutMajorTest);
+        layoutMajorTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent=new Intent(getActivity(), MajorTestActivity.class);
+                startActivity(mIntent);
+            }
+        });
     }
+
+
+
 }

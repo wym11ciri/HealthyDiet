@@ -31,6 +31,7 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/12
+ * 推荐饮食列表
  */
 
 public class RecommendRecipeListFragment extends Fragment {
@@ -68,7 +69,7 @@ public class RecommendRecipeListFragment extends Fragment {
                     GroupBy = type;
                     TypeValue = typeId + "";
 
-//                    getInfo(num);
+                    getInfo(num);
                 }
             }
         });
@@ -120,8 +121,6 @@ public class RecommendRecipeListFragment extends Fragment {
 
     //获取餐厅列表信息
     private void getInfo(int num) {
-
-//
         OkHttpUtils
                 .post()
                 .url(AppUrl.RECIPE_LIST_BY_GPS)

@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
@@ -23,6 +25,7 @@ import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
 import com.huihong.healthydiet.adapter.RvRecordAdapter;
 import com.huihong.healthydiet.fragment.NearbyFragment;
+import com.huihong.healthydiet.mInterface.LocationListener;
 import com.joooonho.SelectableRoundedImageView;
 import com.stx.xhb.xbanner.XBanner;
 
@@ -80,9 +83,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         super.onStop();
     }
 
+    TextView tvAddress;
     XBanner mBannerNet;
 
     private void initUI() {
+
         initBanner();
         initNearby();
         initRecommend();
@@ -99,6 +104,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 .into(ivTest);
 
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity.mainActivity.setLocationListener(new LocationListener() {
+            @Override
+            public void isReLocation(boolean isReLocation, String address) {
+                if (isReLocation) {
+                    tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
+                    tvAddress.setText(address);
+                }
+            }
+        });
     }
 
     private void initJump() {
