@@ -1,7 +1,5 @@
 package com.huihong.healthydiet.mInterface;
 
-import android.view.View;
-
 /**
  * Created by zangyi_shuai_ge on 2017/4/21
  * item布局点击回调接口
@@ -9,6 +7,6 @@ import android.view.View;
 
 public interface ItemOnClickListener {
 
-    void onClick(View v, int position);
+    void onClick();
 
 }

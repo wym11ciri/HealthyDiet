@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutMain"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:background="#fff"
     android:gravity="center"
     android:orientation="horizontal">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
         android:background="#fff"
         android:gravity="center"
         android:orientation="horizontal">
@@ -19,6 +20,7 @@
             android:id="@+id/ivHead"
             android:layout_width="80dp"
             android:layout_height="75dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -46,12 +48,12 @@
                 android:orientation="horizontal">
 
                 <TextView
-
+                    android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="姜红糖煮鸡蛋"
                     android:textColor="#333333"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -66,17 +68,18 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical"
                     android:src="@mipmap/tag" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvArticleTag"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center" />
+                <com.huihong.healthydiet.widget.HorizontalListView
+                    android:id="@+id/lvTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" />
             </LinearLayout>
 
             <View
@@ -97,9 +100,11 @@
                     android:src="@mipmap/browse" />
 
                 <TextView
+                    android:id="@+id/tvClickCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1008"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:textColor="#636363"
                     android:textSize="8sp" />
 
@@ -115,9 +120,11 @@
                     android:src="@mipmap/thumbs_up" />
 
                 <TextView
+                    android:id="@+id/tvLoveCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1008"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:textColor="#636363"
                     android:textSize="8sp" />
 
@@ -132,6 +139,7 @@
                     android:layout_weight="6" />
 
                 <TextView
+                    android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2017-6-29 15:50:00"

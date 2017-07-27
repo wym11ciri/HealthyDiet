@@ -19,8 +19,10 @@ import com.huihong.healthydiet.fragment.main.HomeFragment;
 import com.huihong.healthydiet.fragment.main.MotionFragment;
 import com.huihong.healthydiet.fragment.main.MyFragment;
 import com.huihong.healthydiet.fragment.main.SleepFragment;
+import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.service.AlarmClockService;
+import com.huihong.healthydiet.utils.common.StatusBarUtil;
 import com.huihong.healthydiet.widget.MyViewPager;
 
 import java.util.ArrayList;
@@ -45,10 +47,41 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 
     public static MainActivity mainActivity;
 
+    //5个底部导航栏的监听回调
+    private ItemOnClickListener itemOnClickListener01;
+    private ItemOnClickListener itemOnClickListener02;
+    private ItemOnClickListener itemOnClickListener03;
+    private ItemOnClickListener itemOnClickListener04;
+    private ItemOnClickListener itemOnClickListener05;
+
+    //设置监听
+    public void setItemOnClickListener01(ItemOnClickListener itemOnClickListener01) {
+        this.itemOnClickListener01 = itemOnClickListener01;
+    }
+
+    public void setItemOnClickListener02(ItemOnClickListener itemOnClickListener02) {
+        this.itemOnClickListener02 = itemOnClickListener02;
+    }
+
+    public void setItemOnClickListener03(ItemOnClickListener itemOnClickListener03) {
+        this.itemOnClickListener03 = itemOnClickListener03;
+    }
+
+    public void setItemOnClickListener04(ItemOnClickListener itemOnClickListener04) {
+        this.itemOnClickListener04 = itemOnClickListener04;
+    }
+
+    public void setItemOnClickListener05(ItemOnClickListener itemOnClickListener05) {
+        this.itemOnClickListener05 = itemOnClickListener05;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StatusBarUtil.setTranslucentForImageViewInFragment(MainActivity.this, null);
         setContentView(R.layout.activity_main);
+//        StatusBarUtil.setTransparent(this);//设置状态栏沉浸
         mainActivity = this;
         initUI();
         setupService();
@@ -137,27 +170,47 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 ivTab01.setImageResource(R.mipmap.logo_10);
                 tvTab01.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
 
+                if (itemOnClickListener01 != null) {
+                    itemOnClickListener01.onClick();
+                }
+
 
                 break;
             case R.id.layoutTab02:
                 ivTab02.setImageResource(R.mipmap.logo_6);
                 mViewPager.setCurrentItem(1, false);
                 tvTab02.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
+                if (itemOnClickListener02 != null) {
+                    itemOnClickListener02.onClick();
+                }
+
                 break;
             case R.id.layoutTab03:
                 ivTab03.setImageResource(R.mipmap.logo_1);
                 mViewPager.setCurrentItem(2, false);
                 tvTab03.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
+                if (itemOnClickListener03 != null) {
+                    itemOnClickListener03.onClick();
+                }
+
                 break;
             case R.id.layoutTab04:
                 ivTab04.setImageResource(R.mipmap.logo_8);
                 mViewPager.setCurrentItem(3, false);
                 tvTab04.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
+                if (itemOnClickListener04 != null) {
+                    itemOnClickListener04.onClick();
+                }
+
                 break;
             case R.id.layoutTab05:
                 ivTab05.setImageResource(R.mipmap.logo_4);
                 mViewPager.setCurrentItem(4, false);
                 tvTab05.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
+
+                if (itemOnClickListener05 != null) {
+                    itemOnClickListener05.onClick();
+                }
                 break;
         }
 
@@ -210,8 +263,8 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 MyApplication.Longitude = location.getLongitude();
                 MyApplication.address = location.getLocationDescribe();
 
-                if(locationListener!=null){
-                    locationListener.isReLocation(true,location.getLocationDescribe());
+                if (locationListener != null) {
+                    locationListener.isReLocation(true, location.getLocationDescribe());
                 }
 
 //                StringBuffer sb = new StringBuffer(256);

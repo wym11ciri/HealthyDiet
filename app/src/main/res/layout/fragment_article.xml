@@ -6,7 +6,7 @@
     android:background="#fff">
 
 
-    <android.support.v7.widget.RecyclerView
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,6 +20,11 @@
         android:layout_height="wrap_content"
         android:background="#ffffff"
         app:elevation="0dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/status_bar_view_height"
+            android:background="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|snap" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -64,6 +69,7 @@
                     android:src="@mipmap/text_3" />
 
                 <TextView
+                    android:id="@+id/tvTop01"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -90,6 +96,7 @@
                     android:src="@mipmap/text_2" />
 
                 <TextView
+                    android:id="@+id/tvTop02"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -116,6 +123,7 @@
                     android:src="@mipmap/text_1" />
 
                 <TextView
+                    android:id="@+id/tvTop03"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

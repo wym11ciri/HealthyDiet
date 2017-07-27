@@ -28,14 +28,18 @@
                 android:src="@mipmap/password_1" />
 
             <EditText
+                android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="10dp"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:text="13666666666"
+                android:hint="手机号"
+                android:inputType="phone"
+                android:text="15168212330"
                 android:textColor="#010101"
+                android:textColorHint="#999999"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -65,6 +69,7 @@
                 android:src="@mipmap/password_2" />
 
             <EditText
+                android:id="@+id/etCode"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
@@ -73,21 +78,25 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="验证码"
-                android:textColor="#9A9A9A"
-                android:textSize="13sp" />
+                android:textColor="#999999"
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:background="#B1B1B1" />
 
             <TextView
+                android:id="@+id/tvGetCode"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:text="重新获取(52)"
-                android:textColor="#9A9A9A"
+                android:gravity="center_vertical"
+                android:text="获取验证码"
+                android:textColor="#999999"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -113,7 +122,7 @@
                 android:src="@mipmap/password_3" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/etPassword"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
@@ -121,17 +130,19 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:inputType="numberPassword"
-                android:text="1654646"
-                android:textColor="#9A9A9A"
-                android:textSize="13sp" />
+                android:hint="密码"
+                android:inputType="textPassword"
+                android:textColor="#999999"
+                android:textSize="14sp" />
 
 
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:id="@+id/ivEye"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:padding="10dp"
                 android:src="@mipmap/password_6" />
 
         </LinearLayout>
@@ -173,6 +184,7 @@
                 android:visibility="invisible" />
 
             <EditText
+                android:id="@+id/etPassword2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
@@ -181,8 +193,9 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="确认密码"
-                android:textColor="#9A9A9A"
-                android:textSize="13sp" />
+                android:inputType="textPassword"
+                android:textColor="#999999"
+                android:textSize="14sp" />
 
         </LinearLayout>
     </LinearLayout>

@@ -2,6 +2,7 @@ package com.huihong.healthydiet.mybean;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/25
+ * 专业测评答案
  */
 
 public class MajorAnswer {

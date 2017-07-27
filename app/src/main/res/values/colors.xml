@@ -47,4 +47,9 @@
 
     <color name="white">#ffffff</color>
     <color name="black_2">#333333</color>
+
+
+    <color name="leaf_integral">#C72F44</color>
+    <color name="leaf_event">#010101</color>
+
 </resources>

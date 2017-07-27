@@ -1,22 +1,24 @@
-package com.huihong.healthydiet.view;
+package com.huihong.healthydiet.mybean;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
+ * 圆形时间选择需要触摸的2个圆形
  */
 
 public class TouchCircle {
 
 
-    public  static   final  double PI=3.14592654;
+    public static final double PI = 3.14592654;
+
     //获得坐标
     public double getX() {
-        double mAngle=2*PI*this.angle/360.00001;
-        return R*Math.cos(mAngle);
+        double mAngle = 2 * PI * this.angle / 360.00001;
+        return R * Math.cos(mAngle);
     }
 
     public double getY() {
-        double mAngle=2*PI*this.angle/360.00001;
-        return R*Math.sin(mAngle);
+        double mAngle = 2 * PI * this.angle / 360.00001;
+        return R * Math.sin(mAngle);
     }
 
 //    private double x;
@@ -35,10 +37,10 @@ public class TouchCircle {
     private int R;
     private float angle;//角度
 
-    public TouchCircle(float angle, int r,int R) {
+    public TouchCircle(float angle, int r, int R) {
         this.angle = angle;
         this.r = r;
-        this.R=R;
+        this.R = R;
     }
 
     public float getAngle() {

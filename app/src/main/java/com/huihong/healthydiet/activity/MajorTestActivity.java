@@ -99,7 +99,7 @@ public class MajorTestActivity extends BaseTitleActivity {
 
         OkHttpUtils
                 .post()
-                .url(AppUrl.GET_QUESTION_PROFESSION_LIST2)
+                .url(AppUrl.GET_SUBMIT_QUESTION)
 //                .addParams("id", "2")
                 .addParams("answer",a)
                 .build()
@@ -145,7 +145,7 @@ public class MajorTestActivity extends BaseTitleActivity {
                             //设置第一题
                             tvAnswerTitle.setText("1、" + getListData.get(0).getQuestionContent());
                             TextView tvNum = (TextView) findViewById(R.id.tvNum);
-                            tvNum.setText("*共" + getListData.size() + "道题，均为多选");
+                            tvNum.setText("*共" + getListData.size() + "道题，均为单选");
 
                         } else {
                             String message = mGetQuestionProfessionList.getMessage();

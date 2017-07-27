@@ -4,7 +4,11 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical">
-
+    <View
+        android:id="@+id/fake_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_view_height"
+        android:background="@color/colorPrimary"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"

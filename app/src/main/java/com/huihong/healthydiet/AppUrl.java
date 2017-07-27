@@ -10,7 +10,6 @@ public class AppUrl {
 //    private static final String BASE_URL = "http://106.14.218.31:8020/";
 
 
-
     public static final String GET_RESTAURANT_LIST_INFO = BASE_URL + "API/Restaurant/GetRestaurantListInfo";//获取餐厅列表
     public static final String DATA_DICTIONARY = BASE_URL + "API/DataDictionary/Cate";//获取餐厅类型
     public static final String GET_RESTAURANT_INFO_BY_ID = BASE_URL + "API/Restaurant/GetRestaurantInfoById";//获取餐厅详情 上面那部分
@@ -23,11 +22,27 @@ public class AppUrl {
 
     public static final String RECIPE_LIST_BY_GPS = BASE_URL + "API/Recipe/RecipeListByGPS";
 
-    public static final String GET_QUESTION_PROFESSION_LIST = BASE_URL + "Api/Question/GetQuestionProfessionList";
-
-    public static final String GET_QUESTION_PROFESSION_LIST2 = BASE_URL + "Api/Question/GetSubmitQusttion";
 
 
+
+    //获取文章列表
+    public static final String GET_ARTICLE_LIST_INFO = BASE_URL + "API/Article/GetArticleListInfo";
+
+
+    //用户注册模块
+    public static final String SEND_MAIL = BASE_URL + "API/User/SendMail";//发送验证码短信
+    public static final String MAIL_REGISTER = BASE_URL + "API/User/MailRegister";//手机验证码注册
+    public static final String RESET_USER_PASSWORD = BASE_URL + "API/User/ResetUserPassword";//手机验证码注册
+
+
+    //用户个人资料
+    public static final String SET_USER_BODY_INFO = BASE_URL + "API/User/SetUserBodyInfo";//设置用户身体信息
+
+
+    //问卷
+    public static final String GET_QUESTION_EXPRESS_LIST = BASE_URL + "API/Question/GetQuestionExpressList";//简易版问卷获取
+    public static final String GET_QUESTION_PROFESSION_LIST = BASE_URL + "Api/Question/GetQuestionProfessionList";//专业版问卷获取
+    public static final String GET_SUBMIT_QUESTION = BASE_URL + "Api/Question/GetSubmitQuestion";//专业版问卷提交
 
 
 }

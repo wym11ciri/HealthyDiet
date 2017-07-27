@@ -20,7 +20,7 @@ import java.util.List;
  * 附近餐厅 RecyclerView
  */
 
-public class RvMajorAnswerAdapter extends RecyclerView.Adapter<RvMajorAnswerViewHolder> {
+public class RvMajorAnswerAdapter extends RecyclerView.Adapter<RvMajorAnswerAdapter.RvMajorAnswerViewHolder> {
 
 
     private LayoutInflater mInflater;
@@ -91,21 +91,20 @@ public class RvMajorAnswerAdapter extends RecyclerView.Adapter<RvMajorAnswerView
         chooseId=-1;
         this.notifyDataSetChanged();
     }
+    class RvMajorAnswerViewHolder extends RecyclerView.ViewHolder {
 
 
-}
+        TextView tvAnswer;
+        ImageView ivAnswer;
+        RelativeLayout layoutMain;
 
-class RvMajorAnswerViewHolder extends RecyclerView.ViewHolder {
-
-
-    TextView tvAnswer;
-    ImageView ivAnswer;
-    RelativeLayout layoutMain;
-
-    RvMajorAnswerViewHolder(View itemView) {
-        super(itemView);
-        ivAnswer = (ImageView) itemView.findViewById(R.id.ivAnswer);
-        tvAnswer = (TextView) itemView.findViewById(R.id.tvAnswer);
-        layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
+        RvMajorAnswerViewHolder(View itemView) {
+            super(itemView);
+            ivAnswer = (ImageView) itemView.findViewById(R.id.ivAnswer);
+            tvAnswer = (TextView) itemView.findViewById(R.id.tvAnswer);
+            layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
+        }
     }
+
 }
+

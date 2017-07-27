@@ -67,7 +67,10 @@
         <activity android:name=".activity.SearchResultActivity"/>
         <activity android:name=".activity.PayOnlineActivity"/>
         <activity android:name=".activity.MajorTestActivity"/>
-
+        <activity android:name=".activity.IntegralRecordActivity" />
+        <activity android:name=".activity.RestPasswordActivity"/>
+        <activity android:name=".activity.ArticleDetailsActivity"/>
+        <activity android:name=".activity.SimpleTestActivity"/>
 
 
         <service
