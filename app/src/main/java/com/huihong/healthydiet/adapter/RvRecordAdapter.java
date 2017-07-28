@@ -1,7 +1,6 @@
 package com.huihong.healthydiet.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.activity.RecipesActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
@@ -63,8 +61,8 @@ public class RvRecordAdapter extends RecyclerView.Adapter<RvRecordViewHolder> {
         holder.ivHead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIn = new Intent(mContext, RecipesActivity.class);
-                mContext.startActivity(mIn);
+//                Intent mIn = new Intent(mContext, RecipesActivity.class);
+//                mContext.startActivity(mIn);
             }
         });
 

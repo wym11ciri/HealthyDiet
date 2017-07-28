@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
@@ -41,6 +42,17 @@ public class RecommendNearbyListFragment extends Fragment {
     private int num = 1;
 
 
+    private boolean isOpen = false;
+
+    private ImageView ivTest;
+
+    private View mButtonView;
+    private LRecyclerView.LScrollListener mLScrollListener;
+    public  void setLScrollListener( LRecyclerView.LScrollListener mLScrollListener){
+        this.mLScrollListener=mLScrollListener;
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,6 +66,10 @@ public class RecommendNearbyListFragment extends Fragment {
     }
 
     private void initUI() {
+
+//        initFloatButton();
+
+
         initRecyclerView();
         RecommendActivity.mRecommendActivity.setLeftScreenTypeListener(new ScreenTypeListener() {
             @Override
@@ -76,6 +92,39 @@ public class RecommendNearbyListFragment extends Fragment {
         });
 
     }
+
+//    private void initFloatButton() {
+//
+//        mButtonView = mView.findViewById(R.id.mButtonView);
+//        int width = ScreenUtils.getScreenWidth(getActivity());
+//
+//        ViewGroup.LayoutParams para1;
+//        para1 = mButtonView.getLayoutParams();
+//        para1.width = width- DensityUtils.dp2px(getActivity(),50);
+//        mButtonView.setLayoutParams(para1);
+//
+//
+//        ivTest = (ImageView) mView.findViewById(R.id.ivTest);
+//        ivTest.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isOpen) {
+//                    ObjectAnimator//
+//                            .ofFloat(ivTest, "translationX", -DensityUtils.dp2px(getActivity(),100), 0)//
+//                            .setDuration(500)//
+//                            .start();
+//                    isOpen = false;
+//                } else {
+//                    isOpen = true;
+//                    ObjectAnimator//
+//                            .ofFloat(ivTest, "translationX", 0, -DensityUtils.dp2px(getActivity(),100))//
+//                            .setDuration(500)//
+//                            .start();
+//                }
+//
+//            }
+//        });
+//    }
 
 
     //列表
@@ -117,6 +166,15 @@ public class RecommendNearbyListFragment extends Fragment {
             }
         });
         recyclerView.refresh();
+
+        if(mLScrollListener!=null){
+            recyclerView.setLScrollListener(mLScrollListener);
+        }
+
+
+
+
+
     }
 
     private String GroupBy = "";

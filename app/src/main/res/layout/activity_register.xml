@@ -37,7 +37,6 @@
                 android:gravity="center_vertical"
                 android:hint="手机号"
                 android:inputType="phone"
-                android:text="15168212330"
                 android:textColor="#010101"
                 android:textColorHint="#999999"
                 android:textSize="16sp"

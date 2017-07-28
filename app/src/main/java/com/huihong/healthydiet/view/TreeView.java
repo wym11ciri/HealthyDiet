@@ -106,7 +106,7 @@ public class TreeView extends View {
             leaf.setEvent("事件" + i);
             leaf.setIntegral(" +" + i);
             leaf.setLeafSize(leafSize);
-            leaf.setAlpha(100);
+            leaf.setAlpha(255);
             mLeafList.add(leaf);
         }
 

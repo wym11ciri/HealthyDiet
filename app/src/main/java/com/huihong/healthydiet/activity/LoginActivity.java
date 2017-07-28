@@ -12,12 +12,10 @@ import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
 
-
 /**
  * Created by zangyi_shuai_ge on 2017/7/19
  * 登录界面
  */
-
 public class LoginActivity extends BaseActivity {
 
     private TextView tvLogin, tvRegister, tvRestPassword;
@@ -38,7 +36,6 @@ public class LoginActivity extends BaseActivity {
     private void initUI() {
 
         etPhone = (EditText) findViewById(R.id.etPhone);
-
         tvLogin = (TextView) findViewById(R.id.tvLogin);
         tvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +43,11 @@ public class LoginActivity extends BaseActivity {
                 Intent mIntent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(mIntent);
                 finish();
+//                UMShareAPI.get(LoginActivity.this).deleteOauth(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
+//                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
+//                UMShareAPI.get(LoginActivity.this).deleteOauth(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
+//                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
+
             }
         });
 
@@ -85,9 +87,6 @@ public class LoginActivity extends BaseActivity {
 
                 break;
             case REQUEST_RESET_CODE:
-
-                etPhone.setText("10086");
-
                 if (resultCode == 200) {
                     String phone = (String) SPUtils.get(LoginActivity.this, "phone", "");
                     if (!phone.equals("")) {
@@ -97,4 +96,6 @@ public class LoginActivity extends BaseActivity {
                 break;
         }
     }
+
+
 }

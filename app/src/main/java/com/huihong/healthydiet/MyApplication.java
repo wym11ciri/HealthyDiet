@@ -49,6 +49,10 @@ public class MyApplication extends Application {
         mList.add("http://img4.imgtn.bdimg.com/it/u=3703792495,3164631985&fm=26&gp=0.jpg");
         mList.add("http://img0.imgtn.bdimg.com/it/u=5051244,3664524996&fm=26&gp=0.jpg");
 
+//        Config.DEBUG = true;
+//        QueuedWork.isUseThreadPool = false;
+//        UMShareAPI.get(this);
+//        PlatformConfig.setWeixin("wxdc1e388c3822c80b", "3baf1193c85774b3fd9d18447d76cab0");
 
     }
 }

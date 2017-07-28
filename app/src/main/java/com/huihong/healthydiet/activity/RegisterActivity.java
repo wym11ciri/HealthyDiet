@@ -176,7 +176,7 @@ public class RegisterActivity extends BaseTitleActivity {
         });
 
 
-        codeTimer = new CountDownTimer(10000, 1000) {
+        codeTimer = new CountDownTimer(60000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 //动态更新textView里面的内容

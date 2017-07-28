@@ -30,7 +30,6 @@ import okhttp3.Call;
  */
 
 public class PayActivity extends BaseTitleActivity {
-
     private String RecipeId;
 
     @Override
@@ -40,11 +39,7 @@ public class PayActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
-
-
         setTitle("支付");
-
-
         RecipeId = getIntent().getStringExtra("RecipeId");
         if (!RecipeId.equals("")) {
             //从接口读取信息
