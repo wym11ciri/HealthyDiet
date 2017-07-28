@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/StatusBar" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/dialog-picker" />
             <option value="$PROJECT_DIR$/gallery" />
           </set>
         </option>

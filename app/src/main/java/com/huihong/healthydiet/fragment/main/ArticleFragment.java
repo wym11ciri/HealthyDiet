@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.fragment.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.SearchActivity;
 import com.huihong.healthydiet.adapter.RvArticleAdapter;
 import com.huihong.healthydiet.bean.GetArticleListInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
@@ -50,6 +53,10 @@ public class ArticleFragment extends Fragment {
 
 
     private int mNum=1;
+
+
+
+    private LinearLayout layoutTopRight;
 
 
     @Override
@@ -91,6 +98,17 @@ public class ArticleFragment extends Fragment {
             recyclerView.setAdapter(mLRecyclerViewAdapter);
 
             recyclerView.refresh();
+
+
+
+            layoutTopRight= (LinearLayout) mView.findViewById(R.id.layoutTopRight);
+            layoutTopRight.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mIntent=new Intent(getActivity(), SearchActivity.class);
+                    startActivity(mIntent);
+                }
+            });
 
         }
 

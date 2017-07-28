@@ -16,7 +16,7 @@ import java.util.List;
  * Created by zangyi_shuai_ge on 2017/5/16
  */
 
-public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeAdapter.RvTypeViewHolder> {
+public class RvTypeAdapter3 extends RecyclerView.Adapter<RvTypeAdapter3.RvTypeViewHolder> {
 
 
     private LayoutInflater mInflater;
@@ -29,7 +29,7 @@ public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeAdapter.RvTypeView
         mItemOnClickListener = pItemOnClickListener;
     }
 
-    public RvTypeAdapter(Context pContext, List<String> pList) {
+    public RvTypeAdapter3(Context pContext, List<String> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -38,7 +38,7 @@ public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeAdapter.RvTypeView
 
     @Override
     public RvTypeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View mView = mInflater.inflate(R.layout.rv_type_item, parent, false);
+        View mView = mInflater.inflate(R.layout.rv_type_item3, parent, false);
 
         return new RvTypeViewHolder(mView);
     }

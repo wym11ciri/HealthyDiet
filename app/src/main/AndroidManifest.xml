@@ -66,11 +66,11 @@
         <activity android:name=".activity.PersonalPreferenceActivity"/>
         <activity android:name=".activity.SearchResultActivity"/>
         <activity android:name=".activity.PayOnlineActivity"/>
-        <activity android:name=".activity.MajorTestActivity"/>
+        <activity android:name=".activity.TestMajorActivity"/>
         <activity android:name=".activity.IntegralRecordActivity" />
         <activity android:name=".activity.RestPasswordActivity"/>
         <activity android:name=".activity.ArticleDetailsActivity"/>
-        <activity android:name=".activity.SimpleTestActivity"/>
+        <activity android:name=".activity.TestSimpleActivity"/>
 
 
         <service

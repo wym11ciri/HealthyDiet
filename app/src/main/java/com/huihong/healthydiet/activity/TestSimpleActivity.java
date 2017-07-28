@@ -12,7 +12,7 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvSimpleAnswerAdapter;
 import com.huihong.healthydiet.bean.GetQuestionExpressList;
-import com.huihong.healthydiet.mybean.MajorAnswer;
+import com.huihong.healthydiet.bean.GetSubmitExpressQuestion;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -24,59 +24,64 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/25
+ * 基础版问卷调查
  */
 
-public class SimpleTestActivity extends BaseTitleActivity {
+public class TestSimpleActivity extends BaseTitleActivity {
 
     private RecyclerView rvAnswer;
     private RvSimpleAnswerAdapter rvSimpleAnswerAdapter;
-    private TextView tvAnswerTitle;
-    private List<GetQuestionExpressList.ListDataBean> mListData;
-    private List<MajorAnswer> MajorAnswerList;
+    private TextView tvAnswerTitle;//问题题目
 
-    private List<GetQuestionExpressList.ListDataBean.OptionsBean> mAnswerList;
-
-
-
-
+    private int questionNum=0;//当前题目号码
+    private List<GetQuestionExpressList.ListDataBean> mListData;//所有问题的几个
+    private List<GetQuestionExpressList.ListDataBean.OptionsBean> mAnswerList;//某个问题答案的集合
     private List<Integer> mAnswerOptionIdList;//所有答案的集合
 
 
-//    private List<>
-
-    private int num = 0;
 
     @Override
     public int setLayoutId() {
-        return R.layout.activity_simple_test;
+        return R.layout.activity_test_simple;
     }
 
     @Override
     public void initUI() {
-
-
-        mAnswerOptionIdList=new ArrayList<>();
-        mAnswerList = new ArrayList<>();
-        //
-        MajorAnswerList = new ArrayList<>();
-
-
         setTitle("体质测试");
+        mAnswerOptionIdList = new ArrayList<>();
+        mAnswerList = new ArrayList<>();
         tvAnswerTitle = (TextView) findViewById(R.id.tvAnswerTitle);
 
         rvAnswer = (RecyclerView) findViewById(R.id.rvAnswer);
-        rvAnswer.setLayoutManager(new LinearLayoutManager(SimpleTestActivity.this, LinearLayoutManager.VERTICAL, false));
-        rvSimpleAnswerAdapter = new RvSimpleAnswerAdapter(SimpleTestActivity.this, mAnswerList);
+        rvAnswer.setLayoutManager(new LinearLayoutManager(TestSimpleActivity.this, LinearLayoutManager.VERTICAL, false));
+        rvSimpleAnswerAdapter = new RvSimpleAnswerAdapter(TestSimpleActivity.this, mAnswerList);
         rvAnswer.setAdapter(rvSimpleAnswerAdapter);
 
         findViewById(R.id.tvNext).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //点击下一题的时候先获取上一题的答案
-                List<Integer> thisAnswer=    rvSimpleAnswerAdapter.getAnswer();
-                if(thisAnswer.size()<1){
-                    Toast.makeText(SimpleTestActivity.this, "请选择本题答案", Toast.LENGTH_SHORT).show();
+                List<Integer> thisAnswer = rvSimpleAnswerAdapter.getAnswer();
+                if (thisAnswer.size() < 1) {
+                    Toast.makeText(TestSimpleActivity.this, "请选择本题答案", Toast.LENGTH_SHORT).show();
+                } else {
+                    //把答案添加到我的集合中去
+                    mAnswerOptionIdList.addAll(thisAnswer);
+                    questionNum++;
+                    if(questionNum>=mListData.size()){
+                        Toast.makeText(TestSimpleActivity.this, "答题完成", Toast.LENGTH_SHORT).show();
+                        submitQuestion();//提交问卷
+                    }else {
+                        //切换下一题
+                        mAnswerList.clear();
+                        mAnswerList.addAll(mListData.get(questionNum).getOptions());
+                        rvSimpleAnswerAdapter.notifyDataSetChanged();
+                        //设置题目号码
+                        tvAnswerTitle.setText((questionNum+1)+"、" + mListData.get(questionNum).getQuestionContent());
+                    }
+
                 }
+
 
             }
         });
@@ -90,18 +95,17 @@ public class SimpleTestActivity extends BaseTitleActivity {
 
     }
 
-    //获取餐厅列表信息
-    private void getInfo2() {
+    //基础版问卷提交
+    private void submitQuestion() {
 
         String a = "";
-        for (int i = 0; i < MajorAnswerList.size(); i++) {
-            a = a + MajorAnswerList.get(i).getQuestionId() + "," + MajorAnswerList.get(i).getAnswer() + "|";
+        for (int i = 0; i < mAnswerOptionIdList.size(); i++) {
+            a = a + mAnswerOptionIdList.get(i) + "," ;
         }
-
 
         OkHttpUtils
                 .post()
-                .url(AppUrl.GET_SUBMIT_QUESTION)
+                .url(AppUrl.GET_SUBMIT_EXPRESS_QUESTION)
 //                .addParams("id", "2")
                 .addParams("answer", a)
                 .build()
@@ -109,14 +113,19 @@ public class SimpleTestActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("error" + e);
-                        Toast.makeText(SimpleTestActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestSimpleActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("接口，专业版测试:", response);
-
-
+                        LogUtil.i("接口，基础版测试提交:", response);
+                        Gson gson = new Gson();
+                        GetSubmitExpressQuestion mGetSubmitExpressQuestion = gson.fromJson(response, GetSubmitExpressQuestion.class);
+                        String message=mGetSubmitExpressQuestion.getMessage();
+                        if(message!=null){
+                            Toast.makeText(TestSimpleActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                        finish();
                     }
                 });
 
@@ -132,7 +141,7 @@ public class SimpleTestActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("error" + e);
-                        Toast.makeText(SimpleTestActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestSimpleActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -154,7 +163,7 @@ public class SimpleTestActivity extends BaseTitleActivity {
 //
                         } else {
                             String message = mGetQuestionExpressList.getMessage();
-                            Toast.makeText(SimpleTestActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TestSimpleActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
 
                     }

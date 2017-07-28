@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.eicky.ViewPagerGallery;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
@@ -14,10 +15,12 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvMaterialAdapter;
 import com.huihong.healthydiet.adapter.RvTagAdapter;
+import com.huihong.healthydiet.adapter.RvTypeAdapter3;
 import com.huihong.healthydiet.bean.MaterialInfo;
 import com.huihong.healthydiet.bean.RecipeItemInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.widget.PageIndicator;
+import com.joooonho.SelectableRoundedImageView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -28,6 +31,7 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/13
+ * 食谱详情界面
  */
 
 public class RecipesDetailsActivity extends BaseTitleActivity {
@@ -64,23 +68,15 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
         initMaterial();
 
 
-
-
-
         ImageView ivBuy = (ImageView) findViewById(R.id.ivBuy);
         ivBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent mIn = new Intent(RecipesDetailsActivity.this, PayActivity.class);
-                mIn.putExtra("RecipeId",RecipeId);
+                mIn.putExtra("RecipeId", RecipeId);
                 startActivity(mIn);
             }
         });
-//        RecyclerView rvTag = (RecyclerView) findViewById(rvArticleTag);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(RecipesDetailsActivity.this);
-//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-//        rvTag.setLayoutManager(linearLayoutManager);
-//        rvTag.setAdapter(new RvTypeAdapter(RecipesDetailsActivity.this, zz));
 
 
     }
@@ -114,7 +110,27 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 
                                 //设置画廊
                                 gallery = (ViewPagerGallery) findViewById(R.id.gallery);
-                                gallery.setImgResources(mListDataBean.getImages());
+                                List<String> mImages = mListDataBean.getImages();
+                                if (mImages.size() > 0) {
+                                    List<View> viewList = new ArrayList<>();
+
+                                    for (int i = 0; i < mImages.size(); i++) {
+                                        SelectableRoundedImageView mSelectableRoundedImageView = new SelectableRoundedImageView(RecipesDetailsActivity.this);
+                                        mSelectableRoundedImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                        mSelectableRoundedImageView.setBorderWidthDP(2);
+                                        mSelectableRoundedImageView.setBorderColor(getResources().getColor(R.color.photo_ground));
+                                        mSelectableRoundedImageView.setCornerRadiiDP(4, 4, 4, 4);
+                                        Glide
+                                                .with(RecipesDetailsActivity.this)
+                                                .load(mListDataBean.getImages().get(i))
+                                                .asBitmap()
+                                                .into(mSelectableRoundedImageView);
+                                        viewList.add(mSelectableRoundedImageView);
+                                    }
+                                    gallery.setImgResources(viewList);
+                                }
+
+
                                 //画廊下面的指示器
                                 mPageIndicator = (com.huihong.healthydiet.widget.PageIndicator) findViewById(R.id.PageIndicator);
                                 mPageIndicator.setViewPager(gallery);//给ViewPager设置指示器
@@ -152,6 +168,13 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
                                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                                 rvArticleTag.setLayoutManager(linearLayoutManager);
                                 rvArticleTag.setAdapter(new RvTagAdapter(RecipesDetailsActivity.this, mTags));
+
+                                //获类型列表
+                                RecyclerView rvType = (RecyclerView) findViewById(R.id.rvType);
+                                LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(RecipesDetailsActivity.this);
+                                linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+                                rvType.setLayoutManager(linearLayoutManager2);
+                                rvType.setAdapter(new RvTypeAdapter3(RecipesDetailsActivity.this, mListDataBean.getConstitution()));
 
                             }
                         }

@@ -10,12 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.bumptech.glide.Glide.with;
 
 /**
  * @author Eicky
@@ -74,14 +75,14 @@ public class ViewPagerGallery extends ViewPager {
             final ImageView imageView = new ImageView(mContext);
             //imageView.setLayoutParams(mLayoutParams);
             if (isShadow)
-                Glide.with(mContext).load(url).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>() {
+                with(mContext).load(url).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(ImgUtils.getReverseBitmapById(resource, mContext));
                     }
                 });
             else
-                Glide.with(mContext).load(url).centerCrop().into(imageView);
+                with(mContext).load(url).centerCrop().into(imageView);
             if (mGalleryOnClickListener != null) {
                 final int finalI = i;
                 imageView.setOnClickListener(new OnClickListener() {
@@ -98,28 +99,40 @@ public class ViewPagerGallery extends ViewPager {
         this.setOffscreenPageLimit(views.size());
     }
 
-    public void setImgResources(List<String> imgResources) {
+    public void setImgResources(List<View> views) {
 
-        if (imgResources != null && imgResources.size() > 0) {
-            List<View> views = new ArrayList<>();
-            for (int i = 0; i < imgResources.size(); i++) {
-                final ImageView imageView = new ImageView(mContext);
-
-                Glide
-                        .with(mContext)
-                        .load(imgResources.get(i))
-                        .centerCrop()
-                        .into(imageView);
-
-                views.add(imageView);
-            }
+//        if (imgResources != null && imgResources.size() > 0) {
+//            List<View> views = new ArrayList<>();
+//            for (int i = 0; i < imgResources.size(); i++) {
+//                final ImageView imageView = new ImageView(mContext);
+////                SelectableRoundedImageView
+////                SelectableRoundedImageView sriv = new SelectableRoundedImageView(context);
+////                sriv.setScaleType(ScaleType.CENTER_CROP);
+////                sriv.setCornerRadiusesDP(4, 4, 0, 0);
+////                sriv.setBorderWidthDP(4);
+////                sriv.setBorderColor(Color.BLUE);
+////                sriv.setImageDrawable(drawable);
+////                sriv.setOval(true);
+//
+//
+//
+//
+//
+//                Glide
+//                        .with(mContext)
+//                        .load(imgResources.get(i))
+//                        .centerCrop()
+//                        .into(imageView);
+//
+//                views.add(imageView);
+//            }
             this.setAdapter(new ViewPagerGalleryAdapter(views));
             init();
-            if (imgResources.size() > 3) {
+            if (views.size() > 3) {
                 this.setCurrentItem(1);
             }
             this.setOffscreenPageLimit(views.size());
-        }
+//        }
 
     }
 

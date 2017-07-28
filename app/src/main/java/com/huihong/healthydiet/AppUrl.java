@@ -41,6 +41,7 @@ public class AppUrl {
 
     //问卷
     public static final String GET_QUESTION_EXPRESS_LIST = BASE_URL + "API/Question/GetQuestionExpressList";//简易版问卷获取
+    public static final String GET_SUBMIT_EXPRESS_QUESTION = BASE_URL + "API/Question/GetSubmitExpressQuestion";//简易版问卷提交
     public static final String GET_QUESTION_PROFESSION_LIST = BASE_URL + "Api/Question/GetQuestionProfessionList";//专业版问卷获取
     public static final String GET_SUBMIT_QUESTION = BASE_URL + "Api/Question/GetSubmitQuestion";//专业版问卷提交
 

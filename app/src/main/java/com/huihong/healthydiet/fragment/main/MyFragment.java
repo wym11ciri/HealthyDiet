@@ -16,9 +16,9 @@ import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.BodyDataActivity;
 import com.huihong.healthydiet.activity.IntegralRecordActivity;
+import com.huihong.healthydiet.activity.TestMajorActivity;
 import com.huihong.healthydiet.activity.PersonalPreferenceActivity;
 import com.huihong.healthydiet.activity.SettingsActivity;
-import com.huihong.healthydiet.activity.SimpleTestActivity;
 import com.huihong.healthydiet.adapter.RvIntegralAdapter;
 import com.huihong.healthydiet.view.TreeView;
 import com.joooonho.SelectableRoundedImageView;
@@ -92,8 +92,8 @@ public class MyFragment extends Fragment {
         layoutMajorTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent mIntent=new Intent(getActivity(), MajorTestActivity.class);
-                Intent mIntent=new Intent(getActivity(), SimpleTestActivity.class);
+                Intent mIntent=new Intent(getActivity(), TestMajorActivity.class);
+//                Intent mIntent=new Intent(getActivity(), SimpleTestActivity.class);
                 startActivity(mIntent);
             }
         });

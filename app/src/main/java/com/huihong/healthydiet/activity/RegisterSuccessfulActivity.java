@@ -1,5 +1,9 @@
 package com.huihong.healthydiet.activity;
 
+import android.content.Intent;
+import android.view.View;
+import android.widget.TextView;
+
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 
@@ -8,6 +12,8 @@ import com.huihong.healthydiet.activity.base.BaseTitleActivity;
  */
 
 public class RegisterSuccessfulActivity extends BaseTitleActivity {
+
+    TextView tvGoSimpleTest;
     @Override
     public int setLayoutId() {
         return R.layout.activity_register_successful;
@@ -16,6 +22,15 @@ public class RegisterSuccessfulActivity extends BaseTitleActivity {
     @Override
     public void initUI() {
         setTitle("注册");
+        tvGoSimpleTest= (TextView) findViewById(R.id.tvGoSimpleTest);
+        tvGoSimpleTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent=new Intent(RegisterSuccessfulActivity.this, TestSimpleActivity.class);
+                startActivity(mIntent);
+                finish();
+            }
+        });
 
     }
 

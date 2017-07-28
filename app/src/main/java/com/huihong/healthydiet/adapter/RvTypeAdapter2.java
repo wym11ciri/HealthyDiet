@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by zangyi_shuai_ge on 2017/5/16
  */
 
-public class RvTypeAdapter2 extends RecyclerView.Adapter<RvTypeViewHolder> {
+public class RvTypeAdapter2 extends RecyclerView.Adapter<RvTypeAdapter2.RvTypeViewHolder> {
 
 
     private LayoutInflater mInflater;
@@ -77,6 +78,14 @@ public class RvTypeAdapter2 extends RecyclerView.Adapter<RvTypeViewHolder> {
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+    class RvTypeViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivType;
+
+        RvTypeViewHolder(View itemView) {
+            super(itemView);
+            ivType = (ImageView) itemView.findViewById(R.id.ivType);
+        }
     }
 }
 

@@ -14,6 +14,7 @@ import com.huihong.healthydiet.widget.HorizontalListView;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/27
+ * 文章详情展示界面
  */
 
 public class ArticleDetailsActivity extends BaseTitleActivity {

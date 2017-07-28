@@ -73,11 +73,11 @@
 
             <TextView
                 android:id="@+id/tvBirthday"
-                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:gravity="center"
                 android:text="2017年7月14日"
                 android:textColor="#989898"
                 android:textSize="16sp"
@@ -117,13 +117,27 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
+            <EditText
+                android:maxLength="3"
+                android:id="@+id/etHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:gravity="center|right"
+                android:inputType="number"
+                android:paddingLeft="10dp"
+                android:text="165"
+                android:textColor="#989898"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:text="165cm"
+                android:gravity="center"
+                android:text="cm"
                 android:textColor="#989898"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -162,13 +176,25 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
+            <EditText
+                android:maxLength="3"
+                android:id="@+id/etWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:inputType="number"
+                android:gravity="right|center_vertical"
+                android:paddingLeft="10dp"
+                android:text="45"
+                android:textColor="#989898"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:text="45kg"
+                android:text="kg"
                 android:textColor="#989898"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -212,9 +238,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
                 android:text="一般"
                 android:textColor="#989898"
                 android:textSize="16sp"

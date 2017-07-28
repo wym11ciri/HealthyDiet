@@ -9,8 +9,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1"
         android:background="#fff"
         android:orientation="vertical">
 
@@ -20,11 +21,19 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp"
+            android:paddingBottom="22dp"
+            android:paddingTop="22dp"
             android:text="1、题目标题一"
             android:textColor="#010101"
-            android:textSize="16sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#E3E3E3" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvAnswer"
@@ -38,17 +47,20 @@
         android:id="@+id/tvNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
         android:text="*共7道题，均为多选"
         android:textColor="#FF1F35"
-        android:textSize="12sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="26dp"
@@ -59,6 +71,4 @@
         android:text="下一题"
         android:textColor="#fff"
         android:textSize="18sp" />
-
-
 </LinearLayout>

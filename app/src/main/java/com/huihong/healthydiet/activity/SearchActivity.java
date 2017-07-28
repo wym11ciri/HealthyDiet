@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
@@ -34,6 +35,9 @@ public class SearchActivity extends BaseActivity {
 
     private ImageView ivDeleteHistory;
 
+
+    private LinearLayout layoutBack;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,14 @@ public class SearchActivity extends BaseActivity {
     private AlertDialog mAlertDialog;
 
     private void initUI() {
+
+        layoutBack= (LinearLayout) findViewById(R.id.layoutBack);
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         initHotSearch();
         initHistorySearch();
 

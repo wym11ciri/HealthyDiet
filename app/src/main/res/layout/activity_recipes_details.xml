@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <include layout="@layout/top_bar_style" />
@@ -28,7 +29,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.eicky.ViewPagerGallery xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.eicky.ViewPagerGallery
                     android:id="@+id/gallery"
                     android:layout_width="wrap_content"
                     android:layout_height="300dp"
@@ -39,14 +40,15 @@
                 <com.huihong.healthydiet.widget.PageIndicator
                     android:id="@+id/PageIndicator"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="5dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="5dp" />
             </LinearLayout>
 
             <LinearLayout
+                android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -59,7 +61,7 @@
                     android:layout_marginTop="10dp"
                     android:text="鸡蛋水果沙拉"
                     android:textColor="#000000"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="0dp"
@@ -67,7 +69,8 @@
                     android:layout_weight="1" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvTag"
+                    android:id="@+id/rvType"
+                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

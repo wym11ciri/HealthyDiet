@@ -26,7 +26,7 @@ import okhttp3.Call;
  * Created by zangyi_shuai_ge on 2017/7/25
  */
 
-public class MajorTestActivity extends BaseTitleActivity {
+public class TestMajorActivity extends BaseTitleActivity {
 
     private RecyclerView rvAnswer;
     private RvMajorAnswerAdapter rvMajorAnswerAdapter;
@@ -38,18 +38,18 @@ public class MajorTestActivity extends BaseTitleActivity {
 
     @Override
     public int setLayoutId() {
-        return R.layout.activity_major_test;
+        return R.layout.activity_test_major;
     }
 
     @Override
     public void initUI() {
         MajorAnswerList = new ArrayList<>();
-        setTitle("专业版测试");
+        setTitle("体质测试");
         tvAnswerTitle = (TextView) findViewById(R.id.tvAnswerTitle);
 
         rvAnswer = (RecyclerView) findViewById(R.id.rvAnswer);
-        rvAnswer.setLayoutManager(new LinearLayoutManager(MajorTestActivity.this, LinearLayoutManager.VERTICAL, false));
-        rvMajorAnswerAdapter = new RvMajorAnswerAdapter(MajorTestActivity.this);
+        rvAnswer.setLayoutManager(new LinearLayoutManager(TestMajorActivity.this, LinearLayoutManager.VERTICAL, false));
+        rvMajorAnswerAdapter = new RvMajorAnswerAdapter(TestMajorActivity.this);
         rvAnswer.setAdapter(rvMajorAnswerAdapter);
 
         findViewById(R.id.tvNext).setOnClickListener(new View.OnClickListener() {
@@ -58,7 +58,7 @@ public class MajorTestActivity extends BaseTitleActivity {
                 if (getListData != null) {
                     int answer = rvMajorAnswerAdapter.getAnswer();
                     if (answer == -1) {
-                        Toast.makeText(MajorTestActivity.this, "请先选择本题答案", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestMajorActivity.this, "请先选择本题答案", Toast.LENGTH_SHORT).show();
                     } else {
                         rvMajorAnswerAdapter.resetChooseId();
                         //
@@ -73,7 +73,7 @@ public class MajorTestActivity extends BaseTitleActivity {
                         } else {
                             getInfo2();
                             finish();
-                            Toast.makeText(MajorTestActivity.this, "答题完成", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TestMajorActivity.this, "答题完成", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -107,7 +107,7 @@ public class MajorTestActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("error" + e);
-                        Toast.makeText(MajorTestActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestMajorActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -131,7 +131,7 @@ public class MajorTestActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("error" + e);
-                        Toast.makeText(MajorTestActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TestMajorActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -145,11 +145,11 @@ public class MajorTestActivity extends BaseTitleActivity {
                             //设置第一题
                             tvAnswerTitle.setText("1、" + getListData.get(0).getQuestionContent());
                             TextView tvNum = (TextView) findViewById(R.id.tvNum);
-                            tvNum.setText("*共" + getListData.size() + "道题，均为单选");
+                            tvNum.setText("*共" + getListData.size() + "道题，均为单选。");
 
                         } else {
                             String message = mGetQuestionProfessionList.getMessage();
-                            Toast.makeText(MajorTestActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TestMajorActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
 
                     }
