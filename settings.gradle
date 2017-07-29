@@ -1,1 +1,1 @@
-include ':app', ':gallery', ':StatusBar', ':dialog-picker'
+include ':app', ':gallery', ':dialog-picker'

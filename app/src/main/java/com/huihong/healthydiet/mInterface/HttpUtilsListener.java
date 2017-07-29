@@ -6,8 +6,6 @@ package com.huihong.healthydiet.mInterface;
  */
 
 public interface HttpUtilsListener {
-
-//    void OnError(okhttp3.Call call, Exception e, int id);
-//    void OnError(String response);
-//    void OnResponse(String response, int id);
+    void onResponse(String response, int id);
+    void onError(okhttp3.Call call, Exception e, int id);
 }

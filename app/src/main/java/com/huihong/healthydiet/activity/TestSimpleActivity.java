@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,12 +9,14 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
+import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvSimpleAnswerAdapter;
 import com.huihong.healthydiet.bean.GetQuestionExpressList;
 import com.huihong.healthydiet.bean.GetSubmitExpressQuestion;
 import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.common.SPUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -33,11 +36,10 @@ public class TestSimpleActivity extends BaseTitleActivity {
     private RvSimpleAnswerAdapter rvSimpleAnswerAdapter;
     private TextView tvAnswerTitle;//问题题目
 
-    private int questionNum=0;//当前题目号码
+    private int questionNum = 0;//当前题目号码
     private List<GetQuestionExpressList.ListDataBean> mListData;//所有问题的几个
     private List<GetQuestionExpressList.ListDataBean.OptionsBean> mAnswerList;//某个问题答案的集合
     private List<Integer> mAnswerOptionIdList;//所有答案的集合
-
 
 
     @Override
@@ -68,16 +70,16 @@ public class TestSimpleActivity extends BaseTitleActivity {
                     //把答案添加到我的集合中去
                     mAnswerOptionIdList.addAll(thisAnswer);
                     questionNum++;
-                    if(questionNum>=mListData.size()){
+                    if (questionNum >= mListData.size()) {
                         Toast.makeText(TestSimpleActivity.this, "答题完成", Toast.LENGTH_SHORT).show();
                         submitQuestion();//提交问卷
-                    }else {
+                    } else {
                         //切换下一题
                         mAnswerList.clear();
                         mAnswerList.addAll(mListData.get(questionNum).getOptions());
                         rvSimpleAnswerAdapter.notifyDataSetChanged();
                         //设置题目号码
-                        tvAnswerTitle.setText((questionNum+1)+"、" + mListData.get(questionNum).getQuestionContent());
+                        tvAnswerTitle.setText((questionNum + 1) + "、" + mListData.get(questionNum).getQuestionContent());
                     }
 
                 }
@@ -100,13 +102,13 @@ public class TestSimpleActivity extends BaseTitleActivity {
 
         String a = "";
         for (int i = 0; i < mAnswerOptionIdList.size(); i++) {
-            a = a + mAnswerOptionIdList.get(i) + "," ;
+            a = a + mAnswerOptionIdList.get(i) + ",";
         }
 
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_SUBMIT_EXPRESS_QUESTION)
-//                .addParams("id", "2")
+                .addParams("UserId",  SPUtils.get(TestSimpleActivity.this,"UserId",0)+"")
                 .addParams("answer", a)
                 .build()
                 .execute(new StringCallback() {
@@ -121,11 +123,18 @@ public class TestSimpleActivity extends BaseTitleActivity {
                         LogUtil.i("接口，基础版测试提交:", response);
                         Gson gson = new Gson();
                         GetSubmitExpressQuestion mGetSubmitExpressQuestion = gson.fromJson(response, GetSubmitExpressQuestion.class);
-                        String message=mGetSubmitExpressQuestion.getMessage();
-                        if(message!=null){
+                        int code = mGetSubmitExpressQuestion.getHttpCode();
+                        if (code == 200) {
+                            Intent mIntent = new Intent(TestSimpleActivity.this, MainActivity.class);
+                            startActivity(mIntent);
+                            SPUtils.put(TestSimpleActivity.this, "isDoSimpleTest",true);//完成简易版本测试
+                            finish();
+                        }
+                        String message = mGetSubmitExpressQuestion.getMessage();
+                        if (message != null) {
                             Toast.makeText(TestSimpleActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
-                        finish();
+
                     }
                 });
 

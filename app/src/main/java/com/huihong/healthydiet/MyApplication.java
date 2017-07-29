@@ -6,6 +6,9 @@ import android.os.Vibrator;
 
 import com.baidu.mapapi.SDKInitializer;
 
+import org.litepal.LitePal;
+import org.litepal.tablemanager.Connector;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +29,27 @@ public class MyApplication extends Application {
     public static double Longitude;//纬度
 
 
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+
+
+        LitePal.initialize(this);
+        Connector.getDatabase();//创建数据
+//        CookieJarImpl cookieJar = new CookieJarImpl(new PersistentCookieStore(getApplicationContext()));
+////        cookieJar
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .cookieJar(cookieJar)
+//                //其他配置
+//                .build();
+//        OkHttpUtils.initClient(okHttpClient);
+
+
+
+
         /***
          * 初始化定位sdk，建议在Application中创建
          */

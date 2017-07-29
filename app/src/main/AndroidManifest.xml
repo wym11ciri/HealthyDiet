@@ -45,7 +45,7 @@
             android:value="O825eovBkI8hGCE2j3Syn9zlYtyE5cop" />  <!--http://lbsyun.baidu.com/apiconsole/key-->
 
 
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -71,6 +71,7 @@
         <activity android:name=".activity.RestPasswordActivity"/>
         <activity android:name=".activity.ArticleDetailsActivity"/>
         <activity android:name=".activity.TestSimpleActivity"/>
+        <activity android:name=".activity.LoginActivity"/>
 
 
         <service

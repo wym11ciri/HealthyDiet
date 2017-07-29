@@ -20,13 +20,15 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
 import com.huihong.healthydiet.bean.RestaurantList;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -93,38 +95,6 @@ public class RecommendNearbyListFragment extends Fragment {
 
     }
 
-//    private void initFloatButton() {
-//
-//        mButtonView = mView.findViewById(R.id.mButtonView);
-//        int width = ScreenUtils.getScreenWidth(getActivity());
-//
-//        ViewGroup.LayoutParams para1;
-//        para1 = mButtonView.getLayoutParams();
-//        para1.width = width- DensityUtils.dp2px(getActivity(),50);
-//        mButtonView.setLayoutParams(para1);
-//
-//
-//        ivTest = (ImageView) mView.findViewById(R.id.ivTest);
-//        ivTest.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isOpen) {
-//                    ObjectAnimator//
-//                            .ofFloat(ivTest, "translationX", -DensityUtils.dp2px(getActivity(),100), 0)//
-//                            .setDuration(500)//
-//                            .start();
-//                    isOpen = false;
-//                } else {
-//                    isOpen = true;
-//                    ObjectAnimator//
-//                            .ofFloat(ivTest, "translationX", 0, -DensityUtils.dp2px(getActivity(),100))//
-//                            .setDuration(500)//
-//                            .start();
-//                }
-//
-//            }
-//        });
-//    }
 
 
     //列表
@@ -182,16 +152,17 @@ public class RecommendNearbyListFragment extends Fragment {
 
     //获取餐厅列表信息
     private void getInfo(int num) {
-        OkHttpUtils
-                .post()
-                .url(AppUrl.GET_RESTAURANT_LIST_INFO)
-                .addParams("CoordX", "120.110569")//用户坐标
-                .addParams("CoordY", "30.338419")
-                .addParams("GroupBy", GroupBy)//筛选方式
-                .addParams("PageNo", num + "")//页数
-                .addParams("TypeValue", TypeValue)
-                .build()
-                .execute(new StringCallback() {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("CoordX", "120.110569");
+        map.put("CoordY", "30.338419");
+        map.put("GroupBy", GroupBy);
+        map.put("PageNo", num + "");
+        map.put("TypeValue", TypeValue);
+
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_RESTAURANT_LIST_INFO
+                , map
+                , new HttpUtilsListener() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         recyclerView.refreshComplete(1);
@@ -218,6 +189,48 @@ public class RecommendNearbyListFragment extends Fragment {
 
                     }
                 });
+
+
+
+
+
+//
+//        OkHttpUtils
+//                .post()
+//                .url(AppUrl.GET_RESTAURANT_LIST_INFO)
+//                .addParams("CoordX", "120.110569")//用户坐标
+//                .addParams("CoordY", "30.338419")
+//                .addParams("GroupBy", GroupBy)//筛选方式
+//                .addParams("PageNo", num + "")//页数
+//                .addParams("TypeValue", TypeValue)
+//                .build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        recyclerView.refreshComplete(1);
+//                        LogUtil.i("error" + e);
+//                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        LogUtil.i("接口，餐厅列表:", response);
+//                        recyclerView.refreshComplete(1);
+//                        Gson gson = new Gson();
+//                        RestaurantList RestaurantList = gson.fromJson(response, RestaurantList.class);
+//                        int code = RestaurantList.getHttpCode();
+//                        if (code == 200) {
+//                            RecommendNearbyListFragment.this.num++;
+//                            List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> mListData = RestaurantList.getListData();//拿到餐厅列表
+////                            recommendList.clear();
+//                            recommendList.addAll(mListData);
+//                            mLRecyclerViewAdapter.notifyDataSetChanged();
+//                        } else if (code == 300) {
+//                            Toast.makeText(getActivity(), R.string.no_more_date, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                });
 
     }
 

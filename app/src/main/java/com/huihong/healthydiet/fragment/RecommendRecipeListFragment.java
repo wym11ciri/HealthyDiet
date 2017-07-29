@@ -19,13 +19,16 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.RvRecommendRecommendAdapter;
 import com.huihong.healthydiet.bean.RecipeListByGPS;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -121,17 +124,17 @@ public class RecommendRecipeListFragment extends Fragment {
 
     //获取餐厅列表信息
     private void getInfo(int num) {
-        OkHttpUtils
-                .post()
-                .url(AppUrl.RECIPE_LIST_BY_GPS)
-                .addParams("CoordX", "120.132566")//用户坐标
-                .addParams("CoordY", "30.267515")
-                .addParams("GroupBy", GroupBy)//筛选方式
-                .addParams("PageNo", num + "")//页数
-                .addParams("TypeValue", TypeValue)
-                .addParams("UserId", "2")
-                .build()
-                .execute(new StringCallback() {
+        Map<String, String> map = new HashMap<>();
+        map.put("CoordX", "120.110569");
+        map.put("CoordY", "30.338419");
+        map.put("GroupBy", GroupBy);
+        map.put("PageNo", num + "");
+        map.put("TypeValue", TypeValue);
+        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.RECIPE_LIST_BY_GPS
+                , map
+                , new HttpUtilsListener() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         recyclerView.refreshComplete(1);
@@ -158,6 +161,46 @@ public class RecommendRecipeListFragment extends Fragment {
 
                     }
                 });
+
+
+
+//        OkHttpUtils
+//                .post()
+//                .url(AppUrl.RECIPE_LIST_BY_GPS)
+//                .addParams("CoordX", "120.132566")//用户坐标
+//                .addParams("CoordY", "30.267515")
+//                .addParams("GroupBy", GroupBy)//筛选方式
+//                .addParams("PageNo", num + "")//页数
+//                .addParams("TypeValue", TypeValue)
+//                .addParams("UserId", "2")
+//                .build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        recyclerView.refreshComplete(1);
+//                        LogUtil.i("error" + e);
+//                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        LogUtil.i("接口，推荐饮食列表:", response);
+//                        recyclerView.refreshComplete(1);
+//                        Gson gson = new Gson();
+//                        RecipeListByGPS mRecipeListByGPS = gson.fromJson(response, RecipeListByGPS.class);
+//                        int code = mRecipeListByGPS.getHttpCode();
+//                        if (code == 200) {
+//                            RecommendRecipeListFragment.this.num++;
+//                            List<RecipeListByGPS.ListDataBean> mListData = mRecipeListByGPS.getListData();//拿到餐厅列表
+////                            recommendList.clear();
+//                            recommendList.addAll(mListData);
+//                            mLRecyclerViewAdapter.notifyDataSetChanged();
+//                        } else if (code == 300) {
+//                            Toast.makeText(getActivity(), R.string.no_more_date, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                });
 
     }
 }

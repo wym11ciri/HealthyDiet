@@ -23,12 +23,15 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.SearchActivity;
 import com.huihong.healthydiet.adapter.RvArticleAdapter;
 import com.huihong.healthydiet.bean.GetArticleListInfo;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -120,14 +123,13 @@ public class ArticleFragment extends Fragment {
     //获得信息
     private void getInfo(int pageNum) {
 
+        Map<String, String> map = new HashMap<>();
+        map.put("PageNo", pageNum+"");
+        map.put("Id",  SPUtils.get(getActivity(),"UserId",0)+"");
 
-        OkHttpUtils
-                .post()
-                .url(AppUrl.GET_ARTICLE_LIST_INFO)
-                .addParams("Id", "2")//用户坐标
-                .addParams("PageNo", pageNum+"")//用户坐标
-                .build()
-                .execute(new StringCallback() {
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_ARTICLE_LIST_INFO
+                , map
+                , new HttpUtilsListener() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         recyclerView.refreshComplete(1);
@@ -158,6 +160,47 @@ public class ArticleFragment extends Fragment {
                         recyclerView.refreshComplete(1);
                     }
                 });
+
+
+
+//
+//        OkHttpUtils
+//                .post()
+//                .url(AppUrl.GET_ARTICLE_LIST_INFO)
+//                .addParams("Id", "2")//用户坐标
+//                .addParams("PageNo", pageNum+"")//用户坐标
+//                .build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        recyclerView.refreshComplete(1);
+//                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        LogUtil.i("接口，获取文章列表" + response);
+//                        Gson gson = new Gson();
+//                        GetArticleListInfo mGetArticleListInfo = gson.fromJson(response, GetArticleListInfo.class);
+//                        int code = mGetArticleListInfo.getHttpCode();
+//                        if (code == 200) {
+//                            mNum++;
+//                            //顶部3个TextView
+//                            GetArticleListInfo.ListData2Bean ListData2Bean = mGetArticleListInfo.getListData2().get(0);
+//                            tvTop01.setText("您的体质是" + ListData2Bean.getConstitution());
+//                            tvTop02.setText("适合吃" + ListData2Bean.getSuitEat());
+//                            tvTop03.setText("尽量少吃" + ListData2Bean.getNotSuitEat());
+//
+//                            mList.addAll(mGetArticleListInfo.getListData());
+//                            mLRecyclerViewAdapter.notifyDataSetChanged();
+////
+//                        } else {
+//                            String Message = mGetArticleListInfo.getMessage();
+//                            Toast.makeText(getActivity(), Message, Toast.LENGTH_SHORT).show();
+//                        }
+//                        recyclerView.refreshComplete(1);
+//                    }
+//                });
 
 
     }

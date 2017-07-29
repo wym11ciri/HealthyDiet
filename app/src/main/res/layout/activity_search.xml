@@ -42,6 +42,7 @@
                 android:src="@mipmap/search_3" />
 
             <EditText
+                android:id="@+id/etSearch"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
@@ -49,6 +50,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="餐厅/菜谱/食物"
+                android:singleLine="true"
                 android:textColor="#666666"
                 android:textSize="12sp" />
         </LinearLayout>

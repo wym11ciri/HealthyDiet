@@ -113,14 +113,10 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
                     mRightScreenTypeListener.screenType(isRight, GroupBy, 0, true);
                     mLeftScreenTypeListener.screenType(isRight, GroupBy, 0, true);
                 }
-
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
-
             }
         });
         isRight = false;

@@ -1,6 +1,10 @@
 package com.huihong.healthydiet.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,5 +25,21 @@ public class StringUtil {
             }
         }
         return mList;
+    }
+
+    //传入日期 转换
+    public static Calendar getDate(String dateString) {
+        try {
+            String[] c = dateString.split("T");
+            String mDate = c[0];
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(mDate);
+            Calendar mCalendar = Calendar.getInstance();
+            mCalendar.setTime(date);
+            return mCalendar;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

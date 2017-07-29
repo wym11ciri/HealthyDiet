@@ -75,7 +75,7 @@ public class RecipesActivity extends BaseTitleActivity {
     private void getDownListInfo() {
         OkHttpUtils
                 .post()
-                .url(AppUrl.RECIPE_LIST_INFO_BY_DRID)
+                .url(AppUrl.RECIPE_LIST_INFO_BY_DR_ID)
                 .addParams("id", id + "")//用户坐标
                 .addParams("CoordX", "120.132566")//用户坐标
                 .addParams("CoordY", "30.267515")

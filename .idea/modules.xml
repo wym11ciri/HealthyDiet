@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HealthyDiet.iml" filepath="$PROJECT_DIR$/HealthyDiet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/StatusBar/StatusBar.iml" filepath="$PROJECT_DIR$/StatusBar/StatusBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialog-picker/dialog-picker.iml" filepath="$PROJECT_DIR$/dialog-picker/dialog-picker.iml" />
       <module fileurl="file://$PROJECT_DIR$/gallery/gallery.iml" filepath="$PROJECT_DIR$/gallery/gallery.iml" />
