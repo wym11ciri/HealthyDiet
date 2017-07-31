@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.adapter.RvNearbyAdapter;
+import com.huihong.healthydiet.bean.TitlePage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,14 +22,20 @@ import java.util.List;
 
 public class NearbyFragment extends Fragment {
     //创造它时候需要传递一个连接进来
-//    public NearbyFragment() {
+//    public NearbyFragment(List<String > mList) {
+//       super();
+//        this.mList=mList;
 //    }
 
+
+    public NearbyFragment(List<TitlePage.ListDataBean> mList) {
+        this.mList = mList;
+    }
 
     private View  mView;
     private RecyclerView rvNearby;
     private RvNearbyAdapter mAdapter;
-    private List<String > mList;
+    private List<TitlePage.ListDataBean > mList;
 
     @Nullable
     @Override
@@ -47,10 +53,8 @@ public class NearbyFragment extends Fragment {
     }
 
     private void initUI() {
-        mList=new ArrayList<>();
-        for (int i = 0; i <3 ; i++) {
-            mList.add("肯德基"+i);
-        }
+
+
         rvNearby= (RecyclerView) mView.findViewById(R.id.rvNearby);
 
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

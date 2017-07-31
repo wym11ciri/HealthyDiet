@@ -139,7 +139,6 @@ public class RecommendRecipeListFragment extends Fragment {
                     public void onError(Call call, Exception e, int id) {
                         recyclerView.refreshComplete(1);
                         LogUtil.i("error" + e);
-                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

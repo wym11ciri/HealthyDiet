@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
+import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
@@ -27,7 +28,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<String> mList;
+    private List<TitlePage.ListDataBean> mList;
 
     private ItemOnClickListener mItemOnClickListener;
     public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
@@ -35,7 +36,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
     }
 
 
-    public RvNearbyAdapter(Context pContext, List<String> pList) {
+    public RvNearbyAdapter(Context pContext, List<TitlePage.ListDataBean> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -57,7 +58,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
 
     @Override
     public void onBindViewHolder(final RvNearbyViewHolder holder, int position) {
-        holder.tvName.setText(mList.get(position));
+        holder.tvName.setText(mList.get(position).getName());
         ImageLoderUtil.showImage(mContext,"",holder.ivHead);
         holder.ivHead.setOnClickListener(new View.OnClickListener() {
             @Override

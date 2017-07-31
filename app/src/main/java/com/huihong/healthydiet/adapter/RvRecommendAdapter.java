@@ -8,16 +8,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
-import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/5/16
- * 附近餐厅 RecyclerView
+ * 首页推荐饮食 RecyclerView
  */
 
 public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHolder> {
@@ -25,15 +26,16 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<String> mList;
+    private List<TitlePage.ListData2Bean> mList;
 
     private ItemOnClickListener mItemOnClickListener;
+
     public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
         mItemOnClickListener = pItemOnClickListener;
     }
 
 
-    public RvRecommendAdapter(Context pContext, List<String> pList) {
+    public RvRecommendAdapter(Context pContext, List<TitlePage.ListData2Bean> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -55,9 +57,16 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
     @Override
     public void onBindViewHolder(final RvRecommendViewHolder holder, int position) {
-        holder.tvName.setText(mList.get(position));
+        holder.tvName.setText(mList.get(position).getName());
 
-        ImageLoderUtil.showImage(mContext,"",holder.ivHead);
+        Glide
+                .with(mContext)
+                .load(mList.get(position).getTitleImage())
+                .asBitmap()
+                .into(holder.ivHead);
+
+
+//        ImageLoderUtil.showImage(mContext, "", holder.ivHead);
 //        holder.tvTime.setText(mList.get(position).getTime());
 //        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -86,13 +95,13 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
 class RvRecommendViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName,tvTitle;
+    TextView tvName, tvTitle;
     LinearLayout mLinearLayout;
     SelectableRoundedImageView ivHead;
 
     RvRecommendViewHolder(View itemView) {
         super(itemView);
-        ivHead= (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
+        ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
         tvName = (TextView) itemView.findViewById(R.id.tvName);
 //        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
 //        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);

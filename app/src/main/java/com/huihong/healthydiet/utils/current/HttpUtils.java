@@ -82,7 +82,9 @@ public class HttpUtils {
                 new StringCallback() {
                     @Override
                     public void onError(okhttp3.Call call, Exception e, int id) {
-                        Toast.makeText(mContext, R.string.service_error, Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(mContext.getApplicationContext(), R.string.service_error, Toast.LENGTH_SHORT).show();
+
                         mHttpUtilsListener.onError(call, e, id);
                     }
 
