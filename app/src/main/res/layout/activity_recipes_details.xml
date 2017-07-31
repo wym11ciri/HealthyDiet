@@ -55,11 +55,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
-                    android:text="鸡蛋水果沙拉"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
@@ -115,6 +115,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tvConstitutionPercentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"

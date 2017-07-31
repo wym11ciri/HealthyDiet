@@ -16,6 +16,7 @@ import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
+import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
@@ -153,9 +154,11 @@ public class RecommendNearbyListFragment extends Fragment {
     //获取餐厅列表信息
     private void getInfo(int num) {
 
+        LogUtil.i("定位",MyApplication.Latitude+"");
+
         Map<String, String> map = new HashMap<>();
-        map.put("CoordX", "120.110569");
-        map.put("CoordY", "30.338419");
+        map.put("CoordY", MyApplication.Latitude+"");
+        map.put("CoordX", MyApplication.Longitude+"");
         map.put("GroupBy", GroupBy);
         map.put("PageNo", num + "");
         map.put("TypeValue", TypeValue);

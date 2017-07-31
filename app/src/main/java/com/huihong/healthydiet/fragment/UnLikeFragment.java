@@ -33,7 +33,7 @@ import okhttp3.Call;
  * Created by zangyi_shuai_ge on 2017/7/20
  */
 
-public class LikeFragment extends Fragment {
+public class UnLikeFragment extends Fragment {
 
     //    private SwipeMenuAdapter mDataAdapter = null;
     private View mView;
@@ -52,7 +52,7 @@ public class LikeFragment extends Fragment {
 
             mLRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             recommendList = new ArrayList<>();
-            mRvLikeAdapter = new RvLikeAdapter("foodlike",getActivity(), recommendList);
+            mRvLikeAdapter = new RvLikeAdapter("foodunlike",getActivity(), recommendList);
             mLRecyclerViewAdapter = new LRecyclerViewAdapter(mRvLikeAdapter);
             mLRecyclerView.setAdapter(mLRecyclerViewAdapter);
 
@@ -60,11 +60,10 @@ public class LikeFragment extends Fragment {
             mLRecyclerView.setOnRefreshListener(new OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getInfo("foodlike");
+                    getInfo("foodunlike");
                 }
             });
             mLRecyclerView.refresh();
-//            getInfo("foodlike");
         }
 
 
@@ -96,10 +95,7 @@ public class LikeFragment extends Fragment {
                             String message=mSelectUserPreference.getMessage();
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
-
-
                     }
-
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         mLRecyclerView.refreshComplete(1);

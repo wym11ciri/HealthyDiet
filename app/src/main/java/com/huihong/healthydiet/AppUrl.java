@@ -34,5 +34,8 @@ public class AppUrl {
     //登录
     public static final String LOGIN = BASE_URL + "API/User/Login";//登录
 
+    //食谱详情
+
+    public static final String CUSTOMER_LIKE_OR_NOT = BASE_URL + "API/Restaurant/CustomerLikeOrNot";//用户喜不喜欢
 
 }

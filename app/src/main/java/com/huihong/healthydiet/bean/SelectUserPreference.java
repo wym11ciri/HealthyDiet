@@ -15,7 +15,7 @@ public class SelectUserPreference {
      */
 
     private int HttpCode;
-    private Object Message;
+    private String Message;
     private List<ListDataBean> ListData;
 
     public int getHttpCode() {
@@ -26,11 +26,11 @@ public class SelectUserPreference {
         this.HttpCode = HttpCode;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return Message;
     }
 
-    public void setMessage(Object Message) {
+    public void setMessage(String Message) {
         this.Message = Message;
     }
 

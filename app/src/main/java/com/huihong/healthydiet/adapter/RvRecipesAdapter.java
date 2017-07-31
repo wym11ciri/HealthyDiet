@@ -23,10 +23,10 @@ import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/5/16
- * 附近餐厅 RecyclerView
+ * 食谱列表
  */
 
-public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> {
+public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesAdapter.RvRecipesViewHolder> {
 
 
     private LayoutInflater mInflater;
@@ -146,30 +146,31 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesViewHolder> 
     public int getItemCount() {
         return mList.size();
     }
-}
 
-class RvRecipesViewHolder extends RecyclerView.ViewHolder {
+    class RvRecipesViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName, tvPrice, tvSales;
-    RelativeLayout layoutMain;
+        TextView tvName, tvPrice, tvSales;
+        RelativeLayout layoutMain;
 
-    RecyclerView rvArticleTag, rvFoodRecipe;
-    SelectableRoundedImageView ivHead;
-    ImageView ivIsShow;
-    LinearLayout layoutIsShow;
-    View viewLine;
+        RecyclerView rvArticleTag, rvFoodRecipe;
+        SelectableRoundedImageView ivHead;
+        ImageView ivIsShow;
+        LinearLayout layoutIsShow;
+        View viewLine;
 
-    RvRecipesViewHolder(View itemView) {
-        super(itemView);
-        ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
-        rvArticleTag = (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-        rvFoodRecipe = (RecyclerView) itemView.findViewById(R.id.rvFoodRecipe);
-        tvName = (TextView) itemView.findViewById(R.id.tvName);
-        tvPrice = (TextView) itemView.findViewById(R.id.tvPrice);
-        tvSales = (TextView) itemView.findViewById(R.id.tvSales);
-        layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
-        viewLine = itemView.findViewById(R.id.viewLine);
-        ivIsShow = (ImageView) itemView.findViewById(R.id.ivIsShow);
-        layoutIsShow = (LinearLayout) itemView.findViewById(R.id.layoutIsShow);
+        RvRecipesViewHolder(View itemView) {
+            super(itemView);
+            ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
+            rvArticleTag = (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
+            rvFoodRecipe = (RecyclerView) itemView.findViewById(R.id.rvFoodRecipe);
+            tvName = (TextView) itemView.findViewById(R.id.tvName);
+            tvPrice = (TextView) itemView.findViewById(R.id.tvPrice);
+            tvSales = (TextView) itemView.findViewById(R.id.tvSales);
+            layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
+            viewLine = itemView.findViewById(R.id.viewLine);
+            ivIsShow = (ImageView) itemView.findViewById(R.id.ivIsShow);
+            layoutIsShow = (LinearLayout) itemView.findViewById(R.id.layoutIsShow);
+        }
     }
 }
+

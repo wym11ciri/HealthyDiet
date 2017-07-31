@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.activity.RecipesActivity;
+import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
@@ -62,7 +62,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
         holder.ivHead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIn=new Intent(mContext, RecipesActivity.class);
+                Intent mIn=new Intent(mContext, RestaurantDetailsActivity.class);
                 mContext.startActivity(mIn);
             }
         });

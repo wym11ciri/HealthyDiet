@@ -86,10 +86,27 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
             @Override
             public void onClick(View v) {
                 Intent mIntent = new Intent(mContext, RecipesDetailsActivity.class);
-                mIntent.putExtra("RecipeId",mList.get(position).getId()+"");
+                mIntent.putExtra("RecipeId", mList.get(position).getId() + "");
                 mContext.startActivity(mIntent);
             }
         });
+
+
+        int percentage = mList.get(position).getConstitutionPercentage();
+
+        if (percentage > 90) {
+            holder.tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_9));
+        } else if (percentage > 80 & percentage <= 90) {
+            holder.tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_8));
+        } else if (percentage > 70 & percentage <= 80) {
+            holder.tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_7));
+        } else if (percentage > 60 & percentage <= 70) {
+            holder.tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_6));
+        } else {
+            holder.tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_5));
+        }
+        holder.tvConstitutionPercentage.setText(percentage + "%");
+
 
     }
 
@@ -116,7 +133,7 @@ class RvRecommendRecommendViewHolder extends RecyclerView.ViewHolder {
      */
 
 
-    TextView name, sales, price, Restaurant_Name, Restaurant_Address;
+    TextView name, sales, price, Restaurant_Name, Restaurant_Address, tvConstitutionPercentage;
     LinearLayout mLinearLayout;
 
     RecyclerView rvArticleTag;
@@ -131,7 +148,7 @@ class RvRecommendRecommendViewHolder extends RecyclerView.ViewHolder {
         mHorizontalListView = (HorizontalListView) itemView.findViewById(R.id.mHorizontalListView);
 
         name = (TextView) itemView.findViewById(R.id.name);
-//        ConstitutionPercentagesales = (TextView) itemView.findViewById(R.id.ConstitutionPercentagesales);
+        tvConstitutionPercentage = (TextView) itemView.findViewById(R.id.tvConstitutionPercentage);
         sales = (TextView) itemView.findViewById(R.id.sales);
         price = (TextView) itemView.findViewById(R.id.price);
         Restaurant_Name = (TextView) itemView.findViewById(R.id.Restaurant_Name);

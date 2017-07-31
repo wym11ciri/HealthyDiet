@@ -55,4 +55,14 @@
 
 
     <color name="photo_ground">#FFFFFF</color>
+
+
+    <color name="percentage_color_9">#ff0000</color>
+    <color name="percentage_color_8">#107909</color>
+    <color name="percentage_color_7">#7d28fb</color>
+    <color name="percentage_color_6">#0d8bf6</color>
+    <color name="percentage_color_5">#666666</color>
+
+    <color name="like_color_normal">#999999</color>
+    <color name="like_color_select">#3E3E3E</color>
 </resources>

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.LoginActivity;
 import com.huihong.healthydiet.activity.base.ActivityCollector;
@@ -32,7 +33,7 @@ public class HttpUtils {
         if (mAlertDialog != null) {
             mAlertDialog.dismiss();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mainActivity);
         builder.setMessage("您已被挤下线或Token失效,请重新登录");
 
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -40,11 +41,11 @@ public class HttpUtils {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 //重置当前内容
-                SPUtils.put(mContext, "isDoSimpleTest", false);
-                SPUtils.put(mContext, "isLogin", false);
+                SPUtils.put(MainActivity.mainActivity, "isDoSimpleTest", false);
+                SPUtils.put(MainActivity.mainActivity, "isLogin", false);
                 ActivityCollector.finishAll();//销毁所有界面
-                Intent mIntent = new Intent(mContext, LoginActivity.class);
-                mContext.startActivity(mIntent);
+                Intent mIntent = new Intent(MainActivity.mainActivity, LoginActivity.class);
+                MainActivity.mainActivity.startActivity(mIntent);
                 //
             }
         });

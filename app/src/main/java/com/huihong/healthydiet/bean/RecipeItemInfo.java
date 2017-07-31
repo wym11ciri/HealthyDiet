@@ -9,15 +9,14 @@ import java.util.List;
 
 public class RecipeItemInfo {
 
-
     /**
      * HttpCode : 200
-     * Message : null
-     * ListData : [{"id":7,"name":"食谱4","foodRecipe":[{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodName":"萝卜","FoodWeight":"11g","WhetherLike":1},{"FoodName":"白菜","FoodWeight":"22g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodName":"鸡肉","FoodWeight":"33g","WhetherLike":2},{"FoodName":"牛肉","FoodWeight":"44g","WhetherLike":0}]}],"ConstitutionPercentage":-2147483648,"Constitution":["平和质","气郁质","阴虚质"],"Tags":["清蒸"],"images":["http://106.14.218.31:8081/img//recipe//recipe7-19818599.jpg","http://106.14.218.31:8081/img//recipe//recipe7-19829097.jpg"],"price":"11.00"}]
+     * Message :
+     * ListData : [{"id":4,"name":"食谱5","foodRecipe":[{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodId":4,"FoodName":"鸡肉","FoodWeight":"3g","WhetherLike":0},{"FoodId":50,"FoodName":"牛肉","FoodWeight":"4g","WhetherLike":0}]}],"ConstitutionPercentage":75,"Constitution":["特禀质","气虚质","阴虚质"],"Tags":["清蒸","红烧"],"images":["http://106.14.218.31:8081/img//recipe//recipe4-19823844.jpg","http://106.14.218.31:8081/img//recipe//recipe4-19834101.jpg"],"price":"11.00"}]
      */
 
     private int HttpCode;
-    private Object Message;
+    private String Message;
     private List<ListDataBean> ListData;
 
     public int getHttpCode() {
@@ -28,11 +27,11 @@ public class RecipeItemInfo {
         this.HttpCode = HttpCode;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return Message;
     }
 
-    public void setMessage(Object Message) {
+    public void setMessage(String Message) {
         this.Message = Message;
     }
 
@@ -46,13 +45,13 @@ public class RecipeItemInfo {
 
     public static class ListDataBean {
         /**
-         * id : 7
-         * name : 食谱4
-         * foodRecipe : [{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodName":"萝卜","FoodWeight":"11g","WhetherLike":1},{"FoodName":"白菜","FoodWeight":"22g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodName":"鸡肉","FoodWeight":"33g","WhetherLike":2},{"FoodName":"牛肉","FoodWeight":"44g","WhetherLike":0}]}]
-         * ConstitutionPercentage : -2147483648
-         * Constitution : ["平和质","气郁质","阴虚质"]
-         * Tags : ["清蒸"]
-         * images : ["http://106.14.218.31:8081/img//recipe//recipe7-19818599.jpg","http://106.14.218.31:8081/img//recipe//recipe7-19829097.jpg"]
+         * id : 4
+         * name : 食谱5
+         * foodRecipe : [{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodId":4,"FoodName":"鸡肉","FoodWeight":"3g","WhetherLike":0},{"FoodId":50,"FoodName":"牛肉","FoodWeight":"4g","WhetherLike":0}]}]
+         * ConstitutionPercentage : 75
+         * Constitution : ["特禀质","气虚质","阴虚质"]
+         * Tags : ["清蒸","红烧"]
+         * images : ["http://106.14.218.31:8081/img//recipe//recipe4-19823844.jpg","http://106.14.218.31:8081/img//recipe//recipe4-19834101.jpg"]
          * price : 11.00
          */
 
@@ -133,7 +132,7 @@ public class RecipeItemInfo {
             /**
              * RecipeId : 3
              * RecipeItemName : 配菜
-             * ListFood : [{"FoodName":"萝卜","FoodWeight":"11g","WhetherLike":1},{"FoodName":"白菜","FoodWeight":"22g","WhetherLike":0}]
+             * ListFood : [{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]
              */
 
             private int RecipeId;
@@ -166,14 +165,24 @@ public class RecipeItemInfo {
 
             public static class ListFoodBean {
                 /**
-                 * FoodName : 萝卜
-                 * FoodWeight : 11g
-                 * WhetherLike : 1
+                 * FoodId : 35
+                 * FoodName : 青菜
+                 * FoodWeight : 1g
+                 * WhetherLike : 2
                  */
 
+                private int FoodId;
                 private String FoodName;
                 private String FoodWeight;
                 private int WhetherLike;
+
+                public int getFoodId() {
+                    return FoodId;
+                }
+
+                public void setFoodId(int FoodId) {
+                    this.FoodId = FoodId;
+                }
 
                 public String getFoodName() {
                     return FoodName;

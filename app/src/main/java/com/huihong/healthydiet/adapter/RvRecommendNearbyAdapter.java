@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.activity.RecipesActivity;
+import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
 import com.huihong.healthydiet.bean.RestaurantList;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.joooonho.SelectableRoundedImageView;
@@ -91,7 +91,7 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIn = new Intent(mContext, RecipesActivity.class);
+                Intent mIn = new Intent(mContext, RestaurantDetailsActivity.class);
                 mIn.putExtra("id", mList.get(position).getId());
                 mContext.startActivity(mIn);
             }

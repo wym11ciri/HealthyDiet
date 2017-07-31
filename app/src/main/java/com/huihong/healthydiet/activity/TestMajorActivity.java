@@ -14,6 +14,7 @@ import com.huihong.healthydiet.adapter.RvMajorAnswerAdapter;
 import com.huihong.healthydiet.bean.GetQuestionProfessionList;
 import com.huihong.healthydiet.mybean.MajorAnswer;
 import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.common.SPUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -88,7 +89,7 @@ public class TestMajorActivity extends BaseTitleActivity {
     public void initOnClickListener() {
 
     }
-    //获取餐厅列表信息
+
     private void getInfo2() {
 
         String a="";
@@ -100,7 +101,7 @@ public class TestMajorActivity extends BaseTitleActivity {
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_SUBMIT_QUESTION)
-//                .addParams("id", "2")
+                .addParams("UserId",  SPUtils.get(TestMajorActivity.this,"UserId",0)+"")
                 .addParams("answer",a)
                 .build()
                 .execute(new StringCallback() {
@@ -120,12 +121,12 @@ public class TestMajorActivity extends BaseTitleActivity {
 
     }
 
-    //获取餐厅列表信息
+
     private void getInfo() {
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_QUESTION_PROFESSION_LIST)
-                .addParams("id", "2")
+                .addParams("UserId",  SPUtils.get(TestMajorActivity.this,"UserId",0)+"")
                 .build()
                 .execute(new StringCallback() {
                     @Override
