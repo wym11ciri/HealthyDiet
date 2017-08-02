@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">cancel</string>
+    <string name="sure">sure</string>
+
+
+    <string name="law">regular</string>
+    <string name="Irregular">irregular</string>
+    <string name="text_0111">Min</string>
+    <string name="text_0222">Max</string>
+</resources>
