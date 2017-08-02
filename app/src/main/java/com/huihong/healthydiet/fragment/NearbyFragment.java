@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.adapter.RvNearbyAdapter;
 import com.huihong.healthydiet.bean.TitlePage;
+import com.huihong.healthydiet.utils.common.LogUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,49 +24,52 @@ import java.util.List;
 
 public class NearbyFragment extends Fragment {
     //创造它时候需要传递一个连接进来
-//    public NearbyFragment(List<String > mList) {
-//       super();
-//        this.mList=mList;
+
+
+
+//    public NearbyFragment(List<TitlePage.ListDataBean> mList) {
+//        this.mList = mList;
 //    }
-
-
-    public NearbyFragment(List<TitlePage.ListDataBean> mList) {
-        this.mList = mList;
-    }
 
     private View  mView;
     private RecyclerView rvNearby;
     private RvNearbyAdapter mAdapter;
     private List<TitlePage.ListDataBean > mList;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mList=new ArrayList<>();
+        mAdapter=new RvNearbyAdapter(getActivity(),mList);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        LogUtil.i("测试222","onCreateView");
         if(mView==null){
             mView=  inflater.inflate(R.layout.fragment_nearby,null);
             initUI();
         }
-//        if(mAdapter!=null){
-//            mAdapter.notifyDataSetChanged();
-//        }
-
         return mView;
     }
 
     private void initUI() {
 
-
         rvNearby= (RecyclerView) mView.findViewById(R.id.rvNearby);
-
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-//        holder.rvArticleTag. setLayoutManager(linearLayoutManager);
-//        holder.rvArticleTag.setAdapter(new RvTypeAdapter(mContext,zz));
-
         rvNearby.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        mAdapter=new RvNearbyAdapter(getActivity(),mList);
 
         rvNearby.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    public  void refreshData(List<TitlePage.ListDataBean> pListData){
+        if(mList!=null){
+            LogUtil.i("刷新了");
+            mList.clear();
+            mList.addAll(pListData);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }

@@ -4,13 +4,19 @@ import android.app.AlertDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.utils.common.LogUtil;
@@ -29,6 +35,8 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
     private MediaPlayer player;//音乐播放器
 
     private BroadcastReceiver mBatInfoReceiver;//广播接受者
+
+    private AlertDialog dialog;
 
     /**
      * IBinder对象，向Activity传递数据的桥梁
@@ -127,44 +135,52 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
 
         if (endTime.equals(nowTime)) {
 
-//            if (!player.isPlaying()) {
-            player.start();
-//            }
 
+//            player.start();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("闹钟提醒");
-            builder.setMessage("您有新的闹钟啦");
-            builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_get_up, null);
+            Button button = (Button) view.findViewById(R.id.tvGetUp);
+            button.setText("起床");
+            button.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(View v) {
                     if (player.isPlaying()) {
                         player.stop();
                     }
+                    dialog.dismiss();
                 }
             });
+
+            TextView tvTime= (TextView) view.findViewById(R.id.tvTime);
+            tvTime.setText(endTime);
+            builder.setView(view);
             builder.setCancelable(false);
-            AlertDialog dialog = builder.create();
+            dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
         } else if (startTime.equals(nowTime)) {
-
-//            if (!player.isPlaying()) {
-            player.start();
-//            }
-
+//            player.start();
+            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
+            rt.play();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("闹钟提醒");
-            builder.setMessage("您有新的闹钟啦");
-            builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_get_up, null);
+            Button button = (Button) view.findViewById(R.id.tvGetUp);
+            button.setText("睡觉");
+            button.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (player.isPlaying()) {
-                        player.stop();
-                    }
+                public void onClick(View v) {
+//                    if (player.isPlaying()) {
+//                        player.stop();
+//                    }
+                    dialog.dismiss();
                 }
             });
+            TextView tvTime= (TextView) view.findViewById(R.id.tvTime);
+            tvTime.setText(startTime);
+            builder.setView(view);
             builder.setCancelable(false);
-            AlertDialog dialog = builder.create();
+            dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
         }

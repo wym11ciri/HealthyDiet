@@ -74,6 +74,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private SwipeRefreshLayout layoutRefresh;
 
+
+    private  NearbyFragment nearbyFragmentRight;
+    private  NearbyFragment nearbyFragmentLeft;
+    private  NearbyFragment nearbyFragmentMiddle;
+
+
+    private  String mAddress;
+    private  boolean isFirst=true;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,11 +89,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_home, null);
             initUI();
-            getHomePageInfo();
+//            getHomePageInfo();
+            MainActivity.mainActivity.setLocationListener(new LocationListener() {
+                @Override
+                public void isReLocation(boolean isReLocation, String address) {
+                    if (isReLocation) {
+//                        tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
+//                        tvAddress.setText(address);
+                        mAddress=address;
+
+                        if(isFirst){
+                            isFirst=false;
+                            getHomePageInfo();
+                        }
+                    }
+                }
+            });
+
         }
 
         return mView;
     }
+
 
 
     @Override
@@ -104,7 +129,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     XBanner mBannerNet;
 
     private void initUI() {
-
+        tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
         layoutRefresh = (SwipeRefreshLayout) mView.findViewById(R.id.layoutRefresh);
         layoutRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -134,15 +159,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        MainActivity.mainActivity.setLocationListener(new LocationListener() {
-            @Override
-            public void isReLocation(boolean isReLocation, String address) {
-                if (isReLocation) {
-                    tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
-                    tvAddress.setText(address);
-                }
-            }
-        });
+
+
     }
 
     private void initJump() {
@@ -196,10 +214,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ivCircle02 = (ImageView) mView.findViewById(R.id.ivCircle02);
         ivCircle03 = (ImageView) mView.findViewById(R.id.ivCircle03);
         //附近餐厅
+        nearbyFragmentRight=new NearbyFragment();
+        nearbyFragmentMiddle=new NearbyFragment();
+        nearbyFragmentLeft =new NearbyFragment();
+
         vpNearby = (ViewPager) mView.findViewById(R.id.vpNearby);
         nearbyList = new ArrayList<>();
+        nearbyList.add(nearbyFragmentLeft);
+        nearbyList.add(nearbyFragmentMiddle);
+        nearbyList.add(nearbyFragmentRight);
+
         mNearbyFragmentPagerAdapter = new NearbyFragmentPagerAdapter(getFragmentManager(), nearbyList);
         vpNearby.setAdapter(mNearbyFragmentPagerAdapter);
+        vpNearby.setOffscreenPageLimit(1);
         vpNearby.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -230,6 +257,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+
+        vpNearby.setOffscreenPageLimit(2);
     }
 
 
@@ -286,6 +315,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      * 获取首页信息
      */
     private void getHomePageInfo() {
+        LogUtil.i("调用我");
         Map<String, String> map = new HashMap<>();
         map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         map.put("CoordY", MyApplication.Latitude + "");
@@ -329,32 +359,42 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
-
+        tvAddress.setText(mAddress+"");
     }
 
     private void setNearbyInfo(List<TitlePage.ListDataBean> mListData) {
-        nearbyList.clear();
+
+
         if (mListData.size() <= 3) {
             //只显示一页
-            nearbyList.add(new NearbyFragment(mListData));
-            mNearbyFragmentPagerAdapter.notifyDataSetChanged();
+//            nearbyList.add(new NearbyFragment(mListData));
+            nearbyFragmentLeft.refreshData(mListData);
+//            mNearbyFragmentPagerAdapter.notifyDataSetChanged();
             //设置小圆点
             ivCircle01.setVisibility(View.GONE);
             ivCircle02.setVisibility(View.GONE);
             ivCircle03.setVisibility(View.GONE);
         } else if (mListData.size() > 3 & mListData.size() <= 6) {
-            nearbyList.add(new NearbyFragment(mListData.subList(0, 3)));
-            nearbyList.add(new NearbyFragment(mListData.subList(3, mListData.size())));
-            mNearbyFragmentPagerAdapter.notifyDataSetChanged();
+            nearbyFragmentLeft.refreshData(mListData.subList(0, 3));
+            nearbyFragmentMiddle.refreshData(mListData.subList(3, mListData.size()));
+//            nearbyList.add(new NearbyFragment(mListData.subList(0, 3)));
+//            nearbyList.add(new NearbyFragment());
+//            mNearbyFragmentPagerAdapter.notifyDataSetChanged();
             //设置小圆点
             ivCircle01.setVisibility(View.VISIBLE);
             ivCircle02.setVisibility(View.VISIBLE);
             ivCircle03.setVisibility(View.GONE);
         } else {
-            nearbyList.add(new NearbyFragment(mListData.subList(0, 3)));
-            nearbyList.add(new NearbyFragment(mListData.subList(3, 6)));
-            nearbyList.add(new NearbyFragment(mListData.subList(6, mListData.size())));
-            mNearbyFragmentPagerAdapter.notifyDataSetChanged();
+            LogUtil.i("测试222","重新拿到数据了");
+            nearbyFragmentLeft.refreshData(mListData.subList(0, 3));
+            nearbyFragmentMiddle.refreshData(mListData.subList(3,6));
+            nearbyFragmentRight.refreshData(mListData.subList(6, mListData.size()));
+//            nearbyList.add(new NearbyFragment(mListData.subList(0, 3)));
+//            nearbyList.add(new NearbyFragment(mListData.subList(3, 6)));
+//            nearbyList.add(new NearbyFragment(mListData.subList(6, mListData.size())));
+//            mNearbyFragmentPagerAdapter.notifyDataSetChanged();
+
+//            mNearbyFragmentPagerAdapter.setFragments(nearbyList);
             //设置小圆点
             ivCircle01.setVisibility(View.VISIBLE);
             ivCircle02.setVisibility(View.VISIBLE);

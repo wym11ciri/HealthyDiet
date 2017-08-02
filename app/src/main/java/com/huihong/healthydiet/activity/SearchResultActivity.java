@@ -15,7 +15,6 @@ import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
 import com.huihong.healthydiet.fragment.SearchResultLeftFragment;
 import com.huihong.healthydiet.fragment.SearchResultRightFragment;
-import com.huihong.healthydiet.mInterface.ScreenTypeListener;
 import com.huihong.healthydiet.mybean.Type;
 
 import java.util.ArrayList;
@@ -40,21 +39,10 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
     private String GroupBy;
     private String TypeValue;
     private int TypeId;
-
-
+    //搜索内容
+    public static String searchText;
     //设置4个筛选按钮的监听回调
     public static SearchResultActivity mRecommendActivity;
-    private ScreenTypeListener mLeftScreenTypeListener;
-    private ScreenTypeListener mRightScreenTypeListener;
-
-    public void setLeftScreenTypeListener(ScreenTypeListener pScreenTypeListener) {
-        mLeftScreenTypeListener = pScreenTypeListener;
-    }
-
-    public void setRightScreenTypeListener(ScreenTypeListener pScreenTypeListener) {
-        mRightScreenTypeListener = pScreenTypeListener;
-    }
-
     @Override
     public int setLayoutId() {
         return R.layout.activity_search_result;
@@ -64,6 +52,9 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
     public void initUI() {
 
         setTitle("搜索结果");
+        searchText = getIntent().getStringExtra("searchText");
+
+
         mRecommendActivity = this;
         vpRecommend = (ViewPager) findViewById(R.id.vpRecommend);
         mList = new ArrayList<>();
@@ -95,7 +86,6 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
             @Override
             public void onPageSelected(int position) {
                 restTab();
-
                 if (position == 0) {
                     isRight = false;
                     tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
@@ -108,13 +98,7 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
                     viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
                     ivRight.setImageResource(R.mipmap.restaurant_3);
                 }
-                if (mRightScreenTypeListener != null) {
-                    //切换完成变成默认排序
-                    mRightScreenTypeListener.screenType(isRight, GroupBy, 0, true);
-                    mLeftScreenTypeListener.screenType(isRight, GroupBy, 0, true);
-                }
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
             }
@@ -123,9 +107,7 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
         tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
         viewLeft.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
         ivLeft.setImageResource(R.mipmap.restaurant_1);
-//        setTitle("附近餐厅");
         vpRecommend.setCurrentItem(0);
-
     }
 
 
@@ -139,7 +121,6 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
         restTab();
         switch (v.getId()) {
             case R.id.layoutLeft2:
-//                setTitle("附近餐厅");
                 vpRecommend.setCurrentItem(0);
                 isRight = false;
                 tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
@@ -147,7 +128,6 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
                 ivLeft.setImageResource(R.mipmap.restaurant_1);
                 break;
             case R.id.layoutRight:
-//                setTitle("推荐饮食");
                 vpRecommend.setCurrentItem(1);
                 isRight = true;
                 tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));

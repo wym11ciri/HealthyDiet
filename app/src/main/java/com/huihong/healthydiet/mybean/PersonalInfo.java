@@ -14,7 +14,26 @@ public class PersonalInfo {
     private String weight;//体重
     private String name;//名称
     private String constitution;//体质
+    private String phone;//手机号
+    private  int score;//分数
 
+    public String getPhone() {
+        if(phone==null){
+            return "";
+        }else {
+            return phone;
+
+        }
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    //    private Context mContext;
+//
+//    public PersonalInfo(Context mContext) {
+//        this.mContext = mContext;
+//    }
 
     public String getHeadImageUrl() {
         if (headImageUrl == null) {
@@ -100,5 +119,10 @@ public class PersonalInfo {
 
     public void setConstitution(String constitution) {
         this.constitution = constitution;
+    }
+
+
+    public void  save(){
+
     }
 }

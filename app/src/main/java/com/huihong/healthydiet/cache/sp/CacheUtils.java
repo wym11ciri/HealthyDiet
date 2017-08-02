@@ -24,7 +24,7 @@ public class CacheUtils {
         String weight = (String) SPUtils.get(mContext, "weight", "50");//体重
         String name = (String) SPUtils.get(mContext, "name", "zangyi");//名称
         String constitution = (String) SPUtils.get(mContext, "constitution", "");//体质
-
+        String phone = (String) SPUtils.get(mContext, "phone", "");//体质
         PersonalInfo personalInfo = new PersonalInfo();
         personalInfo.setAge(age);
         personalInfo.setHeight(height);
@@ -33,6 +33,7 @@ public class CacheUtils {
         personalInfo.setName(name);
         personalInfo.setHeadImageUrl(headImageUrl);
         personalInfo.setConstitution(constitution);
+        personalInfo.setPhone(phone);
         return personalInfo;
     }
 
@@ -46,7 +47,7 @@ public class CacheUtils {
         String weight = personalInfo.getWeight();//体重
         String name = personalInfo.getName();//名称
         String constitution = personalInfo.getConstitution();//体质
-
+        String phone= personalInfo.getPhone();
         if (!name.equals("")) {
             SPUtils.put(mContext, "name", name);
         }
@@ -63,7 +64,27 @@ public class CacheUtils {
 
         SPUtils.put(mContext, "height", height);
         SPUtils.put(mContext, "weight", weight);
+        SPUtils.put(mContext, "phone", phone);
+    }
 
+    //设置UserId
+    public static void  setUserId(Context mContext,int newUserId) {
+        SPUtils.put(mContext,"UserId",newUserId);
+    }
+
+    //设置token
+    public static void  setToken(Context mContext,String  newToken) {
+        SPUtils.put(mContext,"Token",newToken);
+    }
+
+    //获取UserId
+    public static String getUserId(Context mContext) {
+        return (int) SPUtils.get(mContext, "UserId", 0) + "";
+    }
+
+    //获取token
+    public static String getToken(Context mContext) {
+        return (String) SPUtils.get(mContext, "Token", "");
     }
 
 

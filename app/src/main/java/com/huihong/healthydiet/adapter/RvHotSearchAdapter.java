@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.mInterface.ItemOnClickListener2;
 
 import java.util.List;
 
@@ -24,9 +24,9 @@ public class RvHotSearchAdapter extends RecyclerView.Adapter<RvHotSearchViewHold
     private Context mContext;
     private List<String> mList;
 
-    private ItemOnClickListener mItemOnClickListener;
+    private ItemOnClickListener2 mItemOnClickListener;
 
-    public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
+    public void setItemOnClickListener(ItemOnClickListener2 pItemOnClickListener) {
         mItemOnClickListener = pItemOnClickListener;
     }
 
@@ -52,9 +52,17 @@ public class RvHotSearchAdapter extends RecyclerView.Adapter<RvHotSearchViewHold
     }
 
     @Override
-    public void onBindViewHolder(final RvHotSearchViewHolder holder, int position) {
+    public void onBindViewHolder(final RvHotSearchViewHolder holder, final int position) {
 
         holder.tvName.setText(mList.get(position));
+        holder.tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mItemOnClickListener!=null){
+                    mItemOnClickListener.onClick(mList.get(position));
+                }
+            }
+        });
 
     }
 

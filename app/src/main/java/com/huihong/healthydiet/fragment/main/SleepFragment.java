@@ -18,6 +18,7 @@ import com.huihong.healthydiet.mInterface.SwitchListener;
 import com.huihong.healthydiet.utils.StringUtil;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.view.SleepChartView;
 import com.huihong.healthydiet.view.TimeSelectView;
 import com.huihong.healthydiet.widget.SwitchImageView;
 
@@ -55,11 +56,13 @@ public class SleepFragment extends Fragment {
 
     private NestedScrollView mNestedScrollView;
 
+    private SleepChartView mSleepChartView;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        LogUtil.i("调试","SleepFragment onCreateView");
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_sleep, null);
             initUI();
@@ -68,12 +71,18 @@ public class SleepFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onPause() {
+        super.onPause();
+        LogUtil.i("调试","SleepFragment onPause");
     }
+
+
 
     private void initUI() {
         mNestedScrollView= (NestedScrollView) mView.findViewById(R.id.mNestedScrollView);
+
+
+        mSleepChartView= (SleepChartView) mView.findViewById(R.id.mSleepChartView);
         initWeekText();
         initTimeSelectView();//初始化自定义时间选择器
         initSettingLayout();//初始化设置按钮布局
@@ -165,6 +174,7 @@ public class SleepFragment extends Fragment {
         return " ";
     }
 
+
     //初始化时间选择器及其附属控件
     private void initTimeSelectView() {
         startHour = (int) SPUtils.get(getActivity(), "startHour", 23);
@@ -173,6 +183,7 @@ public class SleepFragment extends Fragment {
         endMin = (int) SPUtils.get(getActivity(), "endMin", 0);
         _DH = (int) SPUtils.get(getActivity(), "_DH", 9);
         _DM = (int) SPUtils.get(getActivity(), "_DM", 0);
+
 
         mTimeSelectView = (TimeSelectView) mView.findViewById(R.id.mTimeSelectView);//时间选择器
         tvTimeStart = (TextView) mView.findViewById(R.id.tvTimeStart);//开始时间
@@ -228,6 +239,7 @@ public class SleepFragment extends Fragment {
 
                         startHour = hour;
                         startMin = min;
+                        mSleepChartView.setLimitLineH(hour,min,true);
 
                         if (min < 10) {
                             tvTimeStart.setText(hour + ":0" + min);
@@ -250,6 +262,8 @@ public class SleepFragment extends Fragment {
 
                         endHour = hour;
                         endMin = min;
+
+                        mSleepChartView.setLimitLineH(hour,min,false);
                         if (min < 10) {
                             tvTimeEnd.setText(hour2 + ":0" + min);
                         } else {

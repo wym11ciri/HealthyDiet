@@ -15,15 +15,22 @@ import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
+import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.SearchResultActivity;
 import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
 import com.huihong.healthydiet.bean.RestaurantList;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -38,10 +45,13 @@ public class SearchResultLeftFragment extends Fragment {
     //列表加载页数
     private int num = 1;
 
+    private String searchText;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        searchText= SearchResultActivity.searchText;
 
     }
 
@@ -109,6 +119,27 @@ public class SearchResultLeftFragment extends Fragment {
 
     //获取餐厅列表信息
     private void getInfo(int num) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("CoordY", MyApplication.Latitude+"");
+        map.put("CoordX", MyApplication.Longitude+"");
+        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.SELECT_USER_PREFERENCE
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("西部喜欢",response);
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("西部喜欢",e.toString());
+                    }
+                });
+
 
 
         OkHttpUtils

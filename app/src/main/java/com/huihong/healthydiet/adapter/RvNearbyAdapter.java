@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
 import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
-import com.huihong.healthydiet.utils.current.ImageLoderUtil;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -57,16 +57,37 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final RvNearbyViewHolder holder, int position) {
+    public void onBindViewHolder(final RvNearbyViewHolder holder, final int position) {
+
         holder.tvName.setText(mList.get(position).getName());
-        ImageLoderUtil.showImage(mContext,"",holder.ivHead);
+
         holder.ivHead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent mIn=new Intent(mContext, RestaurantDetailsActivity.class);
+                mIn.putExtra("id",mList.get(position).getId());
+
                 mContext.startActivity(mIn);
             }
         });
+
+        Glide
+                .with(mContext)
+                .load(mList.get(position).getTitleImage())
+                .asBitmap()
+                .error(R.mipmap.error_photo)
+                .into(holder.ivHead);
+
+
+        if(mList.get(position).getDistance()>1000){
+            int a=(mList.get(position).getDistance()/1000);
+            holder.tvDistance.setText(a+"km");
+        }else {
+            holder.tvDistance.setText(mList.get(position).getDistance()+"m");
+        }
+
+
+
 
 //        holder.tvTime.setText(mList.get(position).getTime());
 //        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +110,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
 
 class RvNearbyViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName,tvTitle;
+    TextView tvName,tvTitle,tvDistance;
     LinearLayout mLinearLayout;
     SelectableRoundedImageView ivHead;
 
@@ -97,7 +118,7 @@ class RvNearbyViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         tvName = (TextView) itemView.findViewById(R.id.tvName);
         ivHead= (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
-//        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+        tvDistance = (TextView) itemView.findViewById(R.id.tvDistance);
 //        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
     }
 }

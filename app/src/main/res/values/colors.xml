@@ -5,7 +5,6 @@
     <color name="colorAccent">#5BA439</color>
 
 
-
     <color name="tab_bottom_text_normal">#9B9B9B</color>
     <color name="tab_bottom_text_select">#5BA438</color>
 
@@ -22,10 +21,8 @@
     <color name="motion_select">#ffffff</color>
 
 
-
     <color name="line_chart_normal_color">#5E5E5E</color>
     <color name="circle">#539F2F</color>
-
 
 
     <color name="circle_zzzz">#989898</color>
@@ -53,7 +50,6 @@
     <color name="leaf_event">#010101</color>
 
 
-
     <color name="photo_ground">#FFFFFF</color>
 
 
@@ -65,4 +61,13 @@
 
     <color name="like_color_normal">#999999</color>
     <color name="like_color_select">#3E3E3E</color>
+
+    <!--睡眠记录图表限制线-->
+    <color name="sleep_chart_limit_line">#666666</color>
+    <color name="sleep_chart_normal_line">#999999</color>
+    <color name="sleep_chart_sleep_line">#FF7E00</color>
+
+    <color name="color_black">#000000</color>
+
+
 </resources>

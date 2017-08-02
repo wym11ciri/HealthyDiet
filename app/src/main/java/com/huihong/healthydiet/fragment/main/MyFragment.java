@@ -98,8 +98,9 @@ public class MyFragment extends Fragment {
     }
 
     private void initUI() {
-        ivSetting = (ImageView) mView.findViewById(R.id.ivSetting);
-        ivSetting.setOnClickListener(new View.OnClickListener() {
+        LinearLayout layoutSetting= (LinearLayout) mView.findViewById(R.id.layoutSetting);
+//        ivSetting = (ImageView) mView.findViewById(R.id.ivSetting);
+        layoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent mIntent = new Intent(getActivity(), SettingsActivity.class);
@@ -135,10 +136,7 @@ public class MyFragment extends Fragment {
         });
 
         ivHead = (SelectableRoundedImageView) mView.findViewById(R.id.ivHead);
-        Glide.with(getActivity())
-                .load("http://p.qq181.com/cms/1210/2012100413195471481.jpg")
-                .asBitmap()
-                .into(ivHead);
+
 
         rvIntegral = (RecyclerView) mView.findViewById(R.id.rvIntegral);
         List<String> zzz = new ArrayList<>();
@@ -183,6 +181,38 @@ public class MyFragment extends Fragment {
             tvSex.setText("女");
         }
         tvAge.setText(personalInfo.getAge() + "岁");
+
+        Glide.with(getActivity())
+                .load(personalInfo.getHeadImageUrl())
+                .asBitmap()
+                .error(R.mipmap.error_head)
+                .into(ivHead);
+
+        String type=personalInfo.getConstitution();
+        ivConstitution.setVisibility(View.VISIBLE);
+        if (type.equals("平和质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_1);
+        } else if (type.equals("气郁质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_2);
+        } else if (type.equals("阴虚质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_8);
+        } else if (type.equals("痰湿质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_5);
+        } else if (type.equals("阳虚质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_9);
+        } else if (type.equals("特禀质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_6);
+        } else if (type.equals("湿热质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_4);
+        } else if (type.equals("气虚质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_2);
+        } else if (type.equals("血瘀质")) {
+            ivConstitution.setImageResource(R.mipmap.temperament_7);
+        }else {
+            ivConstitution.setVisibility(View.GONE);
+        }
+
+//        ivConstitution
     }
 
     private void getPersonalInfo() {
@@ -211,6 +241,7 @@ public class MyFragment extends Fragment {
                                 personalInfo.setHeadImageUrl(mInfo.getHeadImage());
                                 personalInfo.setConstitution(mInfo.getConstitution());
                                 personalInfo.setAge(mInfo.getAge());
+                                personalInfo.setPhone(mInfo.getPhone());
                                 CacheUtils.putPersonalInfo(getActivity(), personalInfo);
                             }
                         }

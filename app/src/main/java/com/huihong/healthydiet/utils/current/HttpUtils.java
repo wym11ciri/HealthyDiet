@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.utils.current;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -82,11 +83,12 @@ public class HttpUtils {
                 new StringCallback() {
                     @Override
                     public void onError(okhttp3.Call call, Exception e, int id) {
-
-                        Toast.makeText(mContext.getApplicationContext(), R.string.service_error, Toast.LENGTH_SHORT).show();
-
+                        if (mContext != null) {
+                            Toast.makeText(mContext.getApplicationContext(), R.string.service_error, Toast.LENGTH_SHORT).show();
+                        }
                         mHttpUtilsListener.onError(call, e, id);
                     }
+
 
                     @Override
                     public void onResponse(String response, int id) {
@@ -96,11 +98,18 @@ public class HttpUtils {
                             int HttpCode = jsonObject.getInt("HttpCode");
 
                             if (HttpCode == 700) {
-                                AlertDialog mDialog = getAlertDialog(mContext);
-                                mDialog.show();
-
+                                if (mContext != null) {
+                                    AlertDialog mDialog = getAlertDialog(mContext);
+                                    mDialog.show();
+                                }
                             } else {
-                                mHttpUtilsListener.onResponse(response, id);
+//                                if(mHttpUtilsListener!=null){
+                                Activity activity= (Activity) mContext;
+                                if(!activity.isDestroyed()){
+                                    mHttpUtilsListener.onResponse(response, id);
+                                }
+
+//                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

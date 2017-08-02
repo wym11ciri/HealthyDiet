@@ -1,6 +1,7 @@
 package com.huihong.healthydiet.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.joooonho.SelectableRoundedImageView;
@@ -56,13 +58,14 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
     }
 
     @Override
-    public void onBindViewHolder(final RvRecommendViewHolder holder, int position) {
+    public void onBindViewHolder(final RvRecommendViewHolder holder, final int position) {
         holder.tvName.setText(mList.get(position).getName());
 
         Glide
                 .with(mContext)
                 .load(mList.get(position).getTitleImage())
                 .asBitmap()
+                .error(R.mipmap.error_photo)
                 .into(holder.ivHead);
 
 
@@ -79,8 +82,9 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
         holder.ivHead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent mIn=new Intent(mContext, RecipesDetailsActivity.class);
-//                mContext.startActivity(mIn);
+                Intent mIn=new Intent(mContext, RecipesDetailsActivity.class);
+                mIn.putExtra("RecipeId",mList.get(position).getId()+"");
+                mContext.startActivity(mIn);
             }
         });
 

@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
@@ -42,12 +42,18 @@ public class UnLikeFragment extends Fragment {
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
     private List<SelectUserPreference.ListDataBean> recommendList;
 
+    private LinearLayout layoutNoData;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         if (mView == null) {
+
+
             mView = inflater.inflate(R.layout.fragment_islike, null);
+            layoutNoData= (LinearLayout) mView.findViewById(R.id.layoutNoData);
+
             mLRecyclerView = (LRecyclerView) mView.findViewById(R.id.mLRecyclerView);
 
             mLRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -87,18 +93,21 @@ public class UnLikeFragment extends Fragment {
                         SelectUserPreference mSelectUserPreference = gson.fromJson(response, SelectUserPreference.class);
                         int code = mSelectUserPreference.getHttpCode();
                         if (code == 200) {
+                            layoutNoData.setVisibility(View.GONE);
                             recommendList.clear();
                             List<SelectUserPreference.ListDataBean> mListData = mSelectUserPreference.getListData();
                             recommendList.addAll(mListData);
                             mLRecyclerViewAdapter.notifyDataSetChanged();
                         }else {
                             String message=mSelectUserPreference.getMessage();
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            layoutNoData.setVisibility(View.VISIBLE);
+//                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         mLRecyclerView.refreshComplete(1);
+                        layoutNoData.setVisibility(View.VISIBLE);
                         LogUtil.i("喜不喜欢", e.toString());
                     }
                 });

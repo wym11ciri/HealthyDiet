@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.eicky.ViewPagerGallery;
@@ -101,12 +100,12 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("接口，菜谱详情", e + "");
-                        Toast.makeText(RecipesDetailsActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
-
+//                        Toast.makeText(RecipesDetailsActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+
                         LogUtil.i("接口，菜谱详情", response + "");
                         Gson gson = new Gson();
                         RecipeItemInfo mRecipeItemInfo = gson.fromJson(response, RecipeItemInfo.class);

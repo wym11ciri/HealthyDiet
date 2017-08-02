@@ -6,6 +6,6 @@ package com.huihong.healthydiet.mInterface;
  */
 
 public interface LocationListener {
-    //是否在设置睡眠时间  角度  是否结束
+
     void isReLocation(boolean isReLocation,String address);
 }

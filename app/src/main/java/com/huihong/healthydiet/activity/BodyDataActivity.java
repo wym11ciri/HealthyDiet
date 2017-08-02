@@ -42,24 +42,23 @@ public class BodyDataActivity extends BaseTitleActivity {
     private TextView tvBirthday, tvLabour;
     private DataPickerDateDialog mDataPickerDateDialog;
     private DataPickerSingleDialog mLabourDialog;
-
     private ImageView ivBoy, ivGirl;
     private View.OnClickListener onSexClickListener;
     private TextView tvSave;
     private EditText etWeight, etHeight;
-
     //用户生日
     private String userBirthTime = "2017-7-28";
     //劳动强度
     private String labInten = "一般";
     //性别
     private boolean isMan = false;
-
     private ProgressDialog mProgressDialog;
     private int birthYear = 1994;
-
     private Calendar mCalendar3;
     private int nowYear;
+
+    //个人信息
+    private PersonalInfo personalInfo;
 
     @Override
     public int setLayoutId() {
@@ -69,6 +68,8 @@ public class BodyDataActivity extends BaseTitleActivity {
     @Override
     public void initUI() {
         setTitle("身体数据");
+        personalInfo = CacheUtils.getPersonalInfo(BodyDataActivity.this);
+
 
         mCalendar3 = Calendar.getInstance();
         nowYear = mCalendar3.get(Calendar.YEAR);
@@ -174,12 +175,10 @@ public class BodyDataActivity extends BaseTitleActivity {
         getPersonalInfo();
     }
 
-
     @Override
     public void initOnClickListener() {
 
     }
-
 
     //获取身体数据
     private void getPersonalInfo() {
@@ -191,7 +190,8 @@ public class BodyDataActivity extends BaseTitleActivity {
         map.put("Id", SPUtils.get(BodyDataActivity.this, "UserId", 0) + "");
 
         HttpUtils
-                .sendHttpAddToken(BodyDataActivity.this, AppUrl.GET_USER_BODY_INFO
+                .sendHttpAddToken(BodyDataActivity.this
+                        , AppUrl.GET_USER_BODY_INFO
                         , map
                         , new HttpUtilsListener() {
                             @Override
@@ -238,13 +238,6 @@ public class BodyDataActivity extends BaseTitleActivity {
                                             labInten = mInfo.getLabourIntensity();
                                             tvLabour.setText(labInten);
                                         }
-
-                                        //计算年龄
-//                                Calendar mCalendar2 = Calendar.getInstance();
-//                                int nowYear = mCalendar2.get(Calendar.YEAR);
-//                                int age = nowYear - birthYear + 1;
-
-                                        PersonalInfo personalInfo = new PersonalInfo();
                                         personalInfo.setName(mInfo.getName());
                                         personalInfo.setHeight(mInfo.getHeight());
                                         personalInfo.setWeight(mInfo.getWeight());
@@ -252,6 +245,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                                         personalInfo.setHeadImageUrl(mInfo.getHeadImage());
                                         personalInfo.setConstitution(mInfo.getConstitution());
                                         personalInfo.setAge(mInfo.getAge());
+                                        personalInfo.setPhone(mInfo.getPhone());
                                         CacheUtils.putPersonalInfo(BodyDataActivity.this, personalInfo);
                                     }
                                 } else {
@@ -273,7 +267,8 @@ public class BodyDataActivity extends BaseTitleActivity {
         map.put("labInten", labInten);
         map.put("UserId", SPUtils.get(BodyDataActivity.this, "UserId", 0) + "");
 
-        HttpUtils.sendHttpAddToken(BodyDataActivity.this, AppUrl.SET_USER_BODY_INFO
+        HttpUtils.sendHttpAddToken(BodyDataActivity.this
+                , AppUrl.SET_USER_BODY_INFO
                 , map
                 , new HttpUtilsListener() {
                     @Override
@@ -290,15 +285,15 @@ public class BodyDataActivity extends BaseTitleActivity {
                         String message = mSetUserBodyInfo.getMessage();
                         Toast.makeText(BodyDataActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (code == 200) {
-                            PersonalInfo personalInfo = new PersonalInfo();
-                            personalInfo.setHeight(height);
-                            personalInfo.setWeight(weight);
-                            personalInfo.setMan(isMan);
-                            //计算年龄
-                            int age = nowYear - birthYear + 1;
-                            personalInfo.setAge(age + "");
-                            //保存年龄
-                            LogUtil.i("保存年龄" + age);
+                            SetUserBodyInfo.ListDataBean mInfo = mSetUserBodyInfo.getListData().get(0);
+                            personalInfo.setName(mInfo.getName());
+                            personalInfo.setHeight(mInfo.getHeight());
+                            personalInfo.setWeight(mInfo.getWeight());
+                            personalInfo.setMan(mInfo.isSex());
+                            personalInfo.setHeadImageUrl(mInfo.getHeadImage());
+                            personalInfo.setConstitution(mInfo.getConstitution());
+                            personalInfo.setAge(mInfo.getAge());
+                            personalInfo.setPhone(mInfo.getPhone());
                             CacheUtils.putPersonalInfo(BodyDataActivity.this, personalInfo);
                             finish();
                         }

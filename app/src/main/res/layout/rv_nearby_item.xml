@@ -45,6 +45,7 @@
             android:layout_height="1dp"/>
 
         <TextView
+            android:id="@+id/tvDistance"
             android:gravity="bottom"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
