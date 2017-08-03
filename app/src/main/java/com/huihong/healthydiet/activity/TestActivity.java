@@ -1,9 +1,12 @@
 package com.huihong.healthydiet.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -11,7 +14,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.app.TakePhotoActivity;
 import com.jph.takephoto.compress.CompressConfig;
@@ -21,7 +26,10 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 import com.zuoni.dialog.picker.dialog.BottomGetPhotoDialog;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -87,6 +95,32 @@ public class TestActivity extends TakePhotoActivity {
     BottomGetPhotoDialog bottomGetPhotoDialog;
     TakePhoto takePhoto;
     public void Ceshi(View v) {
+        Bitmap bmp=BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        String  a=Bitmap2StrByBase64(bmp);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("imagestr",a);
+
+
+        HttpUtils.sendHttpAddToken(TestActivity.this, AppUrl.UploadUserHeadImage
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("传图",response);
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("传图",e.toString());
+                    }
+                });
+
+
+
+    }
+    public void Ceshi2(View v) {
          takePhoto = getTakePhoto();
 
 
@@ -131,5 +165,25 @@ public class TestActivity extends TakePhotoActivity {
 //        Uri imageUri = Uri.fromFile(file);
 //        takePhoto.onPickMultiple(2);
 
+    }
+
+    public String Bitmap2StrByBase64(Bitmap bit){
+        ByteArrayOutputStream bos=new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
+        byte[] bytes=bos.toByteArray();
+
+        for (int i = 0; i <bytes.length ; i++) {
+            LogUtil.i("bytes",bytes[i]+"");
+        }
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+    /**
+     * base64转为bitmap
+     * @param base64Data
+     * @return
+     */
+    public static Bitmap base64ToBitmap(String base64Data) {
+        byte[] bytes = Base64.decode(base64Data, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }

@@ -71,10 +71,6 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 
         }
 
-
-        initMaterial();
-
-
         ImageView ivBuy = (ImageView) findViewById(R.id.ivBuy);
         ivBuy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +127,7 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
                                                 .with(RecipesDetailsActivity.this)
                                                 .load(mListDataBean.getImages().get(i))
                                                 .asBitmap()
+                                                .error(R.mipmap.error_photo)
                                                 .into(mSelectableRoundedImageView);
                                         viewList.add(mSelectableRoundedImageView);
                                     }
@@ -309,11 +306,7 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 
     }
 
-    private void initMaterial() {
 
-//        mLvMaterialAdapter=new LvMaterialAdapter(RecipesDetailsActivity.this,materialList);
-//        rvMaterial.setAdapter(mLvMaterialAdapter);
-    }
 
 
     @Override

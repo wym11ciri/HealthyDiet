@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
@@ -26,7 +25,6 @@ import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.joooonho.SelectableRoundedImageView;
 import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.app.TakePhotoActivity;
-import com.jph.takephoto.compress.CompressConfig;
 import com.jph.takephoto.model.CropOptions;
 import com.jph.takephoto.model.TResult;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -38,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Call;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/20
@@ -97,7 +97,13 @@ public class SettingsActivity extends TakePhotoActivity {
                 if (name.equals("")) {
                     Toast.makeText(SettingsActivity.this, "请输入姓名", Toast.LENGTH_SHORT).show();
                 } else {
-                    save();
+                    if(mFile!=null){
+                        save();
+                    }else {
+                        saveData("", false);
+//                        Toast.makeText(SettingsActivity.this, "请重新选择头像", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
 
@@ -110,7 +116,7 @@ public class SettingsActivity extends TakePhotoActivity {
             OkHttpUtils
                     .postFile()
                     .url(AppUrl.UPLOAD_IMAGE)
-                    .file(file)
+                    .file(mFile)
                     .build()
                     .execute(new StringCallback() {
                         @Override
@@ -179,7 +185,7 @@ public class SettingsActivity extends TakePhotoActivity {
                         File file = new File(Environment.getExternalStorageDirectory(), "/temp/" + System.currentTimeMillis() + ".jpg");
                         if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
                         Uri imageUri = Uri.fromFile(file);
-                        takePhoto.onEnableCompress(new CompressConfig.Builder().setMaxSize(50 * 1024).setMaxPixel(800).create(), false);//压缩
+//                        takePhoto.onEnableCompress(new CompressConfig.Builder().setMaxSize(50 * 1024).setMaxPixel(800).create(), false);//压缩
                         takePhoto.onPickFromGalleryWithCrop(imageUri, new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(false).create());
                         bottomGetPhotoDialog.dismiss();
                     }
@@ -191,7 +197,7 @@ public class SettingsActivity extends TakePhotoActivity {
                         File file = new File(Environment.getExternalStorageDirectory(), "/temp/" + System.currentTimeMillis() + ".jpg");
                         if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
                         Uri imageUri = Uri.fromFile(file);
-                        takePhoto.onEnableCompress(new CompressConfig.Builder().setMaxSize(50 * 1024).setMaxPixel(800).create(), false);//压缩
+//                        takePhoto.onEnableCompress(new CompressConfig.Builder().create(), false);//压缩
                         takePhoto.onPickFromCaptureWithCrop(imageUri, new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(false).create());
                         bottomGetPhotoDialog.dismiss();
                     }
@@ -211,7 +217,7 @@ public class SettingsActivity extends TakePhotoActivity {
 
     }
 
-    File file;
+    File mFile;
 
     @Override
     public void takeSuccess(TResult result) {
@@ -219,17 +225,34 @@ public class SettingsActivity extends TakePhotoActivity {
         isChangeHead = true;
         result.getImage();
 
-        this.getResources().getDrawable(R.drawable.ic_arrow_back);
+//        this.getResources().getDrawable(R.drawable.ic_arrow_back);
 
-        file = new File(result.getImages().get(0).getOriginalPath());
-        Glide
-                .with(this)
-                .load(file)
-                .asBitmap()
-                .into(ivHead);
+//        file = ;
 
-//
-//
+        //开启鲁班压缩
+        Luban.with(this)
+                .load(new File(result.getImages().get(0).getOriginalPath()))                     //传人要压缩的图片
+                .setCompressListener(new OnCompressListener() { //设置回调
+                    @Override
+                    public void onStart() {
+
+                    }
+                    @Override
+                    public void onSuccess(File file) {
+                        Glide
+                                .with(SettingsActivity.this)
+                                .load(file)
+                                .asBitmap()
+                                .into(ivHead);
+                        mFile=file;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                }).launch();    //启动压缩
+
 
     }
 

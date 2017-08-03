@@ -20,6 +20,7 @@ import com.huihong.healthydiet.bean.GetRestaurantInfoById;
 import com.huihong.healthydiet.bean.RecipeListInfoByDRId;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
+import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
         map.put("id", id + "");
         map.put("CoordY", MyApplication.Latitude + "");
         map.put("CoordX", MyApplication.Longitude + "");
+        map.put("UserId",  SPUtils.get(RestaurantDetailsActivity.this,"UserId",0)+"");
 
         HttpUtils.sendHttpAddToken(RestaurantDetailsActivity.this
                 , AppUrl.RECIPE_LIST_INFO_BY_DR_ID

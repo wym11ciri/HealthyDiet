@@ -20,9 +20,12 @@ import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.ArticleDetailsActivity;
 import com.huihong.healthydiet.activity.SearchActivity;
 import com.huihong.healthydiet.adapter.RvArticleAdapter;
+import com.huihong.healthydiet.bean.GetArticleItemInfo;
 import com.huihong.healthydiet.bean.GetArticleListInfo;
+import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -55,8 +58,7 @@ public class ArticleFragment extends Fragment {
     private TextView tvTop01, tvTop02, tvTop03;
 
 
-    private int mNum=1;
-
+    private int mNum = 1;
 
 
     private LinearLayout layoutTopRight;
@@ -99,16 +101,26 @@ public class ArticleFragment extends Fragment {
             RvArticleAdapter mRvRecommendAdapter = new RvArticleAdapter(getActivity(), mList);
             mLRecyclerViewAdapter = new LRecyclerViewAdapter(mRvRecommendAdapter);
             recyclerView.setAdapter(mLRecyclerViewAdapter);
-
             recyclerView.refresh();
 
+            mRvRecommendAdapter.setItemOnClickListener(new ArticleItemOnClickListener() {
+                @Override
+                public void onClick(int position) {
+                    Intent mIntent = new Intent(getActivity(), ArticleDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("info", mList.get(position));
+                    bundle.putInt("pos", position);
+                    mIntent.putExtras(bundle);
+                   startActivityForResult(mIntent, 10086);
+                }
+            });
 
 
-            layoutTopRight= (LinearLayout) mView.findViewById(R.id.layoutTopRight);
+            layoutTopRight = (LinearLayout) mView.findViewById(R.id.layoutTopRight);
             layoutTopRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent mIntent=new Intent(getActivity(), SearchActivity.class);
+                    Intent mIntent = new Intent(getActivity(), SearchActivity.class);
                     startActivity(mIntent);
                 }
             });
@@ -124,8 +136,8 @@ public class ArticleFragment extends Fragment {
     private void getInfo(int pageNum) {
 
         Map<String, String> map = new HashMap<>();
-        map.put("PageNo", pageNum+"");
-        map.put("Id",  SPUtils.get(getActivity(),"UserId",0)+"");
+        map.put("PageNo", pageNum + "");
+        map.put("Id", SPUtils.get(getActivity(), "UserId", 0) + "");
 
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_ARTICLE_LIST_INFO
                 , map
@@ -160,7 +172,6 @@ public class ArticleFragment extends Fragment {
                         recyclerView.refreshComplete(1);
                     }
                 });
-
 
 
 //
@@ -213,4 +224,27 @@ public class ArticleFragment extends Fragment {
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10086) {
+//            if(resultCode==2)
+
+            int pos = data.getIntExtra("pos", -1);
+            if (pos != -1) {
+                GetArticleItemInfo.ListDataBean mListDataBean = (GetArticleItemInfo.ListDataBean) data.getSerializableExtra("info");
+
+               if(mListDataBean!=null){
+                   mList.get(pos).setLoveCount(mListDataBean.getLoveCount());
+                   mList.get(pos).setPointPraise(mListDataBean.isPointPraise());
+                   mList.get(pos).setCilckCount(mListDataBean.getCilckCount());
+                   mLRecyclerViewAdapter.notifyDataSetChanged();
+               }
+
+
+            }
+
+        }
+
+    }
 }

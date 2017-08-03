@@ -59,6 +59,7 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
     @Override
     public void onBindViewHolder(final RvRecommendViewHolder holder, final int position) {
+
         holder.tvName.setText(mList.get(position).getName());
 
         Glide
@@ -67,10 +68,6 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
                 .asBitmap()
                 .error(R.mipmap.error_photo)
                 .into(holder.ivHead);
-
-
-//        ImageLoderUtil.showImage(mContext, "", holder.ivHead);
-//        holder.tvTime.setText(mList.get(position).getTime());
 //        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -88,6 +85,27 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
             }
         });
 
+
+
+        holder.tvPrice.setText("￥"+mList.get(position).getPrice());
+
+        int percentage = mList.get(position).getConstitutionPercentage();
+
+        holder.tvConstitutionPercentage.setText(percentage+"%");
+
+        if (percentage > 90) {
+           holder.  tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_9));
+        } else if (percentage > 80 & percentage <= 90) {
+          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_8));
+        } else if (percentage > 70 & percentage <= 80) {
+          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_7));
+        } else if (percentage > 60 & percentage <= 70) {
+          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_6));
+        } else {
+          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_5));
+        }
+
+
     }
 
     @Override
@@ -99,7 +117,7 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
 class RvRecommendViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName, tvTitle;
+    TextView tvName, tvTitle,tvPrice,tvConstitutionPercentage;
     LinearLayout mLinearLayout;
     SelectableRoundedImageView ivHead;
 
@@ -107,7 +125,8 @@ class RvRecommendViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
         tvName = (TextView) itemView.findViewById(R.id.tvName);
-//        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+        tvPrice = (TextView) itemView.findViewById(R.id.tvPrice);
+        tvConstitutionPercentage = (TextView) itemView.findViewById(R.id.tvConstitutionPercentage);
 //        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
     }
 }

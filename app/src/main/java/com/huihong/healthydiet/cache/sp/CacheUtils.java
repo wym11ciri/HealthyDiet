@@ -4,6 +4,10 @@ import android.content.Context;
 
 import com.huihong.healthydiet.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.widget.WeekSelectTextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.huihong.healthydiet.utils.common.SPUtils.get;
 
@@ -47,7 +51,7 @@ public class CacheUtils {
         String weight = personalInfo.getWeight();//体重
         String name = personalInfo.getName();//名称
         String constitution = personalInfo.getConstitution();//体质
-        String phone= personalInfo.getPhone();
+        String phone = personalInfo.getPhone();
         if (!name.equals("")) {
             SPUtils.put(mContext, "name", name);
         }
@@ -68,13 +72,13 @@ public class CacheUtils {
     }
 
     //设置UserId
-    public static void  setUserId(Context mContext,int newUserId) {
-        SPUtils.put(mContext,"UserId",newUserId);
+    public static void setUserId(Context mContext, int newUserId) {
+        SPUtils.put(mContext, "UserId", newUserId);
     }
 
     //设置token
-    public static void  setToken(Context mContext,String  newToken) {
-        SPUtils.put(mContext,"Token",newToken);
+    public static void setToken(Context mContext, String newToken) {
+        SPUtils.put(mContext, "Token", newToken);
     }
 
     //获取UserId
@@ -85,6 +89,40 @@ public class CacheUtils {
     //获取token
     public static String getToken(Context mContext) {
         return (String) SPUtils.get(mContext, "Token", "");
+    }
+
+
+    //设置睡眠星期
+    public static void setSleepWeek(Context mContext, List<WeekSelectTextView> mWeekList) {
+        String weekString = "";
+        if (mWeekList.size() == 7) {
+            for (int i = 0; i < 7; i++) {
+                if (mWeekList.get(i).getChoose()) {
+                    weekString = weekString + "1" + ",";
+                } else {
+                    weekString = weekString + "0" + ",";
+                }
+            }
+            SPUtils.put(mContext, "weekValueString", weekString);
+        }
+    }
+
+    //返回睡眠星期
+    public  static  List<Boolean> getSleepWeek (Context mContext){
+
+        String weekValueString= (String) SPUtils.get(mContext,"weekValueString","0,0,0,0,0,0,0,");
+
+        List<Boolean> mList = new ArrayList<>();
+        assert weekValueString != null;
+        String[] sourceStrArray = weekValueString.split(",");
+        for (String aSourceStrArray : sourceStrArray) {
+            if (aSourceStrArray.equals("0")) {
+                mList.add(false);
+            } else {
+                mList.add(true);
+            }
+        }
+        return mList;
     }
 
 

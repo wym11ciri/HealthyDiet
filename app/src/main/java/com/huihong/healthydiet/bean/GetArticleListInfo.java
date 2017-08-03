@@ -13,8 +13,8 @@ public class GetArticleListInfo {
     /**
      * HttpCode : 200
      * Message :
-     * ListData : [{"ArticleId":103,"title":"三大跑","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/201720283328.jpg","tags":["爆炒"],"ConstitutionPercentage":-2147483648,"cilckCount":0,"loveCount":0,"aTime":"2017-07-21T08:34:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=103"},{"ArticleId":104,"title":"葡式蛋挞","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/20172028365.jpg","tags":["红烧"],"ConstitutionPercentage":-2147483648,"cilckCount":0,"loveCount":0,"aTime":"2017-07-21T08:36:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=104"},{"ArticleId":147,"title":"第四篇","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/201720783852.jpg","tags":["爆炒"],"ConstitutionPercentage":-2147483648,"cilckCount":0,"loveCount":0,"aTime":"2017-07-26T08:39:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=147"},{"ArticleId":149,"title":"文章4","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/2017208124738.jpg","tags":["红烧"],"ConstitutionPercentage":-2147483648,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T12:48:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=149"}]
-     * ListData2 : [{"constitution":"平和质","SuitEat":"","NotSuitEat":""}]
+     * ListData : [{"ArticleId":103,"title":"文章1","content":"","TitleImage":"http://106.14.218.31:8081/img/article/201720283328.jpg","tags":["爆炒"],"ConstitutionPercentage":30,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T16:32:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=103","PointPraise":false},{"ArticleId":104,"title":"文章2","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/20172028365.jpg","tags":["红烧"],"ConstitutionPercentage":50,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T16:31:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=104","PointPraise":false},{"ArticleId":147,"title":"文章3","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/201720783852.jpg","tags":["爆炒"],"ConstitutionPercentage":30,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:21:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=147","PointPraise":false},{"ArticleId":149,"title":"文章4","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/2017208124738.jpg","tags":["红烧"],"ConstitutionPercentage":50,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T12:48:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=149","PointPraise":false},{"ArticleId":153,"title":"文章5","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/201720815161.jpg","tags":["乱炖"],"ConstitutionPercentage":50,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:16:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=153","PointPraise":false},{"ArticleId":154,"title":"文章6","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/2017208151627.jpg","tags":["油焖"],"ConstitutionPercentage":80,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:17:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=154","PointPraise":false},{"ArticleId":155,"title":"文章7","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/2017208151651.jpg","tags":["油焖"],"ConstitutionPercentage":80,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:17:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=155","PointPraise":false},{"ArticleId":156,"title":"文章8","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/2017208151724.jpg","tags":["红烧"],"ConstitutionPercentage":50,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:17:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=156","PointPraise":false},{"ArticleId":157,"title":"文章9","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/2017208151747.jpg","tags":["简餐","乱炖"],"ConstitutionPercentage":40,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:18:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=157","PointPraise":false},{"ArticleId":158,"title":"文章10","content":null,"TitleImage":"http://106.14.218.31:8081/img/article/201720815189.jpg","tags":["清蒸","简餐","爆炒","非油炸","简餐"],"ConstitutionPercentage":58,"cilckCount":0,"loveCount":0,"aTime":"2017-07-27T15:18:00","url":"http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=158","PointPraise":false}]
+     * ListData2 : [{"constitution":"气虚质","SuitEat":"只要是肉就行","NotSuitEat":"别吃素"}]
      */
 
     private int HttpCode;
@@ -57,26 +57,28 @@ public class GetArticleListInfo {
     public static class ListDataBean implements Serializable {
         /**
          * ArticleId : 103
-         * title : 三大跑
-         * content : null
+         * title : 文章1
+         * content :
          * TitleImage : http://106.14.218.31:8081/img/article/201720283328.jpg
          * tags : ["爆炒"]
-         * ConstitutionPercentage : -2147483648
+         * ConstitutionPercentage : 30
          * cilckCount : 0
          * loveCount : 0
-         * aTime : 2017-07-21T08:34:00
+         * aTime : 2017-07-27T16:32:00
          * url : http://106.14.218.31:8081/../webs/ArticleUrl.aspx?id=103
+         * PointPraise : false
          */
 
         private int ArticleId;
         private String title;
-        private Object content;
+        private String content;
         private String TitleImage;
         private int ConstitutionPercentage;
         private int cilckCount;
         private int loveCount;
         private String aTime;
         private String url;
+        private boolean PointPraise;
         private List<String> tags;
 
         public int getArticleId() {
@@ -95,11 +97,11 @@ public class GetArticleListInfo {
             this.title = title;
         }
 
-        public Object getContent() {
+        public String getContent() {
             return content;
         }
 
-        public void setContent(Object content) {
+        public void setContent(String content) {
             this.content = content;
         }
 
@@ -151,6 +153,14 @@ public class GetArticleListInfo {
             this.url = url;
         }
 
+        public boolean isPointPraise() {
+            return PointPraise;
+        }
+
+        public void setPointPraise(boolean PointPraise) {
+            this.PointPraise = PointPraise;
+        }
+
         public List<String> getTags() {
             return tags;
         }
@@ -162,9 +172,9 @@ public class GetArticleListInfo {
 
     public static class ListData2Bean {
         /**
-         * constitution : 平和质
-         * SuitEat :
-         * NotSuitEat :
+         * constitution : 气虚质
+         * SuitEat : 只要是肉就行
+         * NotSuitEat : 别吃素
          */
 
         private String constitution;

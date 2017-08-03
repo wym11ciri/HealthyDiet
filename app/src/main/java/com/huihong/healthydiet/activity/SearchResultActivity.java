@@ -16,6 +16,7 @@ import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
 import com.huihong.healthydiet.fragment.SearchResultLeftFragment;
 import com.huihong.healthydiet.fragment.SearchResultRightFragment;
 import com.huihong.healthydiet.mybean.Type;
+import com.huihong.healthydiet.utils.common.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class SearchResultActivity extends BaseTitleActivity implements View.OnCl
 
         setTitle("搜索结果");
         searchText = getIntent().getStringExtra("searchText");
+        LogUtil.i("searchText",searchText);
 
 
         mRecommendActivity = this;

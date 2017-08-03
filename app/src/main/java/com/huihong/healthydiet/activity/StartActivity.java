@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseActivity;
@@ -70,11 +68,11 @@ public class StartActivity extends BaseActivity {
 //               .asGif()
 //                .into(mImageView);
 
-        Glide.with(StartActivity.this)
-                .load("http://img3.duitang.com/uploads/blog/201408/17/20140817104346_YhLJT.gif")
-                .asGif()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(mImageView);
+//        Glide.with(StartActivity.this)
+//                .load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1501746830558&di=e5c3c8f88b9f5bad1a5f9bc4efaaaed4&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01bffc58b6cf28a801219c77ff60f9.gif")
+//                .asGif()
+//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+//                .into(mImageView);
 
 //        SPUtils.put(StartActivity.this,"isDoSimpleTest",false);
 //        SPUtils.put(StartActivity.this,"isLogin",false);

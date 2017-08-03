@@ -1,21 +1,19 @@
 package com.huihong.healthydiet.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.activity.ArticleDetailsActivity;
 import com.huihong.healthydiet.bean.GetArticleListInfo;
-import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
 import com.huihong.healthydiet.widget.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
 
@@ -33,9 +31,9 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
     private Context mContext;
     private List<GetArticleListInfo.ListDataBean> mList;
 
-    private ItemOnClickListener mItemOnClickListener;
+    private ArticleItemOnClickListener mItemOnClickListener;
 
-    public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
+    public void setItemOnClickListener(ArticleItemOnClickListener pItemOnClickListener) {
         mItemOnClickListener = pItemOnClickListener;
     }
 
@@ -71,26 +69,32 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
                 .error(R.mipmap.error_photo)
                 .into(holder.ivHead);
 
-        holder.tvClickCount.setText(mList.get(position).getCilckCount()+"");
-        holder.tvLoveCount.setText(mList.get(position).getLoveCount()+"");
+        holder.tvClickCount.setText(mList.get(position).getCilckCount() + "");
+        holder.tvLoveCount.setText(mList.get(position).getLoveCount() + "");
         holder.tvTitle.setText(mList.get(position).getTitle());
-        String mTime=mList.get(position).getATime();
-        mTime=mTime.replace("T", " ");
+        String mTime = mList.get(position).getATime();
+        mTime = mTime.replace("T", " ");
         holder.tvTime.setText(mTime);
 
-        holder.lvTag.setAdapter(new LvTagAdapterForArticleList(mContext,mList.get(position).getTags()));
+        holder.lvTag.setAdapter(new LvTagAdapterForArticleList(mContext, mList.get(position).getTags()));
 
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIntent=new Intent(mContext, ArticleDetailsActivity.class);
-                Bundle bundle = new Bundle();
-//                mIntent.putExtra("url",mList.get(position).getUrl());
-                bundle.putSerializable("info",mList.get(position));
-                mIntent.putExtras(bundle);
-                mContext.startActivity(mIntent);
+                if(mItemOnClickListener!=null){
+                    mItemOnClickListener.onClick(position);
+                }
+
+
             }
         });
+
+        if (mList.get(position).isPointPraise()) {
+            holder.ivThumbsUp.setImageResource(R.mipmap.thumbs_up);
+        } else {
+            holder.ivThumbsUp.setImageResource(R.mipmap.thumbs_up_normal);
+        }
+
     }
 
     @Override
@@ -99,12 +103,14 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
     }
 
     class RvArticleViewHolder extends RecyclerView.ViewHolder {
-        TextView  tvTitle,tvTime;
+        TextView tvTitle, tvTime;
         LinearLayout mLinearLayout;
         RelativeLayout layoutMain;
         SelectableRoundedImageView ivHead;
         HorizontalListView lvTag;
-        TextView tvLoveCount,tvClickCount;
+        TextView tvLoveCount, tvClickCount;
+        ImageView ivThumbsUp;
+
         RvArticleViewHolder(View itemView) {
             super(itemView);
             ivHead = (SelectableRoundedImageView) itemView.findViewById(R.id.ivHead);
@@ -114,6 +120,7 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             layoutMain = (RelativeLayout) itemView.findViewById(R.id.layoutMain);
+            ivThumbsUp = (ImageView) itemView.findViewById(R.id.ivThumbsUp);
 //        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
         }
     }

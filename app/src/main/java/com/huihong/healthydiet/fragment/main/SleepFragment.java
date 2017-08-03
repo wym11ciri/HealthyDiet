@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.SleepSettingsActivity;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.mInterface.SwitchListener;
-import com.huihong.healthydiet.utils.StringUtil;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.view.SleepChartView;
@@ -62,21 +62,12 @@ public class SleepFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LogUtil.i("调试","SleepFragment onCreateView");
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_sleep, null);
             initUI();
         }
         return mView;
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LogUtil.i("调试","SleepFragment onPause");
-    }
-
-
 
     private void initUI() {
         mNestedScrollView= (NestedScrollView) mView.findViewById(R.id.mNestedScrollView);
@@ -90,8 +81,7 @@ public class SleepFragment extends Fragment {
 
     private void initWeekText() {
         tvWeek= (TextView) mView.findViewById(R.id.tvWeek);
-        String valueString = (String) SPUtils.get(getActivity(), "weekValueString", "0,0,0,0,0,0,0,");
-        List<Boolean> cacheValueList = StringUtil.getWeekList(valueString);
+        List<Boolean> cacheValueList = CacheUtils.getSleepWeek(getActivity());
         String text = "";
         for (int i = 0; i < cacheValueList.size(); i++) {
             if(cacheValueList.get(i)){
@@ -138,13 +128,12 @@ public class SleepFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10086) {
             if (resultCode == 10086) {
-                String valueString=data.getStringExtra("valueString");
-                List<Boolean> cacheValueList = StringUtil.getWeekList(valueString);
+                List<Boolean> cacheValueList = CacheUtils.getSleepWeek(getActivity());
                 String text = "";
                 for (int i = 0; i < cacheValueList.size(); i++) {
-                  if(cacheValueList.get(i)){
-                      text=text+getWeek(i)+" ";
-                  }
+                    if(cacheValueList.get(i)){
+                        text=text+getWeek(i)+" ";
+                    }
                 }
                 tvWeek.setText(text);
             }

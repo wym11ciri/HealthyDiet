@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
-import com.huihong.healthydiet.utils.StringUtil;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.widget.WeekSelectTextView;
 
@@ -52,34 +52,19 @@ public class SleepSettingsActivity extends BaseTitleActivity {
         wsList.add(ws05);
         wsList.add(ws06);
         wsList.add(ws07);
-
-
         //从缓存中去拿
-        String value = (String) SPUtils.get(SleepSettingsActivity.this, "weekValueString", "0,0,0,0,0,0,0,");
-        List<Boolean> cacheValueList = StringUtil.getWeekList(value);
+        List<Boolean> cacheValueList = CacheUtils.getSleepWeek(SleepSettingsActivity.this);
         for (int i = 0; i < wsList.size(); i++) {
             wsList.get(i).setChoose(cacheValueList.get(i));
         }
-
-
         setLeftOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //传入数据
-                for (int i = 0; i < wsList.size(); i++) {
-                    if (wsList.get(i).getChoose()) {
-                        valueString = valueString + "1" + ",";
-                    } else {
-                        valueString = valueString + "0" + ",";
-                    }
-                }
-                //退出的时候把变量保存起来
-                SPUtils.put(SleepSettingsActivity.this, "weekValueString", valueString);
+                //保存睡眠星期
+                CacheUtils.setSleepWeek(SleepSettingsActivity.this,wsList);
                 SPUtils.put(SleepSettingsActivity.this, "nowChooseTime", nowChooseTime);
-
                 Intent mIntent = new Intent();
                 mIntent.putExtra("valueString", valueString);
-                // 设置结果，并进行传送
                 setResult(10086, mIntent);
                 finish();
                 overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);

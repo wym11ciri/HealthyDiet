@@ -198,7 +198,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                             public void onError(Call call, Exception e, int id) {
                                 mProgressDialog.dismiss();
                                 finish();
-                                Toast.makeText(BodyDataActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(BodyDataActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

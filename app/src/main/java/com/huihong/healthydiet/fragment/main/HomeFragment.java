@@ -24,6 +24,7 @@ import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
@@ -44,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
+
+import static com.huihong.healthydiet.MyApplication.mList;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/10
@@ -75,13 +78,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private SwipeRefreshLayout layoutRefresh;
 
 
-    private  NearbyFragment nearbyFragmentRight;
-    private  NearbyFragment nearbyFragmentLeft;
-    private  NearbyFragment nearbyFragmentMiddle;
+    private NearbyFragment nearbyFragmentRight;
+    private NearbyFragment nearbyFragmentLeft;
+    private NearbyFragment nearbyFragmentMiddle;
 
 
-    private  String mAddress;
-    private  boolean isFirst=true;
+    private String mAddress;
+    private boolean isFirst = true;
+
+    //大图推荐饮食
+    private TextView tvRecommendName, tvConstitutionPercentage,tvRecommendPrice;
+    private SelectableRoundedImageView ivRecommend;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,10 +104,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     if (isReLocation) {
 //                        tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
 //                        tvAddress.setText(address);
-                        mAddress=address;
+                        mAddress = address;
 
-                        if(isFirst){
-                            isFirst=false;
+                        if (isFirst) {
+                            isFirst = false;
                             getHomePageInfo();
                         }
                     }
@@ -110,7 +118,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         return mView;
     }
-
 
 
     @Override
@@ -138,20 +145,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        ivRecommend = (SelectableRoundedImageView) mView.findViewById(R.id.ivRecommend);
+        tvRecommendName = (TextView) mView.findViewById(R.id.tvRecommendName);
+        tvConstitutionPercentage = (TextView) mView.findViewById(R.id.tvConstitutionPercentage);
+        tvRecommendPrice= (TextView) mView.findViewById(R.id.tvRecommendPrice);
         initBanner();
         initNearby();
         initRecommend();
         initRecord();
         initJump();
 //
-        SelectableRoundedImageView ivTest = (SelectableRoundedImageView) mView.findViewById(R.id.image0);
 
-        Glide
-                .with(getActivity())
-                .load(MyApplication.mList.get(2))
-                .asBitmap()
-//                .transform(new GlideRoundTransform(getActivity()))
-                .into(ivTest);
+
+//        Glide
+//                .with(getActivity())
+//                .load(MyApplication.mList.get(2))
+//                .asBitmap()
+////                .transform(new GlideRoundTransform(getActivity()))
+//                .into(ivTest);
 
 
     }
@@ -196,13 +207,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //饮食推荐
     private void initRecommend() {
         rvRecommend = (RecyclerView) mView.findViewById(R.id.rvRecommend);
-
         recommendList = new ArrayList<>();
         rvRecommend.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRvRecommendAdapter = new RvRecommendAdapter(getActivity(), recommendList);
         rvRecommend.setAdapter(mRvRecommendAdapter);
-
-
     }
 
     private ImageView ivCircle01, ivCircle02, ivCircle03;
@@ -214,9 +222,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ivCircle02 = (ImageView) mView.findViewById(R.id.ivCircle02);
         ivCircle03 = (ImageView) mView.findViewById(R.id.ivCircle03);
         //附近餐厅
-        nearbyFragmentRight=new NearbyFragment();
-        nearbyFragmentMiddle=new NearbyFragment();
-        nearbyFragmentLeft =new NearbyFragment();
+        nearbyFragmentRight = new NearbyFragment();
+        nearbyFragmentMiddle = new NearbyFragment();
+        nearbyFragmentLeft = new NearbyFragment();
 
         vpNearby = (ViewPager) mView.findViewById(R.id.vpNearby);
         nearbyList = new ArrayList<>();
@@ -266,10 +274,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void initBanner() {
         mBannerNet = (XBanner) mView.findViewById(R.id.banner_1);
         final List<String> imgesUrl = new ArrayList<>();
-        imgesUrl.add(MyApplication.mList.get(0));
-        imgesUrl.add(MyApplication.mList.get(1));
-        imgesUrl.add(MyApplication.mList.get(2));
-        imgesUrl.add(MyApplication.mList.get(3));
+        imgesUrl.add(mList.get(0));
+        imgesUrl.add(mList.get(1));
+        imgesUrl.add(mList.get(2));
+        imgesUrl.add(mList.get(3));
 
         //添加广告数据
         mBannerNet.setData(imgesUrl, null);//第二个参数为提示文字资源集合
@@ -335,13 +343,48 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             List<TitlePage.ListDataBean> mListData = mTitlePage.getListData();
                             setNearbyInfo(mListData);//设置附近餐厅信息
                             //获取推荐饮食
-                            List<TitlePage.ListData2Bean> mListData2 = mTitlePage.getListData2();
+                            final List<TitlePage.ListData2Bean> mListData2 = mTitlePage.getListData2();
                             //大于2条数据
                             if (mListData2.size() >= 2) {
                                 recommendList.clear();
                                 recommendList.addAll(mListData2.subList(1, mListData2.size()));
                                 mRvRecommendAdapter.notifyDataSetChanged();
+                                //大图推荐饮食
+                                Glide
+                                        .with(getActivity())
+                                        .load(mListData2.get(0).getTitleImage())
+                                        .asBitmap()
+                                        .error(R.mipmap.error_photo)
+                                        .into(ivRecommend);
+
+                                tvRecommendName.setText(mListData2.get(0).getName());
+
+                                ivRecommend.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent mIn = new Intent(getActivity(), RecipesDetailsActivity.class);
+                                        mIn.putExtra("RecipeId", mListData2.get(0).getId() + "");
+                                        startActivity(mIn);
+                                    }
+                                });
+
+                                int percentage = mListData2.get(0).getConstitutionPercentage();
+                                tvConstitutionPercentage.setText(percentage + "%");
+                                if (percentage > 90) {
+                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_9));
+                                } else if (percentage > 80 & percentage <= 90) {
+                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_8));
+                                } else if (percentage > 70 & percentage <= 80) {
+                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_7));
+                                } else if (percentage > 60 & percentage <= 70) {
+                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_6));
+                                } else {
+                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_5));
+                                }
+
+                                tvRecommendPrice.setText("￥"+mListData2.get(0).getPrice());
                             }
+
 
                         } else {
                             String message = mTitlePage.getMessage();
@@ -359,7 +402,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
-        tvAddress.setText(mAddress+"");
+        tvAddress.setText(mAddress + "");
     }
 
     private void setNearbyInfo(List<TitlePage.ListDataBean> mListData) {
@@ -385,9 +428,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             ivCircle02.setVisibility(View.VISIBLE);
             ivCircle03.setVisibility(View.GONE);
         } else {
-            LogUtil.i("测试222","重新拿到数据了");
+            LogUtil.i("测试222", "重新拿到数据了");
             nearbyFragmentLeft.refreshData(mListData.subList(0, 3));
-            nearbyFragmentMiddle.refreshData(mListData.subList(3,6));
+            nearbyFragmentMiddle.refreshData(mListData.subList(3, 6));
             nearbyFragmentRight.refreshData(mListData.subList(6, mListData.size()));
 //            nearbyList.add(new NearbyFragment(mListData.subList(0, 3)));
 //            nearbyList.add(new NearbyFragment(mListData.subList(3, 6)));
