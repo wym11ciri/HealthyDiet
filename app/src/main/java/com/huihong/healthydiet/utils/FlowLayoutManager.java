@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by xiangcheng on 17/3/18.
  * 一种流式布局的LayoutManager
  */
 

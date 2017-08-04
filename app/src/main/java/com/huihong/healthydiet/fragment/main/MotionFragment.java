@@ -12,24 +12,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
+import com.huihong.healthydiet.mybean.ChartDay;
+import com.huihong.healthydiet.mybean.ChartMonth;
+import com.huihong.healthydiet.mybean.ChartYear;
 import com.huihong.healthydiet.service.StepService;
+import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.widget.MyYAnimation;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -44,12 +57,33 @@ public class MotionFragment extends Fragment {
     private TextView tvSelectRight, tvSelectLeft, tvSelectMiddle;
     private View.OnClickListener onClickListener;
 
-    private TextView tvStepCount;
+
+    private LinearLayout layoutCircle01, layoutCircle02, layoutCircle03;
+
+    //圆形1里面的内容
+    private TextView tvStepCount;//当前步数
+    private TextView tvCircle01Title;//当前是否在运动
+    private TextView tvStartStep;//点击开始运动
+
+    //圆形3里面的内容
+    private TextView tvDistance,tvTime;//行走的距离
 
 
-    private LinearLayout   layoutCircle01,layoutCircle02,layoutCircle03;
+    //当前是否在运动
+    private boolean isRun = false;
 
 
+    //动画
+    private Animation layoutAnimation01;
+    private Animation layoutAnimation02;
+    private Animation layoutAnimation03;
+    private MyYAnimation myYAnimation;
+
+    private int nowMultiple = 1;
+
+
+    //计步器当前的步数
+    private int stepCount = 0;
 
 
     @Nullable
@@ -59,47 +93,140 @@ public class MotionFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_motion, null);
             setLayoutCircle();
-
             bindStepService();
             initChart();
             initTimeSelectBar();
+            MainActivity.mainActivity.setItemOnClickListener04(new ItemOnClickListener() {
+                @Override
+                public void onClick() {
+                    layoutCircle02.startAnimation(layoutAnimation01);
+                }
+            });
         }
 
         return mView;
     }
 
     private void setLayoutCircle() {
-        layoutCircle01= (LinearLayout) mView.findViewById(R.id.layoutCircle01);
-        layoutCircle02= (LinearLayout) mView.findViewById(R.id.layoutCircle02);
-        layoutCircle03= (LinearLayout) mView.findViewById(R.id.layoutCircle03);
+
+        isRun = (boolean) SPUtils.get(getActivity(), "isRunning", false);
+
+        tvStepCount = (TextView) mView.findViewById(R.id.tvStepCount);
+        tvCircle01Title = (TextView) mView.findViewById(R.id.tvCircle01Title);
+        tvStartStep = (TextView) mView.findViewById(R.id.tvStartStep);
+        tvTime = (TextView) mView.findViewById(R.id.tvTime);
+        if (!isRun) {
+            tvStepCount.setVisibility(View.GONE);
+            tvStartStep.setVisibility(View.VISIBLE);
+            tvCircle01Title.setText("尚未开始");
+        } else {
+            tvStepCount.setVisibility(View.VISIBLE);
+            tvStartStep.setVisibility(View.GONE);
+            tvCircle01Title.setText("正在运动");
+        }
+
+
+        tvDistance = (TextView) mView.findViewById(R.id.tvDistance);
+
+        layoutCircle01 = (LinearLayout) mView.findViewById(R.id.layoutCircle01);
+        layoutCircle02 = (LinearLayout) mView.findViewById(R.id.layoutCircle02);
+        layoutCircle03 = (LinearLayout) mView.findViewById(R.id.layoutCircle03);
+
+        layoutAnimation01 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle);
+        layoutAnimation02 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle);
+        layoutAnimation03 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle);
+        myYAnimation = new MyYAnimation();
+        myYAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (isRun) {
+                    tvStepCount.setVisibility(View.VISIBLE);
+                    tvStartStep.setVisibility(View.GONE);
+                    tvCircle01Title.setText("正在运动");
+                } else {
+                    tvStepCount.setVisibility(View.GONE);
+                    tvStartStep.setVisibility(View.VISIBLE);
+                    tvCircle01Title.setText("尚未开始");
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        layoutAnimation01.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                layoutCircle03.startAnimation(layoutAnimation02);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        layoutAnimation02.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                layoutCircle01.startAnimation(layoutAnimation03);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
         layoutCircle01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AnimationSet animationSet = new AnimationSet(true);
-            /*
-                参数解释：
-                    第一个参数：X轴水平缩放起始位置的大小（fromX）。1代表正常大小
-                    第二个参数：X轴水平缩放完了之后（toX）的大小，0代表完全消失了
-                    第三个参数：Y轴垂直缩放起始时的大小（fromY）
-                    第四个参数：Y轴垂直缩放结束后的大小（toY）
-                    第五个参数：pivotXType为动画在X轴相对于物件位置类型
-                    第六个参数：pivotXValue为动画相对于物件的X坐标的开始位置
-                    第七个参数：pivotXType为动画在Y轴相对于物件位置类型
-                    第八个参数：pivotYValue为动画相对于物件的Y坐标的开始位置
 
-                   （第五个参数，第六个参数），（第七个参数,第八个参数）是用来指定缩放的中心点
-                    0.5f代表从中心缩放
-             */
-                ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f,1,0.5f,1, Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
-                //3秒完成动画
-                scaleAnimation.setDuration(2000);
-                //将AlphaAnimation这个已经设置好的动画添加到 AnimationSet中
-                animationSet.addAnimation(scaleAnimation);
-                //启动动画
-                layoutCircle01.startAnimation(animationSet);
+                if (!isRun) {
+                    SPUtils.put(getActivity(), "isRunning", true);
+                    isRun = true;
+                    bindStepService();
+                    //切换到运动状态
+                    layoutCircle01.startAnimation(myYAnimation);
+                } else {
+                    isRun = false;
+                    SPUtils.put(getActivity(), "isRunning", false);
+                    stopStepService();
+                    layoutCircle01.startAnimation(myYAnimation);
+                    //提交成功了做上面的事情
+
+                    //关闭计步器功能并提交数据
+                    submitStepCount();
+
+                }
             }
         });
+    }
+
+
+    //向服务器提交数据
+    private void submitStepCount() {
+        Calendar c = Calendar.getInstance();//
+        int mYear = c.get(Calendar.YEAR); // 获取当前年份
+        int mMonth = c.get(Calendar.MONTH) + 1;// 获取当前月份
+        int mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
+        MotionFragment.this.stepCount=0;
 
     }
 
@@ -109,7 +236,7 @@ public class MotionFragment extends Fragment {
      * 更详细的信息可以参考Service 和 context.bindService()中的描述，
      * 和许多来自系统的回调方式一样，ServiceConnection的方法都是进程的主线程中调用的。
      */
-    ServiceConnection conn = new ServiceConnection() {
+    private ServiceConnection conn = new ServiceConnection() {
         /**
          * 在建立起于Service的连接时会调用该方法，目前Android是通过IBind机制实现与服务的连接。
          * @param name 实际所连接到的Service组件名称
@@ -120,22 +247,15 @@ public class MotionFragment extends Fragment {
             StepService stepService = ((StepService.StepBinder) service).getService();
             stepService.setUpdateStepCallBack(new UpdateStepCallBack() {
                 @Override
-                public void updateStep(int stepCount) {
-                    tvStepCount.setText(stepCount+"");
+                public void updateStep(int stepCount,int min) {
+                    MotionFragment.this.stepCount = (int) (stepCount*0.8);
+                    tvStepCount.setText(stepCount + "");
+                    DecimalFormat df = new DecimalFormat("######0.0");
+                    double a = MotionFragment.this.stepCount * 0.4;
+                    tvDistance.setText(df.format(a) + "");
+                    tvTime.setText(min+"");
                 }
             });
-//            //设置初始化数据
-//            String planWalk_QTY = (String) sp.getParam("planWalk_QTY", "7000");
-//            cc.setCurrentCount(Integer.parseInt(planWalk_QTY), stepService.getStepCount());
-//
-//            //设置步数监听回调
-//            stepService.registerCallback(new UpdateUiCallBack() {
-//                @Override
-//                public void updateUi(int stepCount) {
-//                    String planWalk_QTY = (String) sp.getParam("planWalk_QTY", "7000");
-//                    cc.setCurrentCount(Integer.parseInt(planWalk_QTY), stepCount);
-//                }
-//            });
         }
 
         /**
@@ -149,16 +269,20 @@ public class MotionFragment extends Fragment {
 
         }
     };
+
     /**
      * 绑定计步器服务
      */
     private void bindStepService() {
-        tvStepCount= (TextView) mView.findViewById(R.id.tvStepCount);
+        if (isRun) {
+            Intent intent = new Intent(getActivity(), StepService.class);
+            getActivity().bindService(intent, conn, Context.BIND_AUTO_CREATE);
+//            getActivity().startService(intent);
+        }
+    }
 
-        Intent intent = new Intent(getActivity(), StepService.class);
-        getActivity().bindService(intent, conn, Context.BIND_AUTO_CREATE);
-        getActivity().startService(intent);
-
+    private void stopStepService() {
+        getActivity().unbindService(conn);
     }
 
     private void initTimeSelectBar() {
@@ -181,14 +305,23 @@ public class MotionFragment extends Fragment {
                     case R.id.tvSelectRight:
                         tvSelectRight.setTextColor(getResources().getColor(R.color.motion_select));
                         tvSelectRight.setBackgroundResource(R.drawable.motion_bg_right_select);
+                        //设置折线图横坐标为年
+                        setChartByYear();
                         break;
                     case R.id.tvSelectMiddle:
+                        //设置折线图横坐标为月
                         tvSelectMiddle.setTextColor(getResources().getColor(R.color.motion_select));
                         tvSelectMiddle.setBackgroundResource(R.drawable.motion_bg_middle_select);
+
+                        setChartByMonth();
                         break;
                     case R.id.tvSelectLeft:
+                        //设置折线图横坐标为日
                         tvSelectLeft.setTextColor(getResources().getColor(R.color.motion_select));
                         tvSelectLeft.setBackgroundResource(R.drawable.motion_bg_left_select);
+                        //
+                        setChartByDay();
+
                         break;
                 }
 
@@ -199,146 +332,284 @@ public class MotionFragment extends Fragment {
         tvSelectRight.setOnClickListener(onClickListener);
     }
 
+    private void setChartByDay() {
+        final List<ChartDay> mChartDayList = new ArrayList<>();
+        //生成一个假数据集合
+        for (int i = 1; i < 30; i++) {
+            ChartDay chartDay = new ChartDay();
+            chartDay.setDay(i);
+            chartDay.setMonth(7);
+            chartDay.setCount((int) (Math.random() * 500));
+            mChartDayList.add(chartDay);
+        }
+
+        //设置折线图的横坐标
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int a = (int) value;
+                if (a < mChartDayList.size()) {
+                    return mChartDayList.get(a).getMonth() + "." + mChartDayList.get(a).getDay();
+                } else {
+                    return "";
+                }
+            }
+        });
+        xAxis.setLabelCount(15);//横轴个数
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // 移除所有限制线
+        leftAxis.setAxisMaximum(500);//设置最大值
+
+
+        //重新绘制折线图数据
+        mChart.clear();//清空原来的数据
+        //绘制主线
+        ArrayList<Entry> values = new ArrayList<>();
+        ArrayList<Entry> values2 = new ArrayList<>();
+        for (int i = 0; i < mChartDayList.size(); i++) {
+            values.add(new Entry(i, mChartDayList.get(i).getCount()));
+            values2.add(new Entry(i, 0));
+        }
+        LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
+        mainLineDataSet.setColor(getResources().getColor(R.color.circle));
+        mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
+        mainLineDataSet.setLineWidth(0.5f);
+        mainLineDataSet.setCircleRadius(3f);
+        mainLineDataSet.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                int a = (int) value;
+                return a + "步";
+            }
+        });
+
+        //在坐标轴上画一条辅助的线
+        LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
+        auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
+        auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
+        auxiliaryLineDataSet.setLineWidth(0.2f);
+        auxiliaryLineDataSet.setCircleRadius(3f);
+        auxiliaryLineDataSet.setDrawFilled(true);
+        auxiliaryLineDataSet.setDrawValues(false);
+        auxiliaryLineDataSet.setDrawCircleHole(false);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(mainLineDataSet); // add the datasets
+        dataSets.add(auxiliaryLineDataSet); // add the datasets
+        LineData data = new LineData(dataSets);
+
+        // set data
+        mChart.setData(data);
+        setChartSize(2);
+
+
+    }
+
+    private void setChartByYear() {
+        final List<ChartYear> mChartDayList = new ArrayList<>();
+        //生成一个假数据集合
+        for (int i = 1; i < 8; i++) {
+            ChartYear chartDay = new ChartYear();
+            chartDay.setYear(2010 + i);
+            chartDay.setCount((int) (Math.random() * 500));
+            mChartDayList.add(chartDay);
+        }
+
+        //设置折线图的横坐标
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int a = (int) value;
+                if (a < mChartDayList.size()) {
+                    return mChartDayList.get(a).getYear() + "年";
+                } else {
+                    return "";
+                }
+            }
+        });
+        xAxis.setLabelCount(15);//横轴个数
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // 移除所有限制线
+        leftAxis.setAxisMaximum(500);//设置最大值
+
+
+        //重新绘制折线图数据
+        mChart.clear();//清空原来的数据
+        //绘制主线
+        ArrayList<Entry> values = new ArrayList<>();
+        ArrayList<Entry> values2 = new ArrayList<>();
+        for (int i = 0; i < mChartDayList.size(); i++) {
+            values.add(new Entry(i, mChartDayList.get(i).getCount()));
+            values2.add(new Entry(i, 0));
+        }
+        LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
+        mainLineDataSet.setColor(getResources().getColor(R.color.circle));
+        mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
+        mainLineDataSet.setLineWidth(0.5f);
+        mainLineDataSet.setCircleRadius(3f);
+        mainLineDataSet.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                int a = (int) value;
+                return a + "步";
+            }
+        });
+
+        //在坐标轴上画一条辅助的线
+        LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
+        auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
+        auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
+        auxiliaryLineDataSet.setLineWidth(0.2f);
+        auxiliaryLineDataSet.setCircleRadius(3f);
+        auxiliaryLineDataSet.setDrawFilled(true);
+        auxiliaryLineDataSet.setDrawValues(false);
+        auxiliaryLineDataSet.setDrawCircleHole(false);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(mainLineDataSet); // add the datasets
+        dataSets.add(auxiliaryLineDataSet); // add the datasets
+        LineData data = new LineData(dataSets);
+
+        // set data
+        mChart.setData(data);
+        setChartSize(1);
+
+    }
+
+    //设置图表的放大倍数
+    public void setChartSize(int multiple) {
+        //放大倍数只有放大2倍数和普通两种状态
+
+        if (multiple == 2) {
+            //如果需要放大2被
+            if (nowMultiple != 2) {
+                mChart.zoom(2, 1, 0, 0);
+                nowMultiple = 2;
+            } else {
+                mChart.zoom(1, 1, 0, 0);
+                nowMultiple = 2;
+            }
+
+
+        } else {
+            //需要变成原来的倍数
+            if (nowMultiple == 2) {
+                mChart.zoom(0.5f, 1, 0, 0);
+                nowMultiple = 1;
+            } else {
+                mChart.zoom(1, 1, 0, 0);
+                nowMultiple = 1;
+            }
+
+        }
+
+
+    }
+
+    private void setChartByMonth() {
+        final List<ChartMonth> mChartDayList = new ArrayList<>();
+        //生成一个假数据集合
+        for (int i = 1; i < 13; i++) {
+            ChartMonth chartMonth = new ChartMonth();
+            chartMonth.setMonth(i);
+            chartMonth.setCount((int) (Math.random() * 500));
+            mChartDayList.add(chartMonth);
+        }
+
+        //设置折线图的横坐标
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int a = (int) value;
+                if (a < mChartDayList.size()) {
+                    return mChartDayList.get(a).getMonth() + "月";
+                } else {
+                    return "";
+                }
+            }
+        });
+        xAxis.setLabelCount(15);//横轴个数
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // 移除所有限制线
+        leftAxis.setAxisMaximum(500);//设置最大值
+
+
+        //重新绘制折线图数据
+        mChart.clear();//清空原来的数据
+        //绘制主线
+        ArrayList<Entry> values = new ArrayList<>();
+        ArrayList<Entry> values2 = new ArrayList<>();
+        for (int i = 0; i < mChartDayList.size(); i++) {
+            values.add(new Entry(i, mChartDayList.get(i).getCount()));
+            values2.add(new Entry(i, 0));
+        }
+        LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
+        mainLineDataSet.setColor(getResources().getColor(R.color.circle));
+        mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
+        mainLineDataSet.setLineWidth(0.5f);
+        mainLineDataSet.setCircleRadius(3f);
+        mainLineDataSet.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                int a = (int) value;
+                return a + "步";
+            }
+        });
+
+        //在坐标轴上画一条辅助的线
+        LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
+        auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
+        auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
+        auxiliaryLineDataSet.setLineWidth(0.2f);
+        auxiliaryLineDataSet.setCircleRadius(3f);
+        auxiliaryLineDataSet.setDrawFilled(true);
+        auxiliaryLineDataSet.setDrawValues(false);
+        auxiliaryLineDataSet.setDrawCircleHole(false);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(mainLineDataSet); // add the datasets
+        dataSets.add(auxiliaryLineDataSet); // add the datasets
+        LineData data = new LineData(dataSets);
+        // set data
+        mChart.setData(data);
+        setChartSize(1);
+        mChart.fitScreen();
+
+    }
 
     //设置图表控件
     private void initChart() {
         mChart = (LineChart) mView.findViewById(R.id.chart1);
-
-//        mChart.setDrawYValues(f) :
-
-
-//        mChart.setOnChartGestureListener(this);
-//        mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(false);
-        // no description text
         mChart.getDescription().setEnabled(false);
-
-        // enable touch gestures
         mChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-//        mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        mChart.setScaleXEnabled(true);
+        mChart.setScaleXEnabled(false);
         mChart.setScaleYEnabled(false);
-
-        // if disabled, scaling can be done on x- and y-axis separately
         mChart.setPinchZoom(true);
-
-
+//        mChart.zoom(2, 1, 0, 0);
         XAxis xAxis = mChart.getXAxis();
-//        xAxis.enableGridDashedLine(10f, 10f, 0f);
         xAxis.setGranularity(1f); //以1为单位跳跃
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(getResources().getColor(R.color.line_chart_normal_color));//设置字体颜色
         xAxis.setDrawGridLines(false);
-
         //设置Y轴属性
         YAxis leftAxis = mChart.getAxisLeft();
-//        leftAxis.setDrawTopYLabelEntry(false);
         leftAxis.removeAllLimitLines(); // 移除所有限制线
         leftAxis.setAxisMaximum(200f);//设置最大值
         leftAxis.setAxisMinimum(0f);//设置最小值
-        //leftAxis.setYOffset(20f);
-        //设置表格框框
-//        leftAxis.enableGridDashedLine(10f, 10f, 0f);
         leftAxis.setDrawZeroLine(false);
-
-        // limit lines are drawn behind data (and not on top)
         leftAxis.setDrawLimitLinesBehindData(true);
-
         leftAxis.setEnabled(false);
 
         mChart.getAxisRight().setEnabled(false);
-        setData(7, 100);
-
-//        mChart.setVisibleXRange(20);
-//        mChart.setVisibleYRange(20f, AxisDependency.LEFT);
-//        mChart.centerViewTo(20, 50, AxisDependency.LEFT);
 
         mChart.animateX(2500);
-
         Legend legend = mChart.getLegend();
         legend.setEnabled(false);
-        //mChart.invalidate();
-
-        // get the legend (only possible after setting data)
-//        Legend l = mChart.getLegend();
-
-        // modify the legend ...
-//        l.setForm(Legend.LegendForm.LINE);
-
-    }
-
-    private void setData(int count, float range) {
-
-        ArrayList<Entry> values = new ArrayList<Entry>();
-
-        for (int i = 1; i < count; i++) {
-            float val = (int) (Math.random() * range) + 3;
-            values.add(new Entry(i, val));
-        }
-
-        LineDataSet set1;
-
-        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            mChart.getData().notifyDataChanged();
-            mChart.notifyDataSetChanged();
-        } else {
-            // create a dataset and give it a type
-            set1 = new LineDataSet(values, "DataSet 1");
-
-//            set1.setDrawIcons(false);
-
-            // set the line to be drawn like this "- - - - - -"
-//            set1.enableDashedLine(10f, 5f, 0f);
-//            set1.enableDashedHighlightLine(10f, 5f, 0f);
-            set1.setColor(getResources().getColor(R.color.circle));
-            set1.setCircleColor(getResources().getColor(R.color.circle));
-            set1.setLineWidth(0.5f);
-            set1.setCircleRadius(3f);
-//            set1.setDrawCircleHole(false);
-//            set1.setValueTextSize(9f);
-//            set1.setDrawFilled(true);
-//            set1.setFormLineWidth(1f);
-//            set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-//            set1.setFormSize(15.f);
-
-//            if (Utils.getSDKInt() >= 18) {
-//                // fill drawable only supported on api level 18 and above
-//                Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.bg_03);
-//                set1.setFillDrawable(drawable);
-//            }
-//            else {
-//                set1.setFillColor(Color.BLACK);
-//            }
-
-            LineDataSet set2;
-
-            ArrayList<Entry> values2 = new ArrayList<Entry>();
-            for (int i = 1; i < count; i++) {
-                values2.add(new Entry(i, 0));
-            }
-
-            set2 = new LineDataSet(values2, "DataSet 1");
-            set2.setColor(getResources().getColor(R.color.circle_zzzz));
-            set2.setCircleColor(getResources().getColor(R.color.circle_zzzz));
-            set2.setLineWidth(0.2f);
-            set2.setCircleRadius(3f);
-            set2.setDrawFilled(true);
-            set2.setDrawValues(false);
-            set2.setDrawCircleHole(false);
-
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-            dataSets.add(set1); // add the datasets
-            dataSets.add(set2); // add the datasets
-            // create a data object with the datasets
-            LineData data = new LineData(dataSets);
-
-            // set data
-            mChart.setData(data);
-        }
+        setChartByDay();
     }
 }

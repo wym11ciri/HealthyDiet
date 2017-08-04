@@ -22,6 +22,8 @@ import android.util.Log;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
+import com.huihong.healthydiet.stepcount.accelerometer.StepCount;
+import com.huihong.healthydiet.stepcount.accelerometer.StepValuePassListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
 
 import java.text.SimpleDateFormat;
@@ -33,30 +35,16 @@ import java.util.Date;
  */
 public class StepService extends Service {
     private String TAG = "StepService";
-    /**
-     * 默认为30秒进行一次存储
-     */
-    private static int duration = 30 * 1000;
-    /**
-     * 当前的日期
-     */
-    private static String CURRENT_DATE = "";
-    /**
-     * 传感器管理对象
-     */
-    private SensorManager sensorManager;
-    /**
-     * 广播接受者
-     */
-    private BroadcastReceiver mBatInfoReceiver;
+
+    private static int DURATION = 30 * 1000;//设置多久去存储一下数据
+    private static String CURRENT_DATE = "";//当前的日期
+    private SensorManager sensorManager;//传感器管理对象
+    private BroadcastReceiver mBatInfoReceiver;//广播接受者
     /**
      * 保存记步计时器
      */
     private TimeCount time;
-    /**
-     * 当前所走的步数
-     */
-    private int CURRENT_STEP;
+    private int CURRENT_STEP;//当前所走的步数
     /**
      * 计步传感器类型  Sensor.TYPE_STEP_COUNTER或者Sensor.TYPE_STEP_DETECTOR
      */
@@ -80,7 +68,7 @@ public class StepService extends Service {
     /**
      * 加速度传感器中获取的步数
      */
-//    private StepCount mStepCount;
+    private StepCount mStepCount;
     /**
      * IBinder对象，向Activity传递数据的桥梁
      */
@@ -90,29 +78,38 @@ public class StepService extends Service {
      */
     private NotificationCompat.Builder mBuilder;
 
+    private Thread stepThread;
 
 
     private UpdateStepCallBack updateStepCallBack;
 
-    public  void setUpdateStepCallBack( UpdateStepCallBack updateStepCallBack){
-        this.updateStepCallBack=updateStepCallBack;
+
+    public void setUpdateStepCallBack(UpdateStepCallBack updateStepCallBack) {
+        this.updateStepCallBack = updateStepCallBack;
     }
 
-
-
-
+    private long startTime;
+    //服务第一次创建的时候会调用onCreate
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate()");
-        initNotification();
+        //获得计步器开始的时间
+        startTime=System.currentTimeMillis();
+
+
+//        initNotification();
 //        initTodayData();
         initBroadcastReceiver();
-        new Thread(new Runnable() {
+
+
+        stepThread = new Thread(new Runnable() {//开启一个线程接收从传感器获得过来的数据
             public void run() {
                 startStepDetector();
             }
-        }).start();
+        });
+        stepThread.start();
+
+
         startTimeCount();
 
     }
@@ -143,9 +140,9 @@ public class StepService extends Service {
                 .setSmallIcon(R.mipmap.ic_launcher);
         Notification notification = mBuilder.build();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        startForeground(notifyId_Step, notification);
-        Log.d(TAG, "initNotification()");
+        startForeground(notifyId_Step, notification);//开启前台进程
     }
+
 
 //    /**
 //     * 初始化当天的步数
@@ -231,7 +228,9 @@ public class StepService extends Service {
     private void isNewDay() {
         String time = "00:00";
         if (time.equals(new SimpleDateFormat("HH:mm").format(new Date())) || !CURRENT_DATE.equals(getTodayDate())) {
-//            initTodayData();
+            //这里要重置步数并关闭
+            //并关闭几部线程
+            stopSelf();
         }
     }
 
@@ -241,7 +240,7 @@ public class StepService extends Service {
      */
     private void startTimeCount() {
         if (time == null) {
-            time = new TimeCount(duration, 1000);
+            time = new TimeCount(DURATION, 1000);
         }
         time.start();
     }
@@ -332,6 +331,7 @@ public class StepService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtil.i("服务onStartCommand");
         return START_STICKY;
     }
 
@@ -342,147 +342,96 @@ public class StepService extends Service {
         if (sensorManager != null) {
             sensorManager = null;
         }
+        LogUtil.i(TAG, "开启线程判断传感器");
         // 获取传感器管理器的实例
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        //android4.4以后可以使用计步传感器
-        int VERSION_CODES = Build.VERSION.SDK_INT;
-        if (VERSION_CODES >= 19) {
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            LogUtil.i(TAG, "API大于19 判断有无计步器");
+            //API大于19的可能会有计步器
             addCountStepListener();
         } else {
-            LogUtil.i("计步器" + TAG, "没有计步器功能");
-//            addBasePedometerListener();
+            LogUtil.i(TAG, "API小于19 开启重力传感器");
+            addBasePedometerListener();
         }
     }
 
-    /**
-     * 添加传感器监听
-     * 1. TYPE_STEP_COUNTER API的解释说返回从开机被激活后统计的步数，当重启手机后该数据归零，
-     * 该传感器是一个硬件传感器所以它是低功耗的。
-     * 为了能持续的计步，请不要反注册事件，就算手机处于休眠状态它依然会计步。
-     * 当激活的时候依然会上报步数。该sensor适合在长时间的计步需求。
-     * <p>
-     * 2.TYPE_STEP_DETECTOR翻译过来就是走路检测，
-     * API文档也确实是这样说的，该sensor只用来监监测走步，每次返回数字1.0。
-     * 如果需要长时间的计步请使用TYPE_STEP_COUNTER。
-     */
+
+    private int PEDOMETER_STEP_COUNT = 0;//使用计步器传感器的步数值
+    private Sensor detectorSensor;//计步器传感器
+    private SensorEventListener mSensorEventListener;//计步器传感器监听
+
     private void addCountStepListener() {
-        //注册2个传感器
-        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        Sensor detectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
-//        if (countSensor != null) {
-//            stepSensorType = Sensor.TYPE_STEP_COUNTER;
-////            Log.v(TAG, "Sensor.TYPE_STEP_COUNTER");
-//            LogUtil.i("计步器"+TAG,"Sensor.TYPE_STEP_COUNTER");
-//            sensorManager.registerListener(StepService.this, countSensor, SensorManager.SENSOR_DELAY_GAME);//第三个参数为设置传感器精度
-//        } else
-
+        //获取计步器传感器
+        detectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         if (detectorSensor != null) {
+            isUseGravitySensor = true;
             stepSensorType = Sensor.TYPE_STEP_DETECTOR;
-            LogUtil.i("计步器" + TAG, "Sensor.TYPE_STEP_DETECTOR");
-            sensorManager.registerListener(new SensorEventListener() {
+            LogUtil.i(TAG, "有计步器传感器 使用计步器传感器");
+            mSensorEventListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-
                     if (event.values[0] == 1.0f) {
-                        LogUtil.i("计步器", "计步啦2");
-                        CURRENT_STEP++;
-                        if(updateStepCallBack!=null){
-                            updateStepCallBack.updateStep(CURRENT_STEP);
+                        LogUtil.i(TAG, "计步啦2");
+                        PEDOMETER_STEP_COUNT++;
+                        if (updateStepCallBack != null) {
+                            //计算时间差
+                         int min= (int) ((System.currentTimeMillis()-startTime)/(1000 * 60));
+                            updateStepCallBack.updateStep(PEDOMETER_STEP_COUNT,min);
                         }
-                        updateNotification();
+//                        updateNotification();
                     }
                 }
 
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                    //当传感器精度发生变化的时候
 
                 }
-            }, detectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            };
+
+
+            sensorManager.registerListener(mSensorEventListener, detectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
         } else {
-            LogUtil.i("计步器" + TAG, "没有计步器功能");
-//            addBasePedometerListener();
+            LogUtil.i(TAG, "没有计步器传感器 使用重力传感器");
+            addBasePedometerListener();
         }
     }
-
-    /**
-     * 传感器监听回调
-     * 记步的关键代码
-     * 1. TYPE_STEP_COUNTER API的解释说返回从开机被激活后统计的步数，当重启手机后该数据归零，
-     * 该传感器是一个硬件传感器所以它是低功耗的。
-     * 为了能持续的计步，请不要反注册事件，就算手机处于休眠状态它依然会计步。
-     * 当激活的时候依然会上报步数。该sensor适合在长时间的计步需求。
-     * <p>
-     * 2.TYPE_STEP_DETECTOR翻译过来就是走路检测，
-     * API文档也确实是这样说的，该sensor只用来监测走步，每次返回数字1.0。
-     * 如果需要长事件的计步请使用TYPE_STEP_COUNTER。
-     *
-     * @param event
-     */
-//    @Override
-//    public void onSensorChanged(SensorEvent event) {
-//
-////        if (stepSensorType == Sensor.TYPE_STEP_COUNTER) {
-////            LogUtil.i("计步器", "计步啦1");
-////            //获取当前传感器返回的临时步数
-////            int tempStep = (int) event.values[0];
-////            //首次如果没有获取手机系统中已有的步数则获取一次系统中APP还未开始记步的步数
-////            if (!hasRecord) {
-////                hasRecord = true;
-////                hasStepCount = tempStep;
-////            } else {
-////                //获取APP打开到现在的总步数=本次系统回调的总步数-APP打开之前已有的步数
-////                int thisStepCount = tempStep - hasStepCount;
-////                //本次有效步数=（APP打开后所记录的总步数-上一次APP打开后所记录的总步数）
-////                int thisStep = thisStepCount - previousStepCount;
-////                //总步数=现有的步数+本次有效步数
-////                CURRENT_STEP += (thisStep);
-////                //记录最后一次APP打开到现在的总步数
-////                previousStepCount = thisStepCount;
-////            }
-//////            Logger.d("tempStep" + tempStep);
-////        } else
-//
-//        if (stepSensorType == Sensor.TYPE_STEP_DETECTOR) {
-//            if (event.values[0] == 1.0) {
-//                LogUtil.i("计步器", "计步啦2");
-//                CURRENT_STEP++;
-//            }
-//        }
-//        updateNotification();
-//    }
-
-//    @Override
-//    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-//
-//    }
 
     /**
      * 如果设备不支持计步器传感器
      * 那么使用重力传感器来代替
      */
+    private Sensor sensor;//重力传感器
+    private int GRAVITY_SENSOR_STEP_COUNT = 0;//使用重力传感器计步器数据
+    private boolean isUseGravitySensor = false;//是否使用重力传感器来计步的
+
     private void addBasePedometerListener() {
-//        mStepCount = new StepCount();
-//        mStepCount.setSteps(CURRENT_STEP);
-//        // 获得传感器的类型，这里获得的类型是加速度传感器
-//        // 此方法用来注册，只有注册过才会生效，参数：SensorEventListener的实例，Sensor的实例，更新速率
-//        Sensor sensor = sensorManager
-//                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//        boolean isAvailable = sensorManager.registerListener(mStepCount.getStepDetector(), sensor,
-//                SensorManager.SENSOR_DELAY_UI);
-//        mStepCount.initListener(new StepValuePassListener() {
-//            @Override
-//            public void stepChanged(int steps) {
-//                CURRENT_STEP = steps;
+        isUseGravitySensor = true;
+        mStepCount = new StepCount();
+        mStepCount.setSteps(GRAVITY_SENSOR_STEP_COUNT);//设置开始值
+        //获取重力传感器
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        //注册重力传感器
+        boolean isAvailable = sensorManager.registerListener(mStepCount.getStepDetector(), sensor, SensorManager.SENSOR_DELAY_UI);
+        mStepCount.initListener(new StepValuePassListener() {
+            @Override
+            public void stepChanged(int steps) {
+                LogUtil.i(TAG, "重力传感器计步器" + steps);//返回的值是累加的
+                GRAVITY_SENSOR_STEP_COUNT = steps;
 //                updateNotification();
-//            }
-//        });
-//        if (isAvailable) {
-//            Log.v(TAG, "加速度传感器可以使用");
-//        } else {
-//            Log.v(TAG, "加速度传感器无法使用");
-//        }
+                if (updateStepCallBack != null) {
+                    int min= (int) ((System.currentTimeMillis()-startTime)/(1000 * 60));
+                    updateStepCallBack.updateStep(GRAVITY_SENSOR_STEP_COUNT,min);
+                }
+
+            }
+        });
+        if (isAvailable) {
+            LogUtil.i(TAG, "加速度传感器可以使用");
+        } else {
+            LogUtil.i(TAG, "加速度传感器无法使用");
+        }
     }
 
     /**
@@ -529,16 +478,26 @@ public class StepService extends Service {
     }
 
 
+    //计步器服务销毁的时候调用
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //取消前台进程
-        stopForeground(true);
-//        DbUtils.closeDb();
+        stopForeground(true);//取消前台进程
         unregisterReceiver(mBatInfoReceiver);
-//        Logger.d("stepService关闭");
+
+        //重力传感器解除
+        if (mStepCount != null && sensor != null) {
+            sensorManager.unregisterListener(mStepCount.getStepDetector(), sensor);
+        }
+
+        //计步器传感器解除
+        if (detectorSensor != null && mSensorEventListener != null) {
+            sensorManager.unregisterListener(mSensorEventListener, detectorSensor);
+        }
+
     }
 
+    //绑定服务的时候调用
     @Override
     public boolean onUnbind(Intent intent) {
         return super.onUnbind(intent);

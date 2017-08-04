@@ -36,17 +36,18 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_gravity="bottom"
+                    android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="103"
+                    android:layout_gravity="bottom"
+                    android:text="0"
                     android:textColor="#F99115"
                     android:textSize="24sp" />
 
                 <TextView
-                    android:layout_gravity="bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:text="min"
@@ -95,20 +96,21 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_gravity="bottom"
+                    android:text="0"
+                    android:id="@+id/tvDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="103"
+                    android:layout_gravity="bottom"
                     android:textColor="#EE79C3"
                     android:textSize="24sp" />
 
                 <TextView
-                    android:layout_gravity="bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="Km"
+                    android:text="m"
                     android:textColor="#989898"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -159,19 +161,18 @@
                     android:src="@mipmap/sport_2" />
 
                 <TextView
-
+                    android:id="@+id/tvCircle01Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="正在运动"
+                    android:text="尚未开始"
                     android:textColor="#000000"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tvStartStep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -179,15 +180,17 @@
                 android:text="点击开始"
                 android:textColor="#666666"
                 android:textSize="24sp" />
-            <TextView
 
+            <TextView
                 android:id="@+id/tvStepCount"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="0"
                 android:textColor="#5FC1E6"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:visibility="gone" />
 
 
             <TextView
