@@ -9,11 +9,21 @@ public class Leaf {
     //绘制bitmap的时候坐标是从左上角开始的
     //x,y为左上角的坐标
     private int startX;
-    private int startY;
+    private float startY;
     private int integralWidth=60;
     private int eventWidth=70;
 
     private int alpha;
+
+    private  float move;
+
+    public float getMove() {
+        return move;
+    }
+
+    public void setMove(float move) {
+        this.move = move;
+    }
 
     public int getAlpha() {
         return alpha;
@@ -31,11 +41,11 @@ public class Leaf {
         this.startX = startX;
     }
 
-    public int getStartY() {
-        return startY;
+    public float getStartY() {
+        return startY+move;
     }
 
-    public void setStartY(int startY) {
+    public void setStartY(float startY) {
         this.startY = startY;
     }
 
@@ -47,9 +57,6 @@ public class Leaf {
         this.leafSize = leafSize;
         this.integralWidth= leafSize+5;
         this.eventWidth= leafSize+5;
-
-
-
     }
 
     public String getIntegral() {
@@ -79,12 +86,12 @@ public class Leaf {
 
 
     //获得绘制积分的开始坐标X
-    public int getDrawIntegralX() {
+    public float getDrawIntegralX() {
         return startX+leafSize;
     }
     //获得绘制积分的开始坐标Y
     public int getDrawIntegralY() {
-        return (int) (startY+leafSize*0.8);
+        return (int) (startY+leafSize*0.8+move);
     }
 
     //获得绘制事件的开始坐标X
@@ -92,8 +99,8 @@ public class Leaf {
         return startX+leafSize+integralWidth;
     }
     //获得绘制事件的开始坐标Y
-    public int getDrawEventY() {
-        return (int) (startY+leafSize*0.8);
+    public float getDrawEventY() {
+        return (int) (move+startY+leafSize*0.8);
     }
 
     //获得叶子点击事件区域的X
@@ -101,7 +108,7 @@ public class Leaf {
         return startX+leafSize+integralWidth+eventWidth;
     }
     //获得叶子点击事件区域的X
-    public int getLeafYEnd() {
+    public float getLeafYEnd() {
         return startY+leafSize;
     }
 

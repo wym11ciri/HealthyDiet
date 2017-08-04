@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.fragment.main;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -84,7 +85,7 @@ public class MotionFragment extends Fragment {
 
     //计步器当前的步数
     private int stepCount = 0;
-
+    private AlertDialog runningDialog;
 
     @Nullable
     @Override
@@ -99,7 +100,9 @@ public class MotionFragment extends Fragment {
             MainActivity.mainActivity.setItemOnClickListener04(new ItemOnClickListener() {
                 @Override
                 public void onClick() {
-                    layoutCircle02.startAnimation(layoutAnimation01);
+                    layoutCircle01.startAnimation(layoutAnimation01);
+                    layoutCircle02.startAnimation(layoutAnimation02);
+                    layoutCircle03.startAnimation(layoutAnimation02);
                 }
             });
         }
@@ -132,9 +135,9 @@ public class MotionFragment extends Fragment {
         layoutCircle02 = (LinearLayout) mView.findViewById(R.id.layoutCircle02);
         layoutCircle03 = (LinearLayout) mView.findViewById(R.id.layoutCircle03);
 
-        layoutAnimation01 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle);
-        layoutAnimation02 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle);
-        layoutAnimation03 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle);
+        layoutAnimation01 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle01);
+        layoutAnimation02 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle02);
+        layoutAnimation03 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle02);
         myYAnimation = new MyYAnimation();
         myYAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -161,38 +164,9 @@ public class MotionFragment extends Fragment {
             }
         });
 
-        layoutAnimation01.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
 
-            }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                layoutCircle03.startAnimation(layoutAnimation02);
-            }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        layoutAnimation02.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                layoutCircle01.startAnimation(layoutAnimation03);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
 
         layoutCircle01.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +184,14 @@ public class MotionFragment extends Fragment {
                     stopStepService();
                     layoutCircle01.startAnimation(myYAnimation);
                     //提交成功了做上面的事情
+//                    AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+//                    View view=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_prompt_running,null);
+//
+//                    builder.setView(view);
+//                    runningDialog=builder.create();
+//                    runningDialog.show();
+
+
 
                     //关闭计步器功能并提交数据
                     submitStepCount();

@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.mybean.Coordinate;
 import com.huihong.healthydiet.mybean.Leaf;
 
 import java.util.ArrayList;
@@ -45,13 +47,15 @@ public class TreeView extends View {
 
     private int clickNum = -1;//上次点击的叶子
 
-    private boolean isAnimation=false;//是否在执行动画
+    private boolean isAnimation = false;//是否在执行动画
     private boolean isRunAlphaAnimation = false;//是否需要执行透明度动画
 
-    private boolean isRun=true;
+    private boolean isRun = true;
 
     private AlphaAnimationThread alphaAnimationThread;
+    ValueAnimator animator;
 
+    private List<Coordinate> mCoordinateList;
 
     public TreeView(Context context) {
         this(context, null);
@@ -63,11 +67,35 @@ public class TreeView extends View {
 
     public TreeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         this.context = context;
+        mCoordinateList = new ArrayList<>();
+
+
         mLeafList = new ArrayList<>();
+        animator = ValueAnimator.ofInt(-5, 5, -5);
+        animator.setDuration(1500);
+        animator.setRepeatCount(-1);
+        animator.start();
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int f = (int) animation.getAnimatedValue();
+                for (int i = 0; i < mLeafList.size(); i++) {
+                    mLeafList.get(i).setMove(f);
+                }
+                invalidate();
+//                Log.i("TAG", "AnimatorValue is" + String.valueOf(f));
+            }
+        });
 
 
+    }
+
+    private void setCoordinate(double x, double y) {
+        Coordinate mCoordinate = new Coordinate();
+        mCoordinate.setX(x);
+        mCoordinate.setY(y);
+        mCoordinateList.add(mCoordinate);
     }
 
     @Override
@@ -76,8 +104,8 @@ public class TreeView extends View {
         viewW = w;
         viewH = h;
         leafSize = w / 16;
-        textSize01= (int) (leafSize*0.8);
-        textSize02= (int) (leafSize*0.6);
+        textSize01 = (int) (leafSize * 0.8);
+        textSize02 = (int) (leafSize * 0.6);
         Bitmap bt1 = BitmapFactory.decodeResource(getResources(), R.mipmap.leaf);
         LeafBitmap = Bitmap.createScaledBitmap(bt1, leafSize, leafSize, false);
         bt1.recycle();//释放旧的图片资源
@@ -98,11 +126,37 @@ public class TreeView extends View {
         textEventPaint.setAntiAlias(true);//设置抗锯齿
 
 
+        //设置树叶可能显示坐标位置的地方
 
-        for (int i = 0; i < 8; i++) {
+        //文件tree1
+//        setCoordinate(0.3444,0.11);
+//        setCoordinate(0.571,0.274);
+//        setCoordinate(0.3848,0.261);
+
+//        //文件tree2
+//        setCoordinate(0.3987,0.14388);
+//        setCoordinate(0.14767,0.3597);
+//        setCoordinate(0.6835,0.7458);
+//
+//        //文件tree3
+//        setCoordinate(0.38526, 0.12857);
+//        setCoordinate(0.11789, 0.29523);
+//        setCoordinate(0.7052, 0.7);
+//
+//        //文件tree4
+//        setCoordinate(0.195,0.933);
+//        setCoordinate(0.922,0.679);
+//        setCoordinate(0.71698,0.79425);
+//
+//        //文件tree5
+        setCoordinate(0.077568,0.6610);
+        setCoordinate(0.18238,0.85336);
+        setCoordinate(0.8134,0.786);
+
+        for (int i = 0; i < 3; i++) {
             Leaf leaf = new Leaf();
-            leaf.setStartX(i * (h/10));
-            leaf.setStartY(i * (h/10));
+            leaf.setStartX((int) (mCoordinateList.get(i).getX() * viewW));
+            leaf.setStartY((int) (mCoordinateList.get(i).getY() * viewH));
             leaf.setEvent("事件" + i);
             leaf.setIntegral(" +" + i);
             leaf.setLeafSize(leafSize);
@@ -111,6 +165,23 @@ public class TreeView extends View {
         }
 
     }
+
+    private void valueAnimator() {
+        ValueAnimator animator = ValueAnimator.ofInt(-5, 0, 5);
+        animator.setDuration(400);
+        animator.start();
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float f = (float) animation.getAnimatedValue();
+                for (int i = 0; i < mLeafList.size(); i++) {
+                    mLeafList.get(i).setMove(f);
+                }
+//                Log.i("TAG", "AnimatorValue is" + String.valueOf(f));
+            }
+        });
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -130,15 +201,19 @@ public class TreeView extends View {
             canvas.drawText(mLeafList.get(i).getEvent(), mLeafList.get(i).getDrawEventX(), mLeafList.get(i).getDrawEventY(), textEventPaint);
         }
 
-        if(!isAnimation){
+        if (!isAnimation) {
             //若没有在执行渐变动画则开启渐变动画
-            if(!isRunAlphaAnimation){
-                isRunAlphaAnimation=true;
+            if (!isRunAlphaAnimation) {
+                isRunAlphaAnimation = true;
             }
         }
 
-        if(mLeafList.size()<1){
-            isRun=false;
+        if (mLeafList.size() < 1) {
+            isRun = false;
+        }
+
+        if(!animator.isRunning()){
+            animator.start();
         }
     }
 
@@ -176,7 +251,7 @@ public class TreeView extends View {
                 try {
                     sleep(30);
                     if (mLeafList != null && clickNum != -1 && clickNum < mLeafList.size()) {
-                        int y = mLeafList.get(clickNum).getStartY();
+                        float y = mLeafList.get(clickNum).getStartY();
                         mLeafList.get(clickNum).setStartY(y - 20);
                         postInvalidate();//异步更新
                     }
@@ -203,16 +278,16 @@ public class TreeView extends View {
                         sleep(300);
                         for (int i = 0; i < mLeafList.size(); i++) {
                             if (i < mLeafList.size()) {
-                                int nowAlpha=mLeafList.get(i).getAlpha();
+                                int nowAlpha = mLeafList.get(i).getAlpha();
 
-                                if (nowAlpha < 240&&nowAlpha>=100) {
-                                    mLeafList.get(i).setAlpha(nowAlpha+30);
+                                if (nowAlpha < 240 && nowAlpha >= 100) {
+                                    mLeafList.get(i).setAlpha(nowAlpha + 30);
                                 } else {
                                     mLeafList.get(i).setAlpha(100);
                                 }
                             }
                         }
-                        if(mLeafList.size()>0){
+                        if (mLeafList.size() > 0) {
                             postInvalidate();
                         }
                     } catch (InterruptedException e) {
@@ -223,14 +298,15 @@ public class TreeView extends View {
         }
     }
 
-    public  void stopThread(){
-        isRun=false;
-        isAnimation=false;
-        isRunAlphaAnimation=false;
+    public void stopThread() {
+        isRun = false;
+        isAnimation = false;
+        isRunAlphaAnimation = false;
     }
-    public  void startThread(){
-        isRunAlphaAnimation=false;
-        alphaAnimationThread=new AlphaAnimationThread();
+
+    public void startThread() {
+        isRunAlphaAnimation = false;
+        alphaAnimationThread = new AlphaAnimationThread();
         alphaAnimationThread.start();
         invalidate();
     }
