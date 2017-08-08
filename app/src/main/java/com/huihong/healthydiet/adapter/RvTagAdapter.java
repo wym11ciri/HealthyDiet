@@ -52,6 +52,9 @@ public class RvTagAdapter extends RecyclerView.Adapter<RvTagViewHolder> {
     @Override
     public void onBindViewHolder(final RvTagViewHolder holder, int position) {
         holder.tvTag.setText(mList.get(position));
+
+
+
     }
 
     @Override

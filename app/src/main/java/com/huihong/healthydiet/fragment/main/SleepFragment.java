@@ -50,8 +50,7 @@ public class SleepFragment extends Fragment {
     private SwitchImageView mSwitchImageView;
 
 
-    private  TextView tvWeek;
-
+    private TextView tvWeek;
 
 
     private NestedScrollView mNestedScrollView;
@@ -70,22 +69,22 @@ public class SleepFragment extends Fragment {
     }
 
     private void initUI() {
-        mNestedScrollView= (NestedScrollView) mView.findViewById(R.id.mNestedScrollView);
+        mNestedScrollView = (NestedScrollView) mView.findViewById(R.id.mNestedScrollView);
 
 
-        mSleepChartView= (SleepChartView) mView.findViewById(R.id.mSleepChartView);
+        mSleepChartView = (SleepChartView) mView.findViewById(R.id.mSleepChartView);
         initWeekText();
         initTimeSelectView();//初始化自定义时间选择器
         initSettingLayout();//初始化设置按钮布局
     }
 
     private void initWeekText() {
-        tvWeek= (TextView) mView.findViewById(R.id.tvWeek);
+        tvWeek = (TextView) mView.findViewById(R.id.tvWeek);
         List<Boolean> cacheValueList = CacheUtils.getSleepWeek(getActivity());
         String text = "";
         for (int i = 0; i < cacheValueList.size(); i++) {
-            if(cacheValueList.get(i)){
-                text=text+getWeek(i)+" ";
+            if (cacheValueList.get(i)) {
+                text = text + getWeek(i) + " ";
             }
         }
         tvWeek.setText(text);
@@ -97,16 +96,16 @@ public class SleepFragment extends Fragment {
 
 
         //从缓存中拿取
-        boolean AlarmOpen= (boolean) SPUtils.get(getActivity(),"AlarmOpen",false);
+        boolean AlarmOpen = CacheUtils.isOpenAlarm(getActivity());
         mSwitchImageView.setChoose(AlarmOpen);
 
         mSwitchImageView.setmSwitchListener(new SwitchListener() {
             @Override
             public void mSwitch(boolean isChoose) {
                 if (isChoose) {
-                    SPUtils.put(getActivity(),"AlarmOpen",true);
+                    CacheUtils.setOpenAlarm(getActivity(), true);
                 } else {
-                    SPUtils.put(getActivity(),"AlarmOpen",false);
+                    CacheUtils.setOpenAlarm(getActivity(), false);
                 }
             }
         });
@@ -131,8 +130,8 @@ public class SleepFragment extends Fragment {
                 List<Boolean> cacheValueList = CacheUtils.getSleepWeek(getActivity());
                 String text = "";
                 for (int i = 0; i < cacheValueList.size(); i++) {
-                    if(cacheValueList.get(i)){
-                        text=text+getWeek(i)+" ";
+                    if (cacheValueList.get(i)) {
+                        text = text + getWeek(i) + " ";
                     }
                 }
                 tvWeek.setText(text);
@@ -228,7 +227,7 @@ public class SleepFragment extends Fragment {
 
                         startHour = hour;
                         startMin = min;
-                        mSleepChartView.setLimitLineH(hour,min,true);
+                        mSleepChartView.setLimitLineH(hour, min, true);
 
                         if (min < 10) {
                             tvTimeStart.setText(hour + ":0" + min);
@@ -252,7 +251,7 @@ public class SleepFragment extends Fragment {
                         endHour = hour;
                         endMin = min;
 
-                        mSleepChartView.setLimitLineH(hour,min,false);
+                        mSleepChartView.setLimitLineH(hour, min, false);
                         if (min < 10) {
                             tvTimeEnd.setText(hour2 + ":0" + min);
                         } else {

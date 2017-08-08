@@ -18,7 +18,7 @@ import static com.huihong.healthydiet.utils.common.SPUtils.get;
 
 public class CacheUtils {
 
-
+    //个人信息
     //从缓存中读取个人信息
     public static PersonalInfo getPersonalInfo(Context mContext) {
         String headImageUrl = (String) get(mContext, "headImageUrl", "");//头像链接地址
@@ -71,14 +71,10 @@ public class CacheUtils {
         SPUtils.put(mContext, "phone", phone);
     }
 
+    //UserId
     //设置UserId
     public static void setUserId(Context mContext, int newUserId) {
         SPUtils.put(mContext, "UserId", newUserId);
-    }
-
-    //设置token
-    public static void setToken(Context mContext, String newToken) {
-        SPUtils.put(mContext, "Token", newToken);
     }
 
     //获取UserId
@@ -86,12 +82,18 @@ public class CacheUtils {
         return (int) SPUtils.get(mContext, "UserId", 0) + "";
     }
 
+    //token
+    //设置token
+    public static void setToken(Context mContext, String newToken) {
+        SPUtils.put(mContext, "Token", newToken);
+    }
+
     //获取token
     public static String getToken(Context mContext) {
         return (String) SPUtils.get(mContext, "Token", "");
     }
 
-
+    //睡眠星期
     //设置睡眠星期
     public static void setSleepWeek(Context mContext, List<WeekSelectTextView> mWeekList) {
         String weekString = "";
@@ -108,9 +110,9 @@ public class CacheUtils {
     }
 
     //返回睡眠星期
-    public  static  List<Boolean> getSleepWeek (Context mContext){
+    public static List<Boolean> getSleepWeek(Context mContext) {
 
-        String weekValueString= (String) SPUtils.get(mContext,"weekValueString","0,0,0,0,0,0,0,");
+        String weekValueString = (String) SPUtils.get(mContext, "weekValueString", "0,0,0,0,0,0,0,");
 
         List<Boolean> mList = new ArrayList<>();
         assert weekValueString != null;
@@ -125,5 +127,36 @@ public class CacheUtils {
         return mList;
     }
 
+    //步数
+    //获得当前行走的步数
+    public static int getStepCount(Context mContext) {
+        return (int) SPUtils.get(mContext, "stepCount", 0);
+    }
 
+    //保存步数
+    public static void putStepCount(Context mContext, int nowCount) {
+        SPUtils.put(mContext, "stepCount", nowCount);
+    }
+
+    //运动状态
+    //设置运动状态
+    public static void setRun(Context mContext, boolean isRunning) {
+        SPUtils.put(mContext, "isRunning", isRunning);
+    }
+
+    //获得运动状态
+    public static boolean getRun(Context mContext) {
+        return (boolean) SPUtils.get(mContext, "isRunning", false);
+    }
+
+    //闹铃状态
+    //设置闹铃状态
+    public static void setOpenAlarm(Context mContext, boolean isOpen) {
+        SPUtils.put(mContext, "isOpenAlarm", isOpen);
+    }
+
+    //获得闹铃状态
+    public static boolean isOpenAlarm(Context mContext) {
+        return (boolean) SPUtils.get(mContext, "isOpenAlarm", false);
+    }
 }

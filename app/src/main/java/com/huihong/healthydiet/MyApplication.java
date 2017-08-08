@@ -23,20 +23,15 @@ public class MyApplication extends Application {
     public Vibrator mVibrator;
 
 
-    public  static  String address;
+    public static String address;
 
-    public  static double Latitude;//经度
+    public static double Latitude;//经度
     public static double Longitude;//纬度
-
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-
-
-
         LitePal.initialize(this);
         Connector.getDatabase();//创建数据
 //        CookieJarImpl cookieJar = new CookieJarImpl(new PersistentCookieStore(getApplicationContext()));
@@ -46,8 +41,6 @@ public class MyApplication extends Application {
 //                //其他配置
 //                .build();
 //        OkHttpUtils.initClient(okHttpClient);
-
-
 
 
         /***

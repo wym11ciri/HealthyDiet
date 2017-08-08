@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
-import com.huihong.healthydiet.fragment.LikeFragment;
-import com.huihong.healthydiet.fragment.UnLikeFragment;
+import com.huihong.healthydiet.fragment.like.LikeFragment;
+import com.huihong.healthydiet.fragment.like.UnLikeFragment;
 import com.huihong.healthydiet.widget.MyViewPager;
 
 import java.util.ArrayList;

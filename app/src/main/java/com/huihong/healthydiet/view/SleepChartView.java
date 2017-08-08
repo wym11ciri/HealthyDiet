@@ -8,10 +8,13 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.mybean.Sleep;
+import com.huihong.healthydiet.cache.litepal.SleepCache;
+import com.huihong.healthydiet.utils.DateUtil;
 import com.huihong.healthydiet.utils.common.DensityUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +37,7 @@ public class SleepChartView extends View {
     private float sleepLimitH;//睡眠线高度
     private float getUpLimitH;//起床线高度
 
-    private List<Sleep> mSleepList;
+    private List<SleepCache> mSleepList;
 
     private int textWidth;
     private int textSize;
@@ -87,17 +90,71 @@ public class SleepChartView extends View {
         textWidth = DensityUtils.dp2px(mContext, 40);
 
         mSleepList = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-           Sleep sleep=new Sleep();
-            sleep.setGetUpHour(i+1);
-            sleep.setGetUpMin(i+1);
+        initData();
+    }
+    //初始化数据
+    private void initData() {
+        //查询当天是周几
+       int nowWeek= DateUtil.getNowWeek();
+        LogUtil.i("当前星期"+nowWeek);
+        //去数据库查询前几天的数据
+        //nowWeek 1时候为周天 需要去查询前6天的
+        LogUtil.i("前1天"+DateUtil.getPastDate(1));
+        LogUtil.i("前2天"+DateUtil.getPastDate(2));
+        LogUtil.i("前3天"+DateUtil.getPastDate(3));
+        LogUtil.i("前4天"+DateUtil.getPastDate(4));
+        if(nowWeek==1){
+            //当前为周天 获取前6天的数据 i=1 2 3 4 5 6
+            for (int i = 1; i <7 ; i++) {
+                List<Integer> mDateList=DateUtil.getPastDate(i);
+                //去数据库查询
+                List<SleepCache> mSleepCacheList = DataSupport
+                        .where("year = ? and month = ? and day = ?", mDateList.get(0) + "", mDateList.get(1) + "", mDateList.get(2) + "")
+                        .find(SleepCache.class);
 
-            sleep.setSleepHour(i+13);
-            sleep.setSleepMin(i+13);
-            mSleepList.add(sleep);
+                if(mSleepCacheList.size()>0){
+                    //当前有记录
+                    //去绘制
+                    SleepCache mSleepCache=mSleepCacheList.get(0);
+                    mSleepCache.setDraw(true);
+                    mSleepList.add(mSleepCache);
+                }else {
+                    //当前没有记录
+                    //不去绘制
+                    SleepCache mSleepCache=new SleepCache();
+                    mSleepCache.setDraw(false);
+                    mSleepList.add(mSleepCache);
+                }
+            }
+        }else {
+            //例如 nowWeek=2 是周一 需要去查询前0天的数据
+            for (int i = 1; i <nowWeek-1 ; i++) {
+                List<Integer> mDateList=DateUtil.getPastDate(i);
+                //去数据库查询
+                List<SleepCache> mSleepCacheList = DataSupport
+                        .where("year = ? and month = ? and day = ?", mDateList.get(0) + "", mDateList.get(1) + "", mDateList.get(2) + "")
+                        .find(SleepCache.class);
+
+                if(mSleepCacheList.size()>0){
+                    LogUtil.i("嘻嘻","有数据"+mSleepCacheList.size());
+                    //当前有记录
+                    //去绘制
+                    SleepCache mSleepCache=mSleepCacheList.get(0);
+                    mSleepCache.setDraw(true);
+                    mSleepList.add(mSleepCache);
+                    LogUtil.i("嘻嘻",mSleepCache.getGetUpHour()+"==="+mSleepCache.getGetUpMin()+"");
+                }else {
+                    LogUtil.i("嘻嘻","没有数据");
+                    //当前没有记录
+                    //不去绘制
+                    SleepCache mSleepCache=new SleepCache();
+                    mSleepCache.setDraw(false);
+                    mSleepList.add(mSleepCache);
+                }
+            }
+
         }
-        LogUtil.i("调试", "SleepChartView 构造");
-
+        //nowWeek 2时候为周1 去查询前1-1天的
     }
 
     @Override
@@ -161,13 +218,15 @@ public class SleepChartView extends View {
 
 
         //绘制历史睡眠线
-        for (int i = 0; i < mSleepList.size()-1; i++) {
-            canvas.drawLine(textWidth + screenW_14 * (2 * i + 1),  getSleepH(mSleepList.get(i),false)+ paddingTop, textWidth + screenW_14 * (2 * i + 1),  getSleepH(mSleepList.get(i),true) + paddingTop, paintSleep);
+        for (int i = 0; i < mSleepList.size(); i++) {
+            if(mSleepList.get(i).isDraw()){
+                canvas.drawLine(textWidth + screenW_14 * (2 * i + 1),  getSleepH(mSleepList.get(i),false)+ paddingTop, textWidth + screenW_14 * (2 * i + 1),  getSleepH(mSleepList.get(i),true) + paddingTop, paintSleep);
+            }
 //            canvas.drawLine(textWidth + screenW_14 * i, getUpLimitH + paddingTop, textWidth + screenW_14 * i, sleepLimitH + paddingTop, paintSleep);
         }
 
         //画当前睡眠线
-        canvas.drawLine(textWidth + screenW_14 * (2 * 6 + 1),  getUpLimitH+ paddingTop, textWidth + screenW_14 * (2 * 6 + 1),  sleepLimitH + paddingTop, paintSleep);
+        canvas.drawLine(textWidth + screenW_14 * (2 * (mSleepList.size()) + 1),  getUpLimitH+ paddingTop, textWidth + screenW_14 * (2 * (mSleepList.size()) + 1),  sleepLimitH + paddingTop, paintSleep);
 
     }
 
@@ -197,7 +256,7 @@ public class SleepChartView extends View {
         invalidate();
     }
 
-    public float getSleepH(Sleep mSleep, boolean isGetSleep) {
+    public float getSleepH(SleepCache mSleep, boolean isGetSleep) {
 
 
         if (isGetSleep) {

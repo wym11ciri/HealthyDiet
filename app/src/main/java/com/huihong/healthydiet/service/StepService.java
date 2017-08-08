@@ -14,14 +14,15 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
+import com.huihong.healthydiet.mInterface.UpdateTimeCallBack;
 import com.huihong.healthydiet.stepcount.accelerometer.StepCount;
 import com.huihong.healthydiet.stepcount.accelerometer.StepValuePassListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
@@ -40,10 +41,7 @@ public class StepService extends Service {
     private static String CURRENT_DATE = "";//当前的日期
     private SensorManager sensorManager;//传感器管理对象
     private BroadcastReceiver mBatInfoReceiver;//广播接受者
-    /**
-     * 保存记步计时器
-     */
-    private TimeCount time;
+
     private int CURRENT_STEP;//当前所走的步数
     /**
      * 计步传感器类型  Sensor.TYPE_STEP_COUNTER或者Sensor.TYPE_STEP_DETECTOR
@@ -88,29 +86,31 @@ public class StepService extends Service {
         this.updateStepCallBack = updateStepCallBack;
     }
 
+
+    private UpdateTimeCallBack updateTimeCallBack;
+
+    public void setUpdateTimeCallBack(UpdateTimeCallBack updateTimeCallBack) {
+        this.updateTimeCallBack = updateTimeCallBack;
+    }
+
     private long startTime;
+
     //服务第一次创建的时候会调用onCreate
     @Override
     public void onCreate() {
         super.onCreate();
         //获得计步器开始的时间
-        startTime=System.currentTimeMillis();
-
+        startTime = System.currentTimeMillis();
 
 //        initNotification();
 //        initTodayData();
         initBroadcastReceiver();
-
-
         stepThread = new Thread(new Runnable() {//开启一个线程接收从传感器获得过来的数据
             public void run() {
                 startStepDetector();
             }
         });
         stepThread.start();
-
-
-        startTimeCount();
 
     }
 
@@ -144,29 +144,6 @@ public class StepService extends Service {
     }
 
 
-//    /**
-//     * 初始化当天的步数
-//     */
-//    private void initTodayData() {
-//        CURRENT_DATE = getTodayDate();
-//        DbUtils.createDb(this, "DylanStepCount");
-//        DbUtils.getLiteOrm().setDebugged(false);
-//        //获取当天的数据，用于展示
-//        List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENT_DATE});
-//        if (list.size() == 0 || list.isEmpty()) {
-//            CURRENT_STEP = 0;
-//        } else if (list.size() == 1) {
-//            Log.v(TAG, "StepData=" + list.get(0).toString());
-//            CURRENT_STEP = Integer.parseInt(list.get(0).getStep());
-//        } else {
-//            Log.v(TAG, "出错了！");
-//        }
-//        if (mStepCount != null) {
-//            mStepCount.setSteps(CURRENT_STEP);
-//        }
-//        updateNotification();
-//    }
-
     /**
      * 注册广播
      */
@@ -197,24 +174,34 @@ public class StepService extends Service {
                 } else if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(intent.getAction())) {
                     Log.i(TAG, " receive Intent.ACTION_CLOSE_SYSTEM_DIALOGS");//点击Home键按钮
                     //保存一次
-                    save();
+                    saveStepCount();
                 } else if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
                     Log.i(TAG, " receive ACTION_SHUTDOWN");
-                    save();
+                    saveStepCount();
                 } else if (Intent.ACTION_DATE_CHANGED.equals(action)) {//日期变化步数重置为0
 //                    Logger.d("重置步数" + StepDcretor.CURRENT_STEP);
-                    save();
+                    saveStepCount();
                     isNewDay();
+                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
+                    if(updateTimeCallBack!=null){
+                        updateTimeCallBack.updateTime(min);
+                    }
                 } else if (Intent.ACTION_TIME_CHANGED.equals(action)) {
+                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
+                    if(updateTimeCallBack!=null){
+                        updateTimeCallBack.updateTime(min);
+                    }
                     //时间变化步数重置为0
-
-                    save();
+                    saveStepCount();
                     isNewDay();
                 } else if (Intent.ACTION_TIME_TICK.equals(action)) {//日期变化步数重置为0
-
 //                    Logger.d("重置步数" + StepDcretor.CURRENT_STEP);
-                    save();
+                    saveStepCount();
                     isNewDay();
+                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
+                    if(updateTimeCallBack!=null){
+                        updateTimeCallBack.updateTime(min);
+                    }
                 }
             }
         };
@@ -224,29 +211,34 @@ public class StepService extends Service {
 
     /**
      * 监听晚上0点变化初始化数据
+     * 这里到了0点之后需要关闭计步器服务
+     * 并且提交当天的计步数据
+     * 提交完成之后需要关闭手机的计步器状态
+     * 并且把缓存中的数据清空
      */
     private void isNewDay() {
         String time = "00:00";
         if (time.equals(new SimpleDateFormat("HH:mm").format(new Date())) || !CURRENT_DATE.equals(getTodayDate())) {
-            //这里要重置步数并关闭
-            //并关闭几部线程
-            stopSelf();
+            submitStepCount();
         }
     }
 
-
     /**
-     * 开始保存记步数据
+     * 向服务器提交数据
      */
-    private void startTimeCount() {
-        if (time == null) {
-            time = new TimeCount(DURATION, 1000);
-        }
-        time.start();
+    private void submitStepCount() {
+        //提交成功
+        //设置缓存
+        CacheUtils.putStepCount(this, 0);
+        CacheUtils.setRun(this, false);
+        //关闭服务
+        stopSelf();
+
     }
 
     /**
      * 更新步数通知
+     * 在通知栏通知
      */
     private void updateNotification() {
         //设置点击跳转
@@ -264,20 +256,6 @@ public class StepService extends Service {
 //        }
         Log.d(TAG, "updateNotification()");
     }
-
-    /**
-     * UI监听器对象
-     */
-//    private UpdateUiCallBack mCallback;
-
-    /**
-     * 注册UI更新监听
-     *
-     * @param paramICallback
-     */
-//    public void registerCallback(UpdateUiCallBack paramICallback) {
-//        this.mCallback = paramICallback;
-//    }
 
     /**
      * 记步Notification的ID
@@ -304,30 +282,11 @@ public class StepService extends Service {
      * 向Activity传递数据的纽带
      */
     public class StepBinder extends Binder {
-
-        /**
-         * 获取当前service对象
-         *
-         * @return StepService
-         */
         public StepService getService() {
             return StepService.this;
         }
     }
 
-    /**
-     * 获取当前步数
-     *
-     * @return
-     */
-    public int getStepCount() {
-        return CURRENT_STEP;
-    }
-
-    @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -336,6 +295,7 @@ public class StepService extends Service {
     }
 
     /**
+     * 判断使用哪种计步器传感器
      * 获取传感器实例
      */
     private void startStepDetector() {
@@ -357,6 +317,10 @@ public class StepService extends Service {
     }
 
 
+    /**
+     * 如果设备支持计步器传感器
+     * 那么使用计步器传感器
+     */
     private int PEDOMETER_STEP_COUNT = 0;//使用计步器传感器的步数值
     private Sensor detectorSensor;//计步器传感器
     private SensorEventListener mSensorEventListener;//计步器传感器监听
@@ -377,8 +341,8 @@ public class StepService extends Service {
                         PEDOMETER_STEP_COUNT++;
                         if (updateStepCallBack != null) {
                             //计算时间差
-                         int min= (int) ((System.currentTimeMillis()-startTime)/(1000 * 60));
-                            updateStepCallBack.updateStep(PEDOMETER_STEP_COUNT,min);
+                            int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
+                            updateStepCallBack.updateStep(PEDOMETER_STEP_COUNT, min);
                         }
 //                        updateNotification();
                     }
@@ -421,8 +385,8 @@ public class StepService extends Service {
                 GRAVITY_SENSOR_STEP_COUNT = steps;
 //                updateNotification();
                 if (updateStepCallBack != null) {
-                    int min= (int) ((System.currentTimeMillis()-startTime)/(1000 * 60));
-                    updateStepCallBack.updateStep(GRAVITY_SENSOR_STEP_COUNT,min);
+                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
+                    updateStepCallBack.updateStep(GRAVITY_SENSOR_STEP_COUNT, min);
                 }
 
             }
@@ -434,70 +398,36 @@ public class StepService extends Service {
         }
     }
 
-    /**
-     * 保存记步数据
-     */
-    class TimeCount extends CountDownTimer {
-        public TimeCount(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
+
+    // 保存记步数据
+    private void saveStepCount() {
+        int tempStep;
+        if (isUseGravitySensor) {
+            tempStep = GRAVITY_SENSOR_STEP_COUNT; //使用重力传感器计步
+        } else {
+            tempStep = PEDOMETER_STEP_COUNT;//使用计步器传感器计步
         }
-
-        @Override
-        public void onFinish() {
-            // 如果计时器正常结束，则开始计步
-            time.cancel();
-            save();
-            startTimeCount();
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-    }
-
-    /**
-     * 保存记步数据
-     */
-    private void save() {
-        int tempStep = CURRENT_STEP;
-
-//        List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENT_DATE});
-//        if (list.size() == 0 || list.isEmpty()) {
-//            StepData data = new StepData();
-//            data.setToday(CURRENT_DATE);
-//            data.setStep(tempStep + "");
-//            DbUtils.insert(data);
-//        } else if (list.size() == 1) {
-//            StepData data = list.get(0);
-//            data.setStep(tempStep + "");
-//            DbUtils.update(data);
-//        } else {
-//        }
+        CacheUtils.putStepCount(this, tempStep);
     }
 
 
-    //计步器服务销毁的时候调用
+    //计步器服务销毁的时候调用 关闭计步器线程
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopForeground(true);//取消前台进程
         unregisterReceiver(mBatInfoReceiver);
-
         //重力传感器解除
         if (mStepCount != null && sensor != null) {
             sensorManager.unregisterListener(mStepCount.getStepDetector(), sensor);
         }
-
         //计步器传感器解除
         if (detectorSensor != null && mSensorEventListener != null) {
             sensorManager.unregisterListener(mSensorEventListener, detectorSensor);
         }
-
     }
 
-    //绑定服务的时候调用
+    //解除绑定服务的时候调用
     @Override
     public boolean onUnbind(Intent intent) {
         return super.onUnbind(intent);

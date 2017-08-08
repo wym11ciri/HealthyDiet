@@ -2,9 +2,6 @@ package com.huihong.healthydiet.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.ListPopupWindow;
@@ -41,12 +38,14 @@ import java.util.List;
 
 import okhttp3.Call;
 
+import static com.huihong.healthydiet.R.id.layoutType04;
+
 /**
  * Created by zangyi_shuai_ge on 2017/7/12
  * 推荐饮食界面
  */
 
-public class RecommendActivity extends BaseTitleActivity implements View.OnClickListener {
+public class RecommendActivity extends BaseTitleActivity {
 
     private List<Type> mTypeList;
 
@@ -55,16 +54,18 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
     private List<Fragment> mList;
     private RecommendFragmentPagerAdapter mPagerAdapter;
 
-
+    //顶部导航栏
     private LinearLayout layoutLeft2, layoutRight;
     private ImageView ivLeft, ivRight;
     private View viewLeft, viewRight;
     private TextView tvRight, tvLeft2;
 
+
+
     private boolean isRight = true;
 
 
-    private String GroupBy;
+
     private String TypeValue;
     private int TypeId;
 
@@ -75,6 +76,22 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
     private ScreenTypeListener mRightScreenTypeListener;
     private TextView tvType01, tvType02, tvType03, tvType04;
     private LinearLayout layoutType4;
+
+
+    //筛选
+    private ListPopupWindow mListPopupWindow;//类型列表
+    private  ImageView ivType;//第四个筛选里面那个箭头
+    private String GroupBy;
+
+
+
+
+    //底部弹出菜单
+    private ImageView ivTest;
+    private LinearLayout layoutFloatButton;
+    private boolean nowIsOpen = false;
+
+
 
     public void setLeftScreenTypeListener(ScreenTypeListener pScreenTypeListener) {
         mLeftScreenTypeListener = pScreenTypeListener;
@@ -89,13 +106,52 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
         return R.layout.activity_recommend;
     }
 
+
     @Override
     public void initUI() {
-
-        initFloatButton();
-
         mRecommendActivity = this;
+        initTitleBar();//初始化标题栏
 
+        initViewPager();//ViewPager
+
+        initFloatButton();//悬浮菜单
+
+        initTopBar();//初始化头部导航栏（附近餐厅 推荐饮食）
+
+        initScreenBar();//初始化筛选栏
+
+        getDataDictionary();//获取数据
+
+
+
+        setShowFragment();//设置要显示的界面
+    }
+
+
+    //设置界面进入时候显示的Fragment
+    private void setShowFragment() {
+
+        restTab();//重置选项卡
+        String tag = getIntent().getStringExtra("tag");
+        if (tag.equals("1")) {
+            isRight = false;
+            setTitle("附近餐厅");
+            tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
+            viewLeft.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
+            ivLeft.setImageResource(R.mipmap.restaurant_1);
+            vpRecommend.setCurrentItem(0);
+        } else {
+            setTitle("推荐饮食");
+            isRight = true;
+            vpRecommend.setCurrentItem(1);
+            tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));
+            viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
+            ivRight.setImageResource(R.mipmap.restaurant_3);
+        }
+    }
+
+    //初始化标题栏
+    private void initTitleBar() {
         setRightOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +159,14 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 startActivity(mIntent);
             }
         });
+    }
+
+    //初始化ViewPager
+    private void initViewPager() {
+
+        vpRecommend = (ViewPager) findViewById(R.id.vpRecommend);
+
+        mList = new ArrayList<>();
 
         RecommendNearbyListFragment mRecommendNearbyListFragment = new RecommendNearbyListFragment();
         mRecommendNearbyListFragment.setLScrollListener(new LRecyclerView.LScrollListener() {
@@ -123,7 +187,6 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
             @Override
             public void onScrollStateChanged(int state) {
-
                 if (state == 0) {
                     openButton(true);
                 } else {
@@ -133,27 +196,12 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
             }
         });
 
-        vpRecommend = (ViewPager) findViewById(R.id.vpRecommend);
-        mList = new ArrayList<>();
         mList.add(mRecommendNearbyListFragment);
-//        mList.add(new RecommendNearbyListFragment());
         mList.add(new RecommendRecipeListFragment());
+
         mPagerAdapter = new RecommendFragmentPagerAdapter(getSupportFragmentManager(), mList);
+
         vpRecommend.setAdapter(mPagerAdapter);
-
-
-        layoutLeft2 = (LinearLayout) findViewById(R.id.layoutLeft2);
-        layoutRight = (LinearLayout) findViewById(R.id.layoutRight);
-        ivLeft = (ImageView) findViewById(R.id.ivLeft);
-        ivRight = (ImageView) findViewById(R.id.ivRight);
-        viewLeft = findViewById(R.id.viewLeft);
-        viewRight = findViewById(R.id.viewRight);
-        tvLeft2 = (TextView) findViewById(R.id.tvLeft2);
-        tvRight = (TextView) findViewById(R.id.tvRight);
-
-        layoutLeft2.setOnClickListener(this);
-        layoutRight.setOnClickListener(this);
-
 
         vpRecommend.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -179,7 +227,6 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 } else if (position == 1) {
                     layoutFloatButton.setVisibility(View.INVISIBLE);
                     setTitle("推荐饮食");
-                    vpRecommend.setCurrentItem(1);
                     isRight = true;
                     tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));
                     viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
@@ -200,16 +247,20 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
             }
         });
+    }
 
-
+    //初始化筛选栏
+    private void initScreenBar() {
+        mTypeList = new ArrayList<>();
+        //四个筛选
         tvType01 = (TextView) findViewById(R.id.tvType01);
         tvType02 = (TextView) findViewById(R.id.tvType02);
         tvType03 = (TextView) findViewById(R.id.tvType03);
+        //最后一个筛选
         tvType04 = (TextView) findViewById(R.id.tvType04);
-        layoutType4 = (LinearLayout) findViewById(R.id.layoutType04);
+        layoutType4 = (LinearLayout) findViewById(layoutType04);
         ivType = (ImageView) findViewById(R.id.ivType);
-
-
+        //筛选按钮的监听器
         View.OnClickListener typeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,7 +295,7 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                             mRightScreenTypeListener.screenType(isRight, GroupBy, 0, false);
                             mLeftScreenTypeListener.screenType(isRight, GroupBy, 0, false);
                             break;
-                        case R.id.layoutType04:
+                        case layoutType04:
 
                             GroupBy = "Type";
                             tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
@@ -257,7 +308,6 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                             } else {
                                 showListPopup(layoutType4);
                             }
-
                             break;
                     }
                 }
@@ -267,77 +317,79 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
         tvType01.setOnClickListener(typeListener);
         tvType02.setOnClickListener(typeListener);
         tvType03.setOnClickListener(typeListener);
-//        tvType04.setOnClickListener(typeListener);
         layoutType4.setOnClickListener(typeListener);
-
-        //判断是从哪个界面进来的
-        restTab();
         restType();
-        String tag = getIntent().getStringExtra("tag");
-        if (tag.equals("1")) {
-            isRight = false;
-            tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
-            viewLeft.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
-            ivLeft.setImageResource(R.mipmap.restaurant_1);
-            setTitle("附近餐厅");
-            vpRecommend.setCurrentItem(0);
-        } else {
-            setTitle("推荐饮食");
-            vpRecommend.setCurrentItem(1);
-            isRight = true;
-            tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));
-            viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
-            ivRight.setImageResource(R.mipmap.restaurant_3);
-        }
+    }
 
-        mTypeList = new ArrayList<>();
-        getDataDictionary();
+    //初始化头部选项卡
+    private void initTopBar() {
+
+        //最外层布局
+        layoutLeft2 = (LinearLayout) findViewById(R.id.layoutLeft2);
+        layoutRight = (LinearLayout) findViewById(R.id.layoutRight);
+        //里面的图片
+        ivLeft = (ImageView) findViewById(R.id.ivLeft);
+        ivRight = (ImageView) findViewById(R.id.ivRight);
+        //左右两根提示线
+        viewLeft = findViewById(R.id.viewLeft);
+        viewRight = findViewById(R.id.viewRight);
+        //里面的文字
+        tvLeft2 = (TextView) findViewById(R.id.tvLeft2);
+        tvRight = (TextView) findViewById(R.id.tvRight);
+
+
+        View.OnClickListener topBarOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restTab();
+                switch (v.getId()) {
+                    case R.id.layoutLeft2:
+                        setTitle("附近餐厅");
+                        isRight = false;
+                        vpRecommend.setCurrentItem(0);
+                        tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
+                        viewLeft.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
+                        ivLeft.setImageResource(R.mipmap.restaurant_1);
+                        break;
+                    case R.id.layoutRight:
+                        setTitle("推荐饮食");
+                        isRight = true;
+                        vpRecommend.setCurrentItem(1);
+                        tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));
+                        viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
+                        ivRight.setImageResource(R.mipmap.restaurant_3);
+                        break;
+                }
+            }
+        };
+
+        //设置点击事件
+        layoutLeft2.setOnClickListener(topBarOnClickListener);
+        layoutRight.setOnClickListener(topBarOnClickListener);
+
+
+
+        //下面
+
 
     }
 
-    ImageView ivType;
-
     private void restType() {
-
 
         tvType01.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
         tvType02.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
         tvType03.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
         tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_normal));
+
         GroupBy = "";
         TypeValue = "类型";
         TypeId = 0;
         tvType04.setText("类型");
-
         ivType.setImageResource(R.mipmap.up);
     }
 
     @Override
     public void initOnClickListener() {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        restTab();
-        switch (v.getId()) {
-            case R.id.layoutLeft2:
-                setTitle("附近餐厅");
-                vpRecommend.setCurrentItem(0);
-                isRight = false;
-                tvLeft2.setTextColor(getResources().getColor(R.color.recommend_text_select));
-                viewLeft.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
-                ivLeft.setImageResource(R.mipmap.restaurant_1);
-                break;
-            case R.id.layoutRight:
-                setTitle("推荐饮食");
-                vpRecommend.setCurrentItem(1);
-                isRight = true;
-                tvRight.setTextColor(getResources().getColor(R.color.recommend_text_select));
-                viewRight.setBackgroundColor(getResources().getColor(R.color.recommend_line_select));
-                ivRight.setImageResource(R.mipmap.restaurant_3);
-                break;
-        }
 
     }
 
@@ -350,13 +402,6 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
         ivLeft.setImageResource(R.mipmap.restaurant_4);
         ivRight.setImageResource(R.mipmap.restaurant_2);
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-
     }
 
     //获取餐厅类型
@@ -395,10 +440,6 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 });
     }
 
-
-    private ListPopupWindow mListPopupWindow;//类型列表
-    private boolean popIsShow = false;
-
     private void showListPopup(LinearLayout mTextView) {
 
         if (mTypeList.size() > 0) {
@@ -420,9 +461,10 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 mListPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
+
                         ivType.setImageResource(R.mipmap.up);
 //                        Toast.makeText(RecommendActivity.this, "消失了", Toast.LENGTH_SHORT).show();
-
+//                        layoutType4.setClickable(true);
                     }
                 });
                 mListPopupWindow.setForceIgnoreOutsideTouch(true);
@@ -434,22 +476,15 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
 
     }
 
-
-    private boolean isOpen = false;
-    private View mButtonView;
-    private ImageView ivTest;
-    private LinearLayout layoutFloatButton;
-
     private void initFloatButton() {
         layoutFloatButton = (LinearLayout) findViewById(R.id.layoutFloatButton);
-        mButtonView = findViewById(R.id.mButtonView);
+        View mButtonView = findViewById(R.id.mButtonView);
         int width = ScreenUtils.getScreenWidth(RecommendActivity.this);
 
         ViewGroup.LayoutParams para1;
         para1 = mButtonView.getLayoutParams();
         para1.width = width - DensityUtils.dp2px(RecommendActivity.this, 30);
         mButtonView.setLayoutParams(para1);
-
 
         ivTest = (ImageView) findViewById(R.id.ivTest);
         ivTest.setOnClickListener(new View.OnClickListener() {
@@ -458,37 +493,30 @@ public class RecommendActivity extends BaseTitleActivity implements View.OnClick
                 Toast.makeText(RecommendActivity.this, "点我干嘛呀", Toast.LENGTH_SHORT).show();
             }
         });
-
         openButton(true);
     }
 
-    private boolean nowIsOpen = false;
-
+    //打开关闭菜单栏
     public void openButton(boolean needOpen) {
 
         if (needOpen) {
             if (!nowIsOpen) {
                 nowIsOpen = true;
-                ObjectAnimator//
-                        .ofFloat(ivTest, "translationX", 0, -DensityUtils.dp2px(RecommendActivity.this, 60))//
-                        .setDuration(500)//
+                ObjectAnimator
+                        .ofFloat(ivTest, "translationX", 0, -DensityUtils.dp2px(RecommendActivity.this, 60))
+                        .setDuration(500)
                         .start();
             }
-
         } else {
             //关闭悬浮按钮
             //如果当前是打开则执行
             if (nowIsOpen) {
                 nowIsOpen = false;
-                ObjectAnimator//
-                        .ofFloat(ivTest, "translationX", -DensityUtils.dp2px(RecommendActivity.this, 60), 0)//
-                        .setDuration(500)//
+                ObjectAnimator
+                        .ofFloat(ivTest, "translationX", -DensityUtils.dp2px(RecommendActivity.this, 60), 0)
+                        .setDuration(500)
                         .start();
             }
-
         }
-
-
     }
-
 }

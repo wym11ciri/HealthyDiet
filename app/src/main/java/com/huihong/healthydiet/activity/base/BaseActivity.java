@@ -4,7 +4,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-
 /**
  * Created by zangyi_shuai_ge on 2017/4/21
  * Activity 基类
@@ -42,4 +41,6 @@ public class BaseActivity extends AppCompatActivity {
 //        return false;
 //
 //    }
+
+
 }

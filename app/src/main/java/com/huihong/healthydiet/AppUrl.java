@@ -6,9 +6,8 @@ package com.huihong.healthydiet;
 
 public class AppUrl {
     private static final String TEST_URL = "http://192.168.10.102:8051/API/Restaurant/GetRestaurantInfoById";
-    //    private static final String BASE_URL = "http://192.168.10.100:8051/";
-    private static final String BASE_URL = "http://106.14.218.31:8020/";
-
+        private static final String BASE_URL = "http://192.168.10.100:8051/";
+//    private static final String BASE_URL = "http://106.14.218.31:8020/";
     public static final String GET_RESTAURANT_LIST_INFO = BASE_URL + "API/Restaurant/GetRestaurantListInfo";//获取餐厅列表
     public static final String DATA_DICTIONARY = BASE_URL + "API/DataDictionary/Cate";//获取餐厅类型
     public static final String GET_RESTAURANT_INFO_BY_ID = BASE_URL + "API/Restaurant/GetRestaurantInfoById";//获取餐厅详情 上面那部分
@@ -26,7 +25,6 @@ public class AppUrl {
     public static final String SET_USER_BODY_INFO = BASE_URL + "API/User/SetUserBodyInfo";//设置用户身体信息
     public static final String GET_USER_BODY_INFO = BASE_URL + "API/User/GetUserBodyInfo";//获取用户身体信息
     public static final String SELECT_USER_PREFERENCE = BASE_URL + "API/User/SelectUserPreference";//获取用户喜欢喜欢界面
-
     //问卷
     public static final String GET_QUESTION_EXPRESS_LIST = BASE_URL + "API/Question/GetQuestionExpressList";//简易版问卷获取
     public static final String GET_SUBMIT_EXPRESS_QUESTION = BASE_URL + "API/Question/GetSubmitExpressQuestion";//简易版问卷提交
@@ -34,29 +32,23 @@ public class AppUrl {
     public static final String GET_SUBMIT_QUESTION = BASE_URL + "Api/Question/GetSubmitQuestion";//专业版问卷提交
     //登录
     public static final String LOGIN = BASE_URL + "API/User/Login";//登录
-
     //食谱详情
-
     public static final String CUSTOMER_LIKE_OR_NOT = BASE_URL + "API/Restaurant/CustomerLikeOrNot";
-
     //首页数据
     public static final String TITLE_PAGE = BASE_URL + "API/Restaurant/TitlePage";
-
-
     //上传图片
     public static final String UPLOAD_IMAGE = BASE_URL + "API/User/UploadImage";
     public static final String UploadUserHeadImage = BASE_URL + "API/User/UploadUserHeadImage";
-
     //获取热门搜索
     public static final String HOT_SEARCH = BASE_URL + "API/Restaurant/HotSearch";
     //搜索
     public static final String SEARCH_VAGUE_RESTAURANT = BASE_URL + "API/Restaurant/SearchVagueRestaurant";
-
-
     //文章
     public static final String ARTICLE_POINT_PRAISE = BASE_URL + "API/Article/ArticlePointPraise";//文章点赞
     public static final String ARTICLE_CLICK = BASE_URL + "API/Article/ArticleClick";//文章查看
     public static final String GET_ARTICLE_ITEM_INFO = BASE_URL + "API/Article/GetArticleItemInfo";//根据id获取文章详情
 
+    //获得运动步数
+    public static final String GET_SPORT_LIST = BASE_URL + "API/Sport/GetSportList";
 
 }

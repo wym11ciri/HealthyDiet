@@ -29,21 +29,30 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
+import com.huihong.healthydiet.mInterface.UpdateTimeCallBack;
 import com.huihong.healthydiet.mybean.ChartDay;
 import com.huihong.healthydiet.mybean.ChartMonth;
 import com.huihong.healthydiet.mybean.ChartYear;
 import com.huihong.healthydiet.service.StepService;
+import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.huihong.healthydiet.widget.MyYAnimation;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -238,6 +247,13 @@ public class MotionFragment extends Fragment {
                     tvTime.setText(min+"");
                 }
             });
+
+            stepService.setUpdateTimeCallBack(new UpdateTimeCallBack() {
+                @Override
+                public void updateTime(int min) {
+                    tvTime.setText(min+"");
+                }
+            });
         }
 
         /**
@@ -341,7 +357,7 @@ public class MotionFragment extends Fragment {
         xAxis.setLabelCount(15);//横轴个数
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // 移除所有限制线
-        leftAxis.setAxisMaximum(500);//设置最大值
+//        leftAxis.setAxisMaximum(500);//设置最大值
 
 
         //重新绘制折线图数据
@@ -389,12 +405,34 @@ public class MotionFragment extends Fragment {
     }
 
     private void setChartByYear() {
+
+
+        Map<String, String> map = new HashMap<>();
+//        map.put("Type_Like",type);
+        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+        map.put("dateType",  "day");
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_SPORT_LIST
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("获取运动数据",response);
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("获取运动数据",e.toString());
+                    }
+                });
+
+
         final List<ChartYear> mChartDayList = new ArrayList<>();
         //生成一个假数据集合
         for (int i = 1; i < 8; i++) {
             ChartYear chartDay = new ChartYear();
             chartDay.setYear(2010 + i);
-            chartDay.setCount((int) (Math.random() * 500));
+            chartDay.setCount((int) (Math.random() * 1000));
             mChartDayList.add(chartDay);
         }
 
@@ -414,7 +452,7 @@ public class MotionFragment extends Fragment {
         xAxis.setLabelCount(15);//横轴个数
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // 移除所有限制线
-        leftAxis.setAxisMaximum(500);//设置最大值
+//        leftAxis.setAxisMaximum(500);//设置最大值
 
 
         //重新绘制折线图数据
@@ -516,7 +554,7 @@ public class MotionFragment extends Fragment {
         xAxis.setLabelCount(15);//横轴个数
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // 移除所有限制线
-        leftAxis.setAxisMaximum(500);//设置最大值
+//        leftAxis.setAxisMaximum(500);//设置最大值
 
 
         //重新绘制折线图数据
@@ -581,7 +619,7 @@ public class MotionFragment extends Fragment {
         //设置Y轴属性
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // 移除所有限制线
-        leftAxis.setAxisMaximum(200f);//设置最大值
+//        leftAxis.setAxisMaximum(200f);//设置最大值
         leftAxis.setAxisMinimum(0f);//设置最小值
         leftAxis.setDrawZeroLine(false);
         leftAxis.setDrawLimitLinesBehindData(true);

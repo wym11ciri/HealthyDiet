@@ -10,9 +10,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,10 +28,12 @@ import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.activity.RecommendActivity;
+import com.huihong.healthydiet.activity.SearchResultActivity;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
 import com.huihong.healthydiet.adapter.RvRecordAdapter;
 import com.huihong.healthydiet.bean.TitlePage;
+import com.huihong.healthydiet.cache.litepal.SearchHistory;
 import com.huihong.healthydiet.fragment.NearbyFragment;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
@@ -87,8 +91,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private boolean isFirst = true;
 
     //大图推荐饮食
-    private TextView tvRecommendName, tvConstitutionPercentage,tvRecommendPrice;
+    private TextView tvRecommendName, tvConstitutionPercentage, tvRecommendPrice;
     private SelectableRoundedImageView ivRecommend;
+
+    //搜索
+    private EditText etSearch;
+
 
     @Nullable
     @Override
@@ -148,12 +156,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ivRecommend = (SelectableRoundedImageView) mView.findViewById(R.id.ivRecommend);
         tvRecommendName = (TextView) mView.findViewById(R.id.tvRecommendName);
         tvConstitutionPercentage = (TextView) mView.findViewById(R.id.tvConstitutionPercentage);
-        tvRecommendPrice= (TextView) mView.findViewById(R.id.tvRecommendPrice);
+        tvRecommendPrice = (TextView) mView.findViewById(R.id.tvRecommendPrice);
         initBanner();
         initNearby();
         initRecommend();
         initRecord();
         initJump();
+        initSearch();
 //
 
 
@@ -164,6 +173,30 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 ////                .transform(new GlideRoundTransform(getActivity()))
 //                .into(ivTest);
 
+
+    }
+
+    private void initSearch() {
+        etSearch = (EditText) mView.findViewById(R.id.etSearch);
+        //输入完后按键盘上的搜索键【回车键改为了搜索键】
+        etSearch.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {//修改回车键功能
+                    if(etSearch.getText().toString().trim().length()<2){
+                        Toast.makeText(getActivity(), "输入搜索内过短", Toast.LENGTH_SHORT).show();
+                    }else {
+                        SearchHistory mSearchHistory=new SearchHistory();
+                        mSearchHistory.setSearchHistory(etSearch.getText().toString().trim());
+                        mSearchHistory.saveOrUpdate("searchHistory=?",mSearchHistory.getSearchHistory());
+                        Intent mIntent=new Intent(getActivity(), SearchResultActivity.class);
+                        mIntent.putExtra("searchText",mSearchHistory.getSearchHistory());
+                        startActivity(mIntent);
+                    }
+                }
+
+                return false;
+            }
+        });
 
     }
 
@@ -382,7 +415,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                     tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_5));
                                 }
 
-                                tvRecommendPrice.setText("￥"+mListData2.get(0).getPrice());
+                                tvRecommendPrice.setText("￥" + mListData2.get(0).getPrice());
                             }
 
 

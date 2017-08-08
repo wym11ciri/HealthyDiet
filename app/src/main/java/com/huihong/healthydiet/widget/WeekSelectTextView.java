@@ -40,7 +40,7 @@ public class WeekSelectTextView extends android.support.v7.widget.AppCompatTextV
         } else {
             isChoose = true;
             this.setBackgroundResource(R.mipmap.circle_00008);
-            this.setTextColor(getResources().getColor(R.color.white));
+            this.setTextColor(getResources().getColor(R.color.color_white));
         }
 
     }
@@ -50,7 +50,7 @@ public class WeekSelectTextView extends android.support.v7.widget.AppCompatTextV
         this.isChoose = isChoose;
         if (isChoose) {
             this.setBackgroundResource(R.mipmap.circle_00008);
-            this.setTextColor(getResources().getColor(R.color.white));
+            this.setTextColor(getResources().getColor(R.color.color_white));
         } else {
             this.setBackgroundResource(R.mipmap.circle_00009);
             this.setTextColor(getResources().getColor(R.color.black_2));

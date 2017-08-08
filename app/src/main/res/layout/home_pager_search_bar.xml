@@ -49,6 +49,8 @@
             android:src="@mipmap/home_2" />
 
         <EditText
+            android:id="@+id/etSearch"
+            android:imeOptions="actionSearch"
             android:hint="餐厅/菜谱/食物"
             android:textSize="12sp"
             android:layout_width="match_parent"

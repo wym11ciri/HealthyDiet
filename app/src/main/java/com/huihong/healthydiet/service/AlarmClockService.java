@@ -10,8 +10,8 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,11 +19,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
+import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -33,15 +37,8 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
 
     private String TAG = "AlarmClockService";
     private MediaPlayer player;//音乐播放器
-
     private BroadcastReceiver mBatInfoReceiver;//广播接受者
-
     private AlertDialog dialog;
-
-    /**
-     * IBinder对象，向Activity传递数据的桥梁
-     */
-    private StepBinder stepBinder = new StepBinder();
 
     @Override
     public void onCreate() {
@@ -57,39 +54,17 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
      */
     private void initBroadcastReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_OFF); // 屏幕灭屏广播
-        filter.addAction(Intent.ACTION_SHUTDOWN);//关机广播
-        filter.addAction(Intent.ACTION_SCREEN_ON);// 屏幕亮屏广播
-        filter.addAction(Intent.ACTION_USER_PRESENT); // 屏幕解锁广播
-        filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);//Home键点击
-        //监听日期变化
-        filter.addAction(Intent.ACTION_DATE_CHANGED);
-        filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_TIME_TICK);
-
         //注册广播接收器
         mBatInfoReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 String action = intent.getAction();
-                if (Intent.ACTION_SCREEN_ON.equals(action)) {
-                    LogUtil.i(TAG, "screen on");//屏幕亮
-                } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                    LogUtil.i(TAG, "screen off");//屏幕灭调
-                } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
-                    LogUtil.i(TAG, "screen unlock");//屏幕解锁
-                } else if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(intent.getAction())) {
-                    LogUtil.i(TAG, " receive Intent.ACTION_CLOSE_SYSTEM_DIALOGS");//点击Home键按钮
-                } else if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
-                    LogUtil.i(TAG, " receive ACTION_SHUTDOWN");//关机了
-                } else if (Intent.ACTION_DATE_CHANGED.equals(action)) {//日期变化
-                    //需要重置步数
-                    LogUtil.i(TAG, "日期变化了");
-                } else if (Intent.ACTION_TIME_CHANGED.equals(action)) {//时间变化了
-                    LogUtil.i(TAG, "日期时间了1" + new SimpleDateFormat("HH:mm").format(new Date()));
-                } else if (Intent.ACTION_TIME_TICK.equals(action)) {//这个日期监听更准一点
-                    isAlarmClock();
-                    LogUtil.i(TAG, "日期时间了2" + new SimpleDateFormat("HH:mm").format(new Date()));
+                if (Intent.ACTION_TIME_TICK.equals(action)) {//这个日期监听更准一点
+                    //判断是否开启了闹钟
+                    if (CacheUtils.isOpenAlarm(AlarmClockService.this)) {
+                        isAlarmClock();
+                    }
                 }
             }
         };
@@ -107,36 +82,15 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         int endHour = (int) SPUtils.get(this, "endHour", 8);
         int endMin = (int) SPUtils.get(this, "endMin", 0);
 
-        boolean sleepIsOpen = true;//闹铃是否开启
-
-        String startTime;
-        String endTime;
-
-        if (startMin < 10) {
-            startTime = startHour + ":0" + startMin;
-        } else {
-            startTime = startHour + ":" + startMin;
-        }
-
-        if (endHour < 10) {
-            if (endMin < 10) {
-                endTime = "0" + endHour + ":0" + endMin;
-            } else {
-                endTime = "0" + endHour + ":" + endMin;
-            }
-        } else {
-            if (endMin < 10) {
-                endTime = endHour + ":0" + endMin;
-            } else {
-                endTime = endHour + ":" + endMin;
-            }
-        }
+        //格式化时间
+        String sleepTime = DateFormattedUtils.formattedDate(startHour) + DateFormattedUtils.formattedDate(startMin);
+        String getUpTime = DateFormattedUtils.formattedDate(endHour) + DateFormattedUtils.formattedDate(endMin);
 
 
-        if (endTime.equals(nowTime)) {
-
-
-//            player.start();
+        if (getUpTime.equals(nowTime)&&isSetWeek()) {
+            //时间是到了需要判断星期
+            //当前为起床闹铃播放闹铃
+            player.start();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_get_up, null);
             Button button = (Button) view.findViewById(R.id.tvGetUp);
@@ -144,6 +98,14 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //话说只有点了起床按钮才能保存到数据库中去
+                    //这时候我点了
+                    //拿到昨天设置的睡眠时间 并吧日期存储到昨天去
+
+
+
+
+
                     if (player.isPlaying()) {
                         player.stop();
                     }
@@ -151,14 +113,15 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                 }
             });
 
-            TextView tvTime= (TextView) view.findViewById(R.id.tvTime);
-            tvTime.setText(endTime);
+            TextView tvTime = (TextView) view.findViewById(R.id.tvTime);
+            tvTime.setText(getUpTime);
             builder.setView(view);
             builder.setCancelable(false);
             dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
-        } else if (startTime.equals(nowTime)) {
+        } else if (sleepTime.equals(nowTime)&&isSetWeek()) {
+            //当前为睡觉闹铃 只播放提示声音
 //            player.start();
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
@@ -176,8 +139,8 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                     dialog.dismiss();
                 }
             });
-            TextView tvTime= (TextView) view.findViewById(R.id.tvTime);
-            tvTime.setText(startTime);
+            TextView tvTime = (TextView) view.findViewById(R.id.tvTime);
+            tvTime.setText(sleepTime);
             builder.setView(view);
             builder.setCancelable(false);
             dialog = builder.create();
@@ -186,35 +149,25 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         }
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return stepBinder;
+    private boolean isSetWeek() {
+        List<Boolean> mSleepWeek = CacheUtils.getSleepWeek(this);
+        //获得当前的星期
+        Calendar c = Calendar.getInstance();
+        int week = c.get(Calendar.DAY_OF_WEEK);
+        //从1开始 1为周天
+        if(week==1){
+            return mSleepWeek.get(6);
+        }else {
+            return  mSleepWeek.get(week);
+        }
     }
+
 
     //音乐播放器完成
     @Override
     public void onCompletion(MediaPlayer mp) {
     }
 
-    /**
-     * 向Activity传递数据的纽带
-     */
-    public class StepBinder extends Binder {
-
-        /**
-         * 获取当前service对象
-         *
-         * @return StepService
-         */
-        public AlarmClockService getService() {
-            return AlarmClockService.this;
-        }
-    }
-
-    @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -227,6 +180,12 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         //取消前台进程
         stopForeground(true);
         unregisterReceiver(mBatInfoReceiver);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override

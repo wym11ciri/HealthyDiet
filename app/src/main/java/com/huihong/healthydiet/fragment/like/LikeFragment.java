@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.fragment;
+package com.huihong.healthydiet.fragment.like;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,9 +31,10 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/20
+ * 个人偏好喜欢
  */
 
-public class UnLikeFragment extends Fragment {
+public class LikeFragment extends Fragment {
 
     //    private SwipeMenuAdapter mDataAdapter = null;
     private View mView;
@@ -49,16 +50,12 @@ public class UnLikeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         if (mView == null) {
-
-
             mView = inflater.inflate(R.layout.fragment_islike, null);
-            layoutNoData= (LinearLayout) mView.findViewById(R.id.layoutNoData);
-
             mLRecyclerView = (LRecyclerView) mView.findViewById(R.id.mLRecyclerView);
-
+            layoutNoData = (LinearLayout) mView.findViewById(R.id.layoutNoData);
             mLRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             recommendList = new ArrayList<>();
-            mRvLikeAdapter = new RvLikeAdapter("foodunlike",getActivity(), recommendList);
+            mRvLikeAdapter = new RvLikeAdapter("foodlike", getActivity(), recommendList);
             mLRecyclerViewAdapter = new LRecyclerViewAdapter(mRvLikeAdapter);
             mLRecyclerView.setAdapter(mLRecyclerViewAdapter);
 
@@ -66,10 +63,11 @@ public class UnLikeFragment extends Fragment {
             mLRecyclerView.setOnRefreshListener(new OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getInfo("foodunlike");
+                    getInfo("foodlike");
                 }
             });
             mLRecyclerView.refresh();
+//            getInfo("foodlike");
         }
 
 
@@ -98,17 +96,18 @@ public class UnLikeFragment extends Fragment {
                             List<SelectUserPreference.ListDataBean> mListData = mSelectUserPreference.getListData();
                             recommendList.addAll(mListData);
                             mLRecyclerViewAdapter.notifyDataSetChanged();
-                        }else {
-                            String message=mSelectUserPreference.getMessage();
+                        } else {
+                            String message = mSelectUserPreference.getMessage();
                             layoutNoData.setVisibility(View.VISIBLE);
 //                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         mLRecyclerView.refreshComplete(1);
-                        layoutNoData.setVisibility(View.VISIBLE);
                         LogUtil.i("喜不喜欢", e.toString());
+                        layoutNoData.setVisibility(View.VISIBLE);
                     }
                 });
 

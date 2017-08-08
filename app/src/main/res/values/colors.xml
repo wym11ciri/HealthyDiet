@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#bababa</color>
-    <color name="colorPrimaryDark">#bababa</color>
+    <color name="colorPrimary">#ececec</color>
+    <color name="colorPrimaryDark">#ececec</color>
     <color name="colorAccent">#5BA439</color>
 
 
@@ -28,6 +28,10 @@
     <color name="circle_zzzz">#989898</color>
     <color name="circle_ring_bg">#EEEEEE</color>
 
+
+
+
+    <!--自定义时间选择器渐变色-->
     <color name="circle_color_01">#FD8002</color>
     <color name="circle_color_02">#F6880D</color>
     <color name="circle_color_03">#F38D11</color>
@@ -38,36 +42,45 @@
     <color name="circle_color_08">#BBD361</color>
     <color name="circle_color_09">#B5D864</color>
 
+
+
+
+
+
+
     <drawable name="layout_bg_white">#ffffff</drawable>
     <drawable name="layout_bg_gray">#cecdcd</drawable>
 
 
-    <color name="white">#ffffff</color>
+
     <color name="black_2">#333333</color>
+    <color name="photo_ground">#FFFFFF</color>
 
-
+    <!--积分小树叶子的字体颜色-->
     <color name="leaf_integral">#C72F44</color>
     <color name="leaf_event">#010101</color>
 
+   <!--喜不喜欢选项卡字体切换颜色-->
+    <color name="like_color_normal">#999999</color>
+    <color name="like_color_select">#3E3E3E</color>
 
-    <color name="photo_ground">#FFFFFF</color>
-
-
+    <!--匹配度百分比颜色-->
     <color name="percentage_color_9">#ff0000</color>
     <color name="percentage_color_8">#107909</color>
     <color name="percentage_color_7">#7d28fb</color>
     <color name="percentage_color_6">#0d8bf6</color>
     <color name="percentage_color_5">#666666</color>
 
-    <color name="like_color_normal">#999999</color>
-    <color name="like_color_select">#3E3E3E</color>
+
 
     <!--睡眠记录图表限制线-->
     <color name="sleep_chart_limit_line">#666666</color>
     <color name="sleep_chart_normal_line">#999999</color>
     <color name="sleep_chart_sleep_line">#FF7E00</color>
 
-    <color name="color_black">#000000</color>
 
+    <!--其他标准颜色-->
+    <color name="color_black">#000000</color>
+    <color name="color_white">#FFFFFF</color>
 
 </resources>

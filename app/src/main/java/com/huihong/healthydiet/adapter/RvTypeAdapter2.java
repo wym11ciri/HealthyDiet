@@ -51,28 +51,29 @@ public class RvTypeAdapter2 extends RecyclerView.Adapter<RvTypeAdapter2.RvTypeVi
 
     @Override
     public void onBindViewHolder(final RvTypeViewHolder holder, int position) {
-//        holder.tvName.setText(mList.get(position));
 
-//        Glide
-//                .with(mContext)
-//                .load("http://www.qiwen007.com/images/image/2016/1212/6361714777668259239190221.jpg")
-//                .asBitmap()
-//                .into( holder.ivHead);
-//        holder.tvTag.setText(mList.get(position));
 
         mList.get(position);
-
-
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
-
+        String type = mList.get(position);
+        if (type.equals("平和质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_1);
+        } else if (type.equals("气郁质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_2);
+        } else if (type.equals("阴虚质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_8);
+        } else if (type.equals("痰湿质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_5);
+        } else if (type.equals("阳虚质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_9);
+        } else if (type.equals("特禀质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_6);
+        } else if (type.equals("湿热质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_4);
+        } else if (type.equals("气虚质")) {
+            holder.ivType.setImageResource(R.mipmap.temperament_2);
+        } else if (type.equals("血瘀质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_7);
+        }
     }
 
     @Override

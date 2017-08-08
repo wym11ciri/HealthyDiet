@@ -5,9 +5,10 @@
     <!--version 标签是指定数据库版本号-->
     <!--list 标签是指定映射模型-->
     <dbname value="Cache" />
-    <version value="1" />
+    <version value="2" />
     <list>
         <mapping class="com.huihong.healthydiet.cache.litepal.SearchHistory"/>
+        <mapping class="com.huihong.healthydiet.cache.litepal.SleepCache"/>
 
     </list>
 

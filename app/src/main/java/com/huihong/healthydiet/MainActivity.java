@@ -85,6 +85,25 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         mainActivity = this;
         initUI();
         setupService();
+
+//
+//        for (int i = 1; i <30 ; i++) {
+//            SleepCache mSleepCache=new SleepCache();
+//            mSleepCache.setYear(2017);
+//            mSleepCache.setMonth(8);
+//            mSleepCache.setDay(i);
+//
+//            mSleepCache.setGetUpHour(2+(i%12));
+//            mSleepCache.setGetUpMin(20);
+//
+//
+//            mSleepCache.setSleepHour(12+(i%12));
+//            mSleepCache.setSleepMin(20);
+//
+//            mSleepCache.save();
+//
+//        }
+
     }
 
     /**

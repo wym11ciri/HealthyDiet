@@ -8,11 +8,12 @@ import java.util.List;
 
 public class RecipeItemInfoForPay {
 
+
     /**
      * HttpCode : 200
      * Message :
-     * ListData : [{"id":7,"name":"食谱4","ConstitutionPercentage":-2147483648,"Constitution":["平和质","气郁质","阴虚质"],"Tags":["清蒸"],"images":["http://106.14.218.31:8081/img//recipe//recipe7-19818599.jpg","http://106.14.218.31:8081/img//recipe//recipe7-19829097.jpg"],"price":"11.00","sales":11}]
-     * ListData2 : [{"id":98,"name":"餐厅7","images":["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg"],"address":"杭州市拱墅区浙大网新智慧立方","phone":"18857120152","distance":0}]
+     * ListData : [{"id":8,"name":"食谱6","ConstitutionPercentage":30,"Constitution":["气虚质","阴虚质","痰湿质"],"Tags":["清蒸"],"images":["http://106.14.218.31:8081/img//recipe//recipe8-198144654.jpg","http://106.14.218.31:8081/img//recipe//recipe8-198197843.jpg"],"price":"22.00","sales":22}]
+     * ListData2 : [{"id":99,"name":"餐厅8","titleImage":"http://106.14.218.31:8081/img//restaurant//restaurant99-19823844.jpg","address":"杭州市拱墅区杭州微盘信息技术有限公司","phone":"18857120152","distance":0}]
      */
 
     private int HttpCode;
@@ -54,14 +55,14 @@ public class RecipeItemInfoForPay {
 
     public static class ListDataBean {
         /**
-         * id : 7
-         * name : 食谱4
-         * ConstitutionPercentage : -2147483648
-         * Constitution : ["平和质","气郁质","阴虚质"]
+         * id : 8
+         * name : 食谱6
+         * ConstitutionPercentage : 30
+         * Constitution : ["气虚质","阴虚质","痰湿质"]
          * Tags : ["清蒸"]
-         * images : ["http://106.14.218.31:8081/img//recipe//recipe7-19818599.jpg","http://106.14.218.31:8081/img//recipe//recipe7-19829097.jpg"]
-         * price : 11.00
-         * sales : 11
+         * images : ["http://106.14.218.31:8081/img//recipe//recipe8-198144654.jpg","http://106.14.218.31:8081/img//recipe//recipe8-198197843.jpg"]
+         * price : 22.00
+         * sales : 22
          */
 
         private int id;
@@ -140,20 +141,20 @@ public class RecipeItemInfoForPay {
 
     public static class ListData2Bean {
         /**
-         * id : 98
-         * name : 餐厅7
-         * images : ["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg"]
-         * address : 杭州市拱墅区浙大网新智慧立方
+         * id : 99
+         * name : 餐厅8
+         * titleImage : http://106.14.218.31:8081/img//restaurant//restaurant99-19823844.jpg
+         * address : 杭州市拱墅区杭州微盘信息技术有限公司
          * phone : 18857120152
          * distance : 0
          */
 
         private int id;
         private String name;
+        private String titleImage;
         private String address;
         private String phone;
         private int distance;
-        private List<String> images;
 
         public int getId() {
             return id;
@@ -169,6 +170,14 @@ public class RecipeItemInfoForPay {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getTitleImage() {
+            return titleImage;
+        }
+
+        public void setTitleImage(String titleImage) {
+            this.titleImage = titleImage;
         }
 
         public String getAddress() {
@@ -193,14 +202,6 @@ public class RecipeItemInfoForPay {
 
         public void setDistance(int distance) {
             this.distance = distance;
-        }
-
-        public List<String> getImages() {
-            return images;
-        }
-
-        public void setImages(List<String> images) {
-            this.images = images;
         }
     }
 }
