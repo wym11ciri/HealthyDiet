@@ -1,12 +1,14 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/15
  */
 
-public class DataDictionary {
+public class DataDictionary extends HttpBaseInfo{
 
     /**
      * HttpCode : 200
@@ -14,25 +16,7 @@ public class DataDictionary {
      * ListData : [{"id":2,"typeValue":"江浙菜"},{"id":3,"typeValue":"咖啡厅"},{"id":5,"typeValue":"西餐"}]
      */
 
-    private int HttpCode;
-    private Object Message;
     private List<ListDataBean> ListData;
-
-    public int getHttpCode() {
-        return HttpCode;
-    }
-
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public Object getMessage() {
-        return Message;
-    }
-
-    public void setMessage(Object Message) {
-        this.Message = Message;
-    }
 
     public List<ListDataBean> getListData() {
         return ListData;

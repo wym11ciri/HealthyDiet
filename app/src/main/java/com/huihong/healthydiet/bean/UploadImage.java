@@ -1,10 +1,12 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 /**
  * Created by zangyi_shuai_ge on 2017/8/2
  */
 
-public class UploadImage {
+public class UploadImage extends HttpBaseInfo{
 
     /**
      * HttpCode : 200
@@ -12,25 +14,10 @@ public class UploadImage {
      * Model1 : Content/UserImage/LST3JC636372841792850023.jpg
      */
 
-    private int HttpCode;
-    private String Message;
+
     private String Model1;
 
-    public int getHttpCode() {
-        return HttpCode;
-    }
 
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-
-    public void setMessage(String Message) {
-        this.Message = Message;
-    }
 
     public String getModel1() {
         return Model1;

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,13 +15,18 @@ import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.bean.Login;
-import com.huihong.healthydiet.mybean.PersonalInfo;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
+import com.huihong.healthydiet.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -33,17 +39,20 @@ public class LoginActivity extends BaseActivity {
     private TextView tvLogin, tvRegister, tvRestPassword;
     private final int REQUEST_REGISTER_CODE = 100;
     private final int REQUEST_RESET_CODE = 101;
-
+    UMShareAPI mShareAPI;
 
     private EditText etPhone, etPassword;
     private ProgressDialog mProgressDialog;
+    private ImageView ivWeChartLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+         mShareAPI=UMShareAPI.get(LoginActivity.this);
         setContentView(R.layout.activity_login);
         StatusBarUtil.setTransparent(this);//设置状态栏沉浸
         initUI();
+
     }
 
     private void initUI() {
@@ -95,8 +104,38 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-    }
 
+        ivWeChartLogin= (ImageView) findViewById(R.id.ivWeChartLogin);
+        ivWeChartLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+             mShareAPI   .getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, umAuthListener);
+            }
+        });
+
+    }
+    private UMAuthListener umAuthListener = new UMAuthListener() {
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+            //授权开始的回调
+        }
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            Toast.makeText(getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            Toast.makeText( getApplicationContext(), "Authorize fail", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            Toast.makeText( getApplicationContext(), "Authorize cancel", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     /**
      * 登录模式
@@ -180,6 +219,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_REGISTER_CODE:
 

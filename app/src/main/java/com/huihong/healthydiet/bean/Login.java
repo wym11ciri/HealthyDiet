@@ -1,12 +1,14 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/29
  */
 
-public class Login {
+public class Login extends HttpBaseInfo{
 
 
     /**
@@ -15,25 +17,9 @@ public class Login {
      * ListData : [{"UserId":16,"name":"","phone":"15168212330","height":"","weight":"","sex":false,"BirthDay":"0001-01-01T00:00:00","labourIntensity":"","HeadImage":"","constitution":"","score":0,"age":"","Token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJNRDUifQ==.eyJleHAiOiIyMDE3LzgvMSA5OjQ4OjM3IiwiVXNlcklEIjoiMTYiLCJVc2VyTmFtZSI6bnVsbH0=.D69587483D34C63D7E009F06B864D55D"}]
      */
 
-    private int HttpCode;
-    private String Message;
+
     private List<ListDataBean> ListData;
 
-    public int getHttpCode() {
-        return HttpCode;
-    }
-
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-
-    public void setMessage(String Message) {
-        this.Message = Message;
-    }
 
     public List<ListDataBean> getListData() {
         return ListData;

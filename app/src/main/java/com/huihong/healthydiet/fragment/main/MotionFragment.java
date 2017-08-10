@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -29,6 +30,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
@@ -36,9 +38,7 @@ import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
 import com.huihong.healthydiet.mInterface.UpdateTimeCallBack;
-import com.huihong.healthydiet.mybean.ChartDay;
-import com.huihong.healthydiet.mybean.ChartMonth;
-import com.huihong.healthydiet.mybean.ChartYear;
+import com.huihong.healthydiet.mybean.GetSportList;
 import com.huihong.healthydiet.service.StepService;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -47,7 +47,6 @@ import com.huihong.healthydiet.widget.MyYAnimation;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +75,7 @@ public class MotionFragment extends Fragment {
     private TextView tvStartStep;//点击开始运动
 
     //圆形3里面的内容
-    private TextView tvDistance,tvTime;//行走的距离
+    private TextView tvDistance, tvTime;//行走的距离
 
 
     //当前是否在运动
@@ -114,6 +113,7 @@ public class MotionFragment extends Fragment {
                     layoutCircle03.startAnimation(layoutAnimation02);
                 }
             });
+            getSportList("day");
         }
 
         return mView;
@@ -174,9 +174,6 @@ public class MotionFragment extends Fragment {
         });
 
 
-
-
-
         layoutCircle01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,7 +198,6 @@ public class MotionFragment extends Fragment {
 //                    runningDialog.show();
 
 
-
                     //关闭计步器功能并提交数据
                     submitStepCount();
 
@@ -213,11 +209,31 @@ public class MotionFragment extends Fragment {
 
     //向服务器提交数据
     private void submitStepCount() {
-        Calendar c = Calendar.getInstance();//
-        int mYear = c.get(Calendar.YEAR); // 获取当前年份
-        int mMonth = c.get(Calendar.MONTH) + 1;// 获取当前月份
-        int mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
-        MotionFragment.this.stepCount=0;
+//        Calendar c = Calendar.getInstance();//
+//        int mYear = c.get(Calendar.YEAR); // 获取当前年份
+//        int mMonth = c.get(Calendar.MONTH) + 1;// 获取当前月份
+//        int mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
+//        MotionFragment.this.stepCount = 0;
+
+        Map<String, String> map = new HashMap<>();
+        map.put("Steps", MotionFragment.this.stepCount+"");
+        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.UPLOAD_SPORT_INFO
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("提交运动步数",response);
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("提交运动步数",e.toString());
+                    }
+                });
+
 
     }
 
@@ -238,20 +254,20 @@ public class MotionFragment extends Fragment {
             StepService stepService = ((StepService.StepBinder) service).getService();
             stepService.setUpdateStepCallBack(new UpdateStepCallBack() {
                 @Override
-                public void updateStep(int stepCount,int min) {
-                    MotionFragment.this.stepCount = (int) (stepCount*0.8);
+                public void updateStep(int stepCount, int min) {
+                    MotionFragment.this.stepCount = (int) (stepCount * 0.8);
                     tvStepCount.setText(stepCount + "");
                     DecimalFormat df = new DecimalFormat("######0.0");
                     double a = MotionFragment.this.stepCount * 0.4;
                     tvDistance.setText(df.format(a) + "");
-                    tvTime.setText(min+"");
+                    tvTime.setText(min + "");
                 }
             });
 
             stepService.setUpdateTimeCallBack(new UpdateTimeCallBack() {
                 @Override
                 public void updateTime(int min) {
-                    tvTime.setText(min+"");
+                    tvTime.setText(min + "");
                 }
             });
         }
@@ -304,21 +320,21 @@ public class MotionFragment extends Fragment {
                         tvSelectRight.setTextColor(getResources().getColor(R.color.motion_select));
                         tvSelectRight.setBackgroundResource(R.drawable.motion_bg_right_select);
                         //设置折线图横坐标为年
-                        setChartByYear();
+                        getSportList("year");
                         break;
                     case R.id.tvSelectMiddle:
                         //设置折线图横坐标为月
                         tvSelectMiddle.setTextColor(getResources().getColor(R.color.motion_select));
                         tvSelectMiddle.setBackgroundResource(R.drawable.motion_bg_middle_select);
 
-                        setChartByMonth();
+                        getSportList("month");
                         break;
                     case R.id.tvSelectLeft:
                         //设置折线图横坐标为日
                         tvSelectLeft.setTextColor(getResources().getColor(R.color.motion_select));
                         tvSelectLeft.setBackgroundResource(R.drawable.motion_bg_left_select);
                         //
-                        setChartByDay();
+                        getSportList("day");
 
                         break;
                 }
@@ -330,173 +346,114 @@ public class MotionFragment extends Fragment {
         tvSelectRight.setOnClickListener(onClickListener);
     }
 
-    private void setChartByDay() {
-        final List<ChartDay> mChartDayList = new ArrayList<>();
-        //生成一个假数据集合
-        for (int i = 1; i < 30; i++) {
-            ChartDay chartDay = new ChartDay();
-            chartDay.setDay(i);
-            chartDay.setMonth(7);
-            chartDay.setCount((int) (Math.random() * 500));
-            mChartDayList.add(chartDay);
+    List<GetSportList.ListDataBean> mListData;
+
+    private void getSportList(String dateType) {
+        if (mListData != null) {
+            mListData.clear();
         }
 
-        //设置折线图的横坐标
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                int a = (int) value;
-                if (a < mChartDayList.size()) {
-                    return mChartDayList.get(a).getMonth() + "." + mChartDayList.get(a).getDay();
-                } else {
-                    return "";
-                }
-            }
-        });
-        xAxis.setLabelCount(15);//横轴个数
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // 移除所有限制线
-//        leftAxis.setAxisMaximum(500);//设置最大值
-
-
-        //重新绘制折线图数据
-        mChart.clear();//清空原来的数据
-        //绘制主线
-        ArrayList<Entry> values = new ArrayList<>();
-        ArrayList<Entry> values2 = new ArrayList<>();
-        for (int i = 0; i < mChartDayList.size(); i++) {
-            values.add(new Entry(i, mChartDayList.get(i).getCount()));
-            values2.add(new Entry(i, 0));
-        }
-        LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
-        mainLineDataSet.setColor(getResources().getColor(R.color.circle));
-        mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
-        mainLineDataSet.setLineWidth(0.5f);
-        mainLineDataSet.setCircleRadius(3f);
-        mainLineDataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                int a = (int) value;
-                return a + "步";
-            }
-        });
-
-        //在坐标轴上画一条辅助的线
-        LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
-        auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
-        auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
-        auxiliaryLineDataSet.setLineWidth(0.2f);
-        auxiliaryLineDataSet.setCircleRadius(3f);
-        auxiliaryLineDataSet.setDrawFilled(true);
-        auxiliaryLineDataSet.setDrawValues(false);
-        auxiliaryLineDataSet.setDrawCircleHole(false);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(mainLineDataSet); // add the datasets
-        dataSets.add(auxiliaryLineDataSet); // add the datasets
-        LineData data = new LineData(dataSets);
-
-        // set data
-        mChart.setData(data);
-        setChartSize(2);
-
-
-    }
-
-    private void setChartByYear() {
-
-
+        //获取数据
         Map<String, String> map = new HashMap<>();
-//        map.put("Type_Like",type);
-        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
-        map.put("dateType",  "day");
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
+        map.put("dateType", dateType);
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_SPORT_LIST
                 , map
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("获取运动数据",response);
+                        LogUtil.i("获取运动数据", response);
+                        Gson gson = new Gson();
+                        GetSportList mGetSportList = gson.fromJson(response, GetSportList.class);
+                        if (mGetSportList.getHttpCode() == 200) {
+                            mListData = mGetSportList.getListData();
+                            if (mListData != null && mListData.size() > 0) {
+
+
+                                //设置折线图的横坐标
+                                XAxis xAxis = mChart.getXAxis();
+                                xAxis.setValueFormatter(new IAxisValueFormatter() {
+                                    @Override
+                                    public String getFormattedValue(float value, AxisBase axis) {
+                                        int a = (int) value;
+                                        if (a < mListData.size()) {
+                                            return mListData.get(a).getDate();
+                                        } else {
+                                            return "";
+                                        }
+                                    }
+                                });
+                                xAxis.setLabelCount(mListData.size());//横轴个数
+                                YAxis leftAxis = mChart.getAxisLeft();
+                                leftAxis.removeAllLimitLines(); // 移除所有限制线
+
+                                //重新绘制折线图数据
+                                mChart.clear();//清空原来的数据
+                                //绘制主线
+                                ArrayList<Entry> values = new ArrayList<>();
+                                ArrayList<Entry> values2 = new ArrayList<>();
+                                for (int i = 0; i < mListData.size(); i++) {
+                                    values.add(new Entry(i, mListData.get(i).getSteps()));
+                                    values2.add(new Entry(i, 0));
+                                }
+                                LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
+                                mainLineDataSet.setColor(getResources().getColor(R.color.circle));
+                                mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
+                                mainLineDataSet.setLineWidth(0.5f);
+                                mainLineDataSet.setCircleRadius(3f);
+
+                                mainLineDataSet.setValueFormatter(new IValueFormatter() {
+                                    @Override
+                                    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                                        int a = (int) value;
+                                        return a + "步";
+                                    }
+                                });
+
+                                //在坐标轴上画一条辅助的线
+                                LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
+                                auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
+                                auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
+                                auxiliaryLineDataSet.setLineWidth(0.2f);
+                                auxiliaryLineDataSet.setCircleRadius(3f);
+                                auxiliaryLineDataSet.setDrawFilled(false);
+                                auxiliaryLineDataSet.setDrawValues(false);
+                                auxiliaryLineDataSet.setDrawCircleHole(false);
+                                auxiliaryLineDataSet.setHighlightEnabled(false);
+                                ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                                dataSets.add(mainLineDataSet);
+                                dataSets.add(auxiliaryLineDataSet);
+                                LineData data = new LineData(dataSets);
+                                // set data
+                                mChart.setData(data);
+//                                setChartSize(1);
+                            }
+                        } else {
+                            String message = mGetSportList.getMessage();
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                        }
 
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.i("获取运动数据",e.toString());
+                        LogUtil.i("获取运动数据", e.toString());
                     }
                 });
 
 
-        final List<ChartYear> mChartDayList = new ArrayList<>();
-        //生成一个假数据集合
-        for (int i = 1; i < 8; i++) {
-            ChartYear chartDay = new ChartYear();
-            chartDay.setYear(2010 + i);
-            chartDay.setCount((int) (Math.random() * 1000));
-            mChartDayList.add(chartDay);
-        }
-
-        //设置折线图的横坐标
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                int a = (int) value;
-                if (a < mChartDayList.size()) {
-                    return mChartDayList.get(a).getYear() + "年";
-                } else {
-                    return "";
-                }
-            }
-        });
-        xAxis.setLabelCount(15);//横轴个数
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // 移除所有限制线
-//        leftAxis.setAxisMaximum(500);//设置最大值
-
-
-        //重新绘制折线图数据
-        mChart.clear();//清空原来的数据
-        //绘制主线
-        ArrayList<Entry> values = new ArrayList<>();
-        ArrayList<Entry> values2 = new ArrayList<>();
-        for (int i = 0; i < mChartDayList.size(); i++) {
-            values.add(new Entry(i, mChartDayList.get(i).getCount()));
-            values2.add(new Entry(i, 0));
-        }
-        LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
-        mainLineDataSet.setColor(getResources().getColor(R.color.circle));
-        mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
-        mainLineDataSet.setLineWidth(0.5f);
-        mainLineDataSet.setCircleRadius(3f);
-        mainLineDataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                int a = (int) value;
-                return a + "步";
-            }
-        });
-
-        //在坐标轴上画一条辅助的线
-        LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
-        auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
-        auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
-        auxiliaryLineDataSet.setLineWidth(0.2f);
-        auxiliaryLineDataSet.setCircleRadius(3f);
-        auxiliaryLineDataSet.setDrawFilled(true);
-        auxiliaryLineDataSet.setDrawValues(false);
-        auxiliaryLineDataSet.setDrawCircleHole(false);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(mainLineDataSet); // add the datasets
-        dataSets.add(auxiliaryLineDataSet); // add the datasets
-        LineData data = new LineData(dataSets);
-
-        // set data
-        mChart.setData(data);
-        setChartSize(1);
+////        final List<ChartYear> mChartDayList = new ArrayList<>();
+//        //生成一个假数据集合
+////        for (int i = 1; i < 8; i++) {
+////            ChartYear chartDay = new ChartYear();
+////            chartDay.setYear(2010 + i);
+////            chartDay.setCount((int) (Math.random() * 1000));
+////            mChartDayList.add(chartDay);
+////        }
+//
 
     }
+
 
     //设置图表的放大倍数
     public void setChartSize(int multiple) {
@@ -528,77 +485,7 @@ public class MotionFragment extends Fragment {
 
     }
 
-    private void setChartByMonth() {
-        final List<ChartMonth> mChartDayList = new ArrayList<>();
-        //生成一个假数据集合
-        for (int i = 1; i < 13; i++) {
-            ChartMonth chartMonth = new ChartMonth();
-            chartMonth.setMonth(i);
-            chartMonth.setCount((int) (Math.random() * 500));
-            mChartDayList.add(chartMonth);
-        }
 
-        //设置折线图的横坐标
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                int a = (int) value;
-                if (a < mChartDayList.size()) {
-                    return mChartDayList.get(a).getMonth() + "月";
-                } else {
-                    return "";
-                }
-            }
-        });
-        xAxis.setLabelCount(15);//横轴个数
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // 移除所有限制线
-//        leftAxis.setAxisMaximum(500);//设置最大值
-
-
-        //重新绘制折线图数据
-        mChart.clear();//清空原来的数据
-        //绘制主线
-        ArrayList<Entry> values = new ArrayList<>();
-        ArrayList<Entry> values2 = new ArrayList<>();
-        for (int i = 0; i < mChartDayList.size(); i++) {
-            values.add(new Entry(i, mChartDayList.get(i).getCount()));
-            values2.add(new Entry(i, 0));
-        }
-        LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
-        mainLineDataSet.setColor(getResources().getColor(R.color.circle));
-        mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
-        mainLineDataSet.setLineWidth(0.5f);
-        mainLineDataSet.setCircleRadius(3f);
-        mainLineDataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                int a = (int) value;
-                return a + "步";
-            }
-        });
-
-        //在坐标轴上画一条辅助的线
-        LineDataSet auxiliaryLineDataSet = new LineDataSet(values2, "DataSet 2");
-        auxiliaryLineDataSet.setColor(getResources().getColor(R.color.circle_zzzz));
-        auxiliaryLineDataSet.setCircleColor(getResources().getColor(R.color.circle_zzzz));
-        auxiliaryLineDataSet.setLineWidth(0.2f);
-        auxiliaryLineDataSet.setCircleRadius(3f);
-        auxiliaryLineDataSet.setDrawFilled(true);
-        auxiliaryLineDataSet.setDrawValues(false);
-        auxiliaryLineDataSet.setDrawCircleHole(false);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(mainLineDataSet); // add the datasets
-        dataSets.add(auxiliaryLineDataSet); // add the datasets
-        LineData data = new LineData(dataSets);
-        // set data
-        mChart.setData(data);
-        setChartSize(1);
-        mChart.fitScreen();
-
-    }
 
     //设置图表控件
     private void initChart() {
@@ -620,7 +507,7 @@ public class MotionFragment extends Fragment {
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.removeAllLimitLines(); // 移除所有限制线
 //        leftAxis.setAxisMaximum(200f);//设置最大值
-        leftAxis.setAxisMinimum(0f);//设置最小值
+        leftAxis.setAxisMinimum(0);//设置最小值
         leftAxis.setDrawZeroLine(false);
         leftAxis.setDrawLimitLinesBehindData(true);
         leftAxis.setEnabled(false);
@@ -630,6 +517,6 @@ public class MotionFragment extends Fragment {
         mChart.animateX(2500);
         Legend legend = mChart.getLegend();
         legend.setEnabled(false);
-        setChartByDay();
+//        setChartByDay();
     }
 }

@@ -1,12 +1,14 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/17
  */
 
-public class RecipeListInfoByDRId {
+public class RecipeListInfoByDRId extends HttpBaseInfo{
 
 
     /**
@@ -15,25 +17,10 @@ public class RecipeListInfoByDRId {
      * ListData : [{"id":4,"name":"食谱5","foodRecipe":[{"RecipeItemName":"配菜","ListFood":"青菜 1g, 萝卜 2g"},{"RecipeItemName":"主食","ListFood":"鸡肉 3g, 牛肉 4g"}],"Constitution":["平和质","气郁质","阴虚质"],"titleImage":"http://106.14.218.31:8081/img//recipe//recipe4-19823844.jpg","sales":11,"price":"11.00"}]
      */
 
-    private int HttpCode;
-    private String Message;
+
     private List<ListDataBean> ListData;
 
-    public int getHttpCode() {
-        return HttpCode;
-    }
 
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-
-    public void setMessage(String Message) {
-        this.Message = Message;
-    }
 
     public List<ListDataBean> getListData() {
         return ListData;

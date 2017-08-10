@@ -1,5 +1,7 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,7 @@ import java.util.List;
  * 食谱详情页面
  */
 
-public class RecipeItemInfo {
+public class RecipeItemInfo extends HttpBaseInfo{
 
     /**
      * HttpCode : 200
@@ -15,25 +17,10 @@ public class RecipeItemInfo {
      * ListData : [{"id":4,"name":"食谱5","foodRecipe":[{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodId":4,"FoodName":"鸡肉","FoodWeight":"3g","WhetherLike":0},{"FoodId":50,"FoodName":"牛肉","FoodWeight":"4g","WhetherLike":0}]}],"ConstitutionPercentage":75,"Constitution":["特禀质","气虚质","阴虚质"],"Tags":["清蒸","红烧"],"images":["http://106.14.218.31:8081/img//recipe//recipe4-19823844.jpg","http://106.14.218.31:8081/img//recipe//recipe4-19834101.jpg"],"price":"11.00"}]
      */
 
-    private int HttpCode;
-    private String Message;
+
     private List<ListDataBean> ListData;
 
-    public int getHttpCode() {
-        return HttpCode;
-    }
 
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-
-    public void setMessage(String Message) {
-        this.Message = Message;
-    }
 
     public List<ListDataBean> getListData() {
         return ListData;

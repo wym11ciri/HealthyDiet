@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -19,11 +18,15 @@ import com.huihong.healthydiet.adapter.RvPhotoAdapter;
 import com.huihong.healthydiet.adapter.RvTagAdapter;
 import com.huihong.healthydiet.adapter.RvTypeAdapter2;
 import com.huihong.healthydiet.bean.RecipeItemInfoForPay;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
+import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.zuoni.dialog.picker.pickerdialog.DataPickerDateDialog;
 import com.zuoni.dialog.picker.pickerdialog.TimePickerDialog;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -43,6 +46,10 @@ public class PayActivity extends BaseTitleActivity {
     private ImageView ivHead;
     private TextView tvDistance;
     private ImageView ivPhone;
+
+    private String payMoney = "-1";
+    private String payTime = "";
+    private String paName = "";
 
     @Override
     public int setLayoutId() {
@@ -77,6 +84,10 @@ public class PayActivity extends BaseTitleActivity {
             @Override
             public void onClick(View v) {
                 Intent mIntent = new Intent(PayActivity.this, PayOnlineActivity.class);
+                mIntent.putExtra("payMoney", payMoney);
+                mIntent.putExtra("payName", paName);
+                mIntent.putExtra("payTime", tvTimeSelect.getText().toString().trim());
+                mIntent.putExtra("RecipeId", RecipeId);
                 startActivity(mIntent);
             }
         });
@@ -134,17 +145,17 @@ public class PayActivity extends BaseTitleActivity {
 
     private void getInfo() {
 
-        OkHttpUtils
-                .post()
-                .url(AppUrl.RECIPE_ITEM_INFO_FOR_PAY)
-                .addParams("RecipeId", RecipeId)
-                .addParams("UserId", "2")
-                .build()
-                .execute(new StringCallback() {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("RecipeId", RecipeId);
+        map.put("UserId", SPUtils.get(PayActivity.this, "UserId", 0) + "");
+
+        HttpUtils.sendHttpAddToken(PayActivity.this, AppUrl.RECIPE_ITEM_INFO_FOR_PAY
+                , map
+                , new HttpUtilsListener() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("接口，支付详情", e + "");
-                        Toast.makeText(PayActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -179,7 +190,9 @@ public class PayActivity extends BaseTitleActivity {
                                 rvDetailPhoto.setAdapter(new RvPhotoAdapter(PayActivity.this, mListDataBean.getImages()));
                                 //设置食谱名称
                                 tvName.setText(mListDataBean.getName());
+
                                 tvPrice.setText("￥" + mListDataBean.getPrice());
+                                payMoney = mListDataBean.getPrice();
                                 tvSales.setText("本月销量" + mListDataBean.getSales() + "份");
                                 //设置匹配度
                                 int percentage = mListDataBean.getConstitutionPercentage();
@@ -225,6 +238,8 @@ public class PayActivity extends BaseTitleActivity {
                                         startActivity(intent);
                                     }
                                 });
+                                paName = mListData2Bean.getName();
+
                             }
 
 
@@ -232,6 +247,7 @@ public class PayActivity extends BaseTitleActivity {
 
                     }
                 });
+
 
     }
 

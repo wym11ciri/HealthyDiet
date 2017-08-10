@@ -48,7 +48,9 @@ public class AppUrl {
     public static final String ARTICLE_CLICK = BASE_URL + "API/Article/ArticleClick";//文章查看
     public static final String GET_ARTICLE_ITEM_INFO = BASE_URL + "API/Article/GetArticleItemInfo";//根据id获取文章详情
 
-    //获得运动步数
-    public static final String GET_SPORT_LIST = BASE_URL + "API/Sport/GetSportList";
+    //运动
+    public static final String GET_SPORT_LIST = BASE_URL + "API/Sport/GetSportList";//获得运动步数
+    public static final String UPLOAD_SPORT_INFO = BASE_URL + "API/Sport/UpLoadSportInfo";//提交运动步数
+
 
 }

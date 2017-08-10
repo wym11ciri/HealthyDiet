@@ -5,6 +5,8 @@ import android.app.Service;
 import android.os.Vibrator;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
 
 import org.litepal.LitePal;
 import org.litepal.tablemanager.Connector;
@@ -34,6 +36,8 @@ public class MyApplication extends Application {
         super.onCreate();
         LitePal.initialize(this);
         Connector.getDatabase();//创建数据
+        UMShareAPI.get(this);
+        PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
 //        CookieJarImpl cookieJar = new CookieJarImpl(new PersistentCookieStore(getApplicationContext()));
 ////        cookieJar
 //        OkHttpClient okHttpClient = new OkHttpClient.Builder()

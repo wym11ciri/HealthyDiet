@@ -145,7 +145,6 @@ public class ArticleFragment extends Fragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         recyclerView.refreshComplete(1);
-                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -172,48 +171,6 @@ public class ArticleFragment extends Fragment {
                         recyclerView.refreshComplete(1);
                     }
                 });
-
-
-//
-//        OkHttpUtils
-//                .post()
-//                .url(AppUrl.GET_ARTICLE_LIST_INFO)
-//                .addParams("Id", "2")//用户坐标
-//                .addParams("PageNo", pageNum+"")//用户坐标
-//                .build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                        recyclerView.refreshComplete(1);
-//                        Toast.makeText(getActivity(), R.string.service_error, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        LogUtil.i("接口，获取文章列表" + response);
-//                        Gson gson = new Gson();
-//                        GetArticleListInfo mGetArticleListInfo = gson.fromJson(response, GetArticleListInfo.class);
-//                        int code = mGetArticleListInfo.getHttpCode();
-//                        if (code == 200) {
-//                            mNum++;
-//                            //顶部3个TextView
-//                            GetArticleListInfo.ListData2Bean ListData2Bean = mGetArticleListInfo.getListData2().get(0);
-//                            tvTop01.setText("您的体质是" + ListData2Bean.getConstitution());
-//                            tvTop02.setText("适合吃" + ListData2Bean.getSuitEat());
-//                            tvTop03.setText("尽量少吃" + ListData2Bean.getNotSuitEat());
-//
-//                            mList.addAll(mGetArticleListInfo.getListData());
-//                            mLRecyclerViewAdapter.notifyDataSetChanged();
-////
-//                        } else {
-//                            String Message = mGetArticleListInfo.getMessage();
-//                            Toast.makeText(getActivity(), Message, Toast.LENGTH_SHORT).show();
-//                        }
-//                        recyclerView.refreshComplete(1);
-//                    }
-//                });
-
-
     }
 
     private void initUI() {

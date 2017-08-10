@@ -14,6 +14,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
+import com.huihong.healthydiet.cache.litepal.SleepCache;
 import com.huihong.healthydiet.fragment.main.ArticleFragment;
 import com.huihong.healthydiet.fragment.main.HomeFragment;
 import com.huihong.healthydiet.fragment.main.MotionFragment;
@@ -22,6 +23,7 @@ import com.huihong.healthydiet.fragment.main.SleepFragment;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.service.AlarmClockService;
+import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
 import com.huihong.healthydiet.widget.MyViewPager;
 
@@ -87,22 +89,23 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         setupService();
 
 //
-//        for (int i = 1; i <30 ; i++) {
-//            SleepCache mSleepCache=new SleepCache();
-//            mSleepCache.setYear(2017);
-//            mSleepCache.setMonth(8);
-//            mSleepCache.setDay(i);
-//
-//            mSleepCache.setGetUpHour(2+(i%12));
-//            mSleepCache.setGetUpMin(20);
-//
-//
-//            mSleepCache.setSleepHour(12+(i%12));
-//            mSleepCache.setSleepMin(20);
-//
-//            mSleepCache.save();
-//
-//        }
+        boolean isFirstzz= (boolean) SPUtils.get(MainActivity.this,"isFirstzz",true);
+
+        if(isFirstzz){
+            for (int i = 1; i <30 ; i++) {
+                SleepCache mSleepCache=new SleepCache();
+                mSleepCache.setYear(2017);
+                mSleepCache.setMonth(8);
+                mSleepCache.setDay(i);
+                mSleepCache.setGetUpHour(2+(i%12));
+                mSleepCache.setGetUpMin(20);
+                mSleepCache.setSleepHour(12+(i%12));
+                mSleepCache.setSleepMin(20);
+                mSleepCache.save();
+            }
+            SPUtils.put(MainActivity.this,"isFirstzz",false);
+        }
+
 
     }
 

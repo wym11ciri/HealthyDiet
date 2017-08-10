@@ -60,9 +60,6 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
-
-
-        setTitle("鸡蛋蔬菜沙拉");
         tvConstitutionPercentage = (TextView) findViewById(R.id.tvConstitutionPercentage);
         RecipeId = getIntent().getStringExtra("RecipeId");
         if (!RecipeId.equals("")) {
@@ -96,7 +93,6 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("接口，菜谱详情", e + "");
-//                        Toast.makeText(RecipesDetailsActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -199,6 +195,9 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
                                     tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_5));
                                 }
                                 tvConstitutionPercentage.setText(percentage + "%");
+
+                                TextView tvPrice= (TextView) findViewById(R.id.tvPrice);
+                                tvPrice.setText("￥"+mListDataBean.getPrice());
 
                             }
                         }

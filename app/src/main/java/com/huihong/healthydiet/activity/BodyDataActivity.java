@@ -187,7 +187,7 @@ public class BodyDataActivity extends BaseTitleActivity {
         }
 
         Map<String, String> map = new HashMap<>();
-        map.put("Id", SPUtils.get(BodyDataActivity.this, "UserId", 0) + "");
+        map.put("UserId", SPUtils.get(BodyDataActivity.this, "UserId", 0) + "");
 
         HttpUtils
                 .sendHttpAddToken(BodyDataActivity.this

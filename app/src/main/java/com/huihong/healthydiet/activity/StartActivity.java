@@ -81,15 +81,14 @@ public class StartActivity extends BaseActivity {
         boolean isDoSimpleTest= (boolean) SPUtils.get(StartActivity.this,"isDoSimpleTest",false);
         //是否已经登录过
         boolean isLogin=(boolean) SPUtils.get(StartActivity.this,"isLogin",false);
-
         if(isLogin){
             if(isDoSimpleTest){
-                mHandler.sendEmptyMessageDelayed(GO_MAIN_TAG, 3000);
+                mHandler.sendEmptyMessageDelayed(GO_MAIN_TAG, 1000);
             }else {
-                mHandler.sendEmptyMessageDelayed(GO_TEST_TAG, 3000);
+                mHandler.sendEmptyMessageDelayed(GO_TEST_TAG, 1000);
             }
         }else {
-            mHandler.sendEmptyMessageDelayed(GO_LOGIN_TAG, 3000);
+            mHandler.sendEmptyMessageDelayed(GO_LOGIN_TAG, 1000);
         }
     }
 }

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 
+import butterknife.ButterKnife;
+
 
 /**
  * Created by zangyi_shuai_ge on 2017/5/15
@@ -35,6 +37,8 @@ public abstract class BaseTitleActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(setLayoutId());
+        ButterKnife.bind(this);
+
 
 //        layoutHead = (RelativeLayout) findViewById(R.id.layoutHead);
         tvTitle = (TextView) findViewById(R.id.tvTitle);//标题

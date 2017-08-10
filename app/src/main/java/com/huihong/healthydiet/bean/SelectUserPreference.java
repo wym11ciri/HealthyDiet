@@ -1,12 +1,14 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 import java.util.List;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/29
  */
 
-public class SelectUserPreference {
+public class SelectUserPreference extends HttpBaseInfo{
 
     /**
      * HttpCode : 200
@@ -14,25 +16,10 @@ public class SelectUserPreference {
      * ListData : [{"FoodId":154,"FoodName":"小米","FoodWeight":null,"WhetherLike":null},{"FoodId":148,"FoodName":"鸭肉","FoodWeight":null,"WhetherLike":null}]
      */
 
-    private int HttpCode;
-    private String Message;
+
     private List<ListDataBean> ListData;
 
-    public int getHttpCode() {
-        return HttpCode;
-    }
 
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-
-    public void setMessage(String Message) {
-        this.Message = Message;
-    }
 
     public List<ListDataBean> getListData() {
         return ListData;

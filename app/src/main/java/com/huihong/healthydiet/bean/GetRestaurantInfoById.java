@@ -1,5 +1,7 @@
 package com.huihong.healthydiet.bean;
 
+import com.huihong.healthydiet.model.HttpBaseInfo;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,7 @@ import java.util.List;
  * 餐厅详情上面那部分餐厅信息
  */
 
-public class GetRestaurantInfoById {
+public class GetRestaurantInfoById extends HttpBaseInfo {
 
 
     /**
@@ -16,25 +18,8 @@ public class GetRestaurantInfoById {
      * ListData : [{"id":98,"name":"餐厅7","images":["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg","http://106.14.218.31:8081/img//restaurant//restaurant98-19834101.jpg"],"address":"杭州市拱墅区浙大网新智慧立方","phone":"18857120152","category":"西餐","sales":5,"consumption":7,"discount":"满100减200|满100减200","distance":0}]
      */
 
-    private int HttpCode;
-    private String Message;
+
     private List<ListDataBean> ListData;
-
-    public int getHttpCode() {
-        return HttpCode;
-    }
-
-    public void setHttpCode(int HttpCode) {
-        this.HttpCode = HttpCode;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-
-    public void setMessage(String Message) {
-        this.Message = Message;
-    }
 
     public List<ListDataBean> getListData() {
         return ListData;

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
@@ -13,6 +12,7 @@ import com.huihong.healthydiet.activity.LoginActivity;
 import com.huihong.healthydiet.activity.base.ActivityCollector;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.common.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -84,9 +84,15 @@ public class HttpUtils {
                     @Override
                     public void onError(okhttp3.Call call, Exception e, int id) {
                         if (mContext != null) {
-                            Toast.makeText(mContext.getApplicationContext(), R.string.service_error, Toast.LENGTH_SHORT).show();
+                            Activity activity= (Activity) mContext;
+                            ToastUtils.showToast(mContext.getApplicationContext(),mContext.getString(R.string.service_error));
+//                            Toast.makeText(mContext.getApplicationContext(), R.string.service_error, Toast.LENGTH_SHORT).show();
                         }
-                        mHttpUtilsListener.onError(call, e, id);
+                        Activity activity= (Activity) mContext;
+                        if(!activity.isDestroyed()){
+                            mHttpUtilsListener.onError(call, e, id);
+                        }
+
                     }
 
 

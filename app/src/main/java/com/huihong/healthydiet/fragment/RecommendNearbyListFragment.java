@@ -23,6 +23,7 @@ import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
 import com.huihong.healthydiet.bean.RestaurantList;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
+import com.huihong.healthydiet.model.RestaurantInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.current.HttpUtils;
 
@@ -102,7 +103,7 @@ public class RecommendNearbyListFragment extends Fragment {
     private LRecyclerView recyclerView;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
     private RvRecommendNearbyAdapter mRvRecommendAdapter;
-    private List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> recommendList;
+    private List<RestaurantInfo> recommendList;
 
     private void initRecyclerView() {
 
@@ -182,7 +183,7 @@ public class RecommendNearbyListFragment extends Fragment {
                         int code = RestaurantList.getHttpCode();
                         if (code == 200) {
                             RecommendNearbyListFragment.this.num++;
-                            List<com.huihong.healthydiet.bean.RestaurantList.ListDataBean> mListData = RestaurantList.getListData();//拿到餐厅列表
+                            List<RestaurantInfo> mListData = RestaurantList.getListData();//拿到餐厅列表
 //                            recommendList.clear();
                             recommendList.addAll(mListData);
                             mLRecyclerViewAdapter.notifyDataSetChanged();
