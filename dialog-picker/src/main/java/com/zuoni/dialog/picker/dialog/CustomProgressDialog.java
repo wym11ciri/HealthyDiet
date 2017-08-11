@@ -12,28 +12,28 @@ import android.widget.Button;
 import com.zuoni.android.dialog.R;
 
 /**
- * 从底部弹出的Dialog
+ * 自定义ProgressDialog
  */
-public class BottomGetPhotoDialog extends Dialog {
+public class CustomProgressDialog extends Dialog {
 
     private Params params;
 
-    public BottomGetPhotoDialog(Context context, int themeResId) {
+    public CustomProgressDialog(Context context, int themeResId) {
         super(context, themeResId);
     }
 
-    private void setParams(BottomGetPhotoDialog.Params params) {
+    private void setParams(CustomProgressDialog.Params params) {
         this.params = params;
     }
 
 
     public static class Builder {
         private final Context context;
-        private final BottomGetPhotoDialog.Params params;
+        private final CustomProgressDialog.Params params;
 
         public Builder(Context context) {
             this.context = context;
-            params = new BottomGetPhotoDialog.Params();
+            params = new CustomProgressDialog.Params();
         }
 
 
@@ -47,8 +47,8 @@ public class BottomGetPhotoDialog extends Dialog {
             return this;
         }
 
-        public BottomGetPhotoDialog create() {
-            BottomGetPhotoDialog dialog = new BottomGetPhotoDialog(context, params.shadow ? R.style.Theme_Light_NoTitle_Dialog : R.style.Theme_Light_NoTitle_NoShadow_Dialog);
+        public CustomProgressDialog create() {
+            CustomProgressDialog dialog = new CustomProgressDialog(context, params.shadow ? R.style.Theme_Light_NoTitle_Dialog : R.style.Theme_Light_NoTitle_NoShadow_Dialog);
             View view = LayoutInflater.from(context).inflate(R.layout.bottom_get_photo_dialog, null);
 
             Button btGetPhoto = (Button) view.findViewById(R.id.btGetPhoto);

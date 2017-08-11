@@ -47,7 +47,10 @@ public class TimePickerDialog extends Dialog {
             this.context = context;
             params = new TimePickerDialog.Params();
         }
-
+        public Builder canCancel(boolean canCancel) {
+            params.canCancel = canCancel;
+            return this;
+        }
         /**
          * 获取当前选择的时间
          *
@@ -79,6 +82,14 @@ public class TimePickerDialog extends Dialog {
                     params.callback.onTimeSelected(getCurrDateValues());
                 }
             });
+
+            view.findViewById(R.id.tvLeft).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
 
             Window win = dialog.getWindow();
             win.getDecorView().setPadding(0, 0, 0, 0);

@@ -89,19 +89,26 @@ public class DataPickerDateDialog extends Dialog {
             params.rightTextColor = rightColor;
             return this;
         }
-
+        public Builder canCancel(boolean canCancel) {
+            params.canCancel = canCancel;
+            return this;
+        }
 
         public DataPickerDateDialog create() {
             final DataPickerDateDialog dialog = new DataPickerDateDialog(context, params.shadow ? R.style.Theme_Light_NoTitle_Dialog : R.style.Theme_Light_NoTitle_NoShadow_Dialog);
             View view = LayoutInflater.from(context).inflate(R.layout.data_picker_date_dialog, null);
 
-            final LoopView loopDay = (LoopView) view.findViewById(R.id.loop_day);
-            loopDay.setArrayList(d(1, 30));
-            loopDay.setCurrentItem(15);
-            loopDay.setNotLoop();
-
             Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);//当前年份
+            int month=c.get(Calendar.MONTH);
+            int day=c.get(Calendar.DAY_OF_MONTH);
+
+            final LoopView loopDay = (LoopView) view.findViewById(R.id.loop_day);
+            loopDay.setArrayList(d(1, 30));
+            loopDay.setCurrentItem(day-1);
+            loopDay.setNotLoop();
+
+
             final LoopView loopYear = (LoopView) view.findViewById(R.id.loop_year);
             loopYear.setArrayList(d(MIN_YEAR, year - MIN_YEAR + 10));
             loopYear.setCurrentItem(year - MIN_YEAR);//设置默认年份
@@ -109,9 +116,14 @@ public class DataPickerDateDialog extends Dialog {
 
             final LoopView loopMonth = (LoopView) view.findViewById(R.id.loop_month);
             loopMonth.setArrayList(d(1, 12));
-            loopMonth.setCurrentItem(6);
+            loopMonth.setCurrentItem(month);
             loopMonth.setNotLoop();
-
+            view.findViewById(R.id.tvLeft).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
             final LoopListener maxDaySyncListener = new LoopListener() {
                 @Override
                 public void onItemSelect(int item) {

@@ -150,7 +150,7 @@ public class DataPickerDialog2 extends Dialog {
                     tvTabLeft.setBackgroundResource(R.drawable.bg_left_01);//左侧选中
                     tvTabRight.setBackgroundResource(R.drawable.bg_right_2);
 
-                    tvTabLeft.setTextColor(context.getResources().getColor(R.color.white));
+                    tvTabLeft.setTextColor(context.getResources().getColor(R.color.color_white));
                     tvTabRight.setTextColor(context.getResources().getColor(R.color.tab02));
 
                     layoutRight.setVisibility(View.GONE);//隐藏右边
@@ -167,7 +167,7 @@ public class DataPickerDialog2 extends Dialog {
                     tvTabLeft.setBackgroundResource(R.drawable.bg_left_02);
                     tvTabRight.setBackgroundResource(R.drawable.bg_right_1);//右侧选中
 
-                    tvTabRight.setTextColor(context.getResources().getColor(R.color.white));
+                    tvTabRight.setTextColor(context.getResources().getColor(R.color.color_white));
                     tvTabLeft.setTextColor(context.getResources().getColor(R.color.tab02));
 
                     layoutRight.setVisibility(View.VISIBLE);//隐藏右边

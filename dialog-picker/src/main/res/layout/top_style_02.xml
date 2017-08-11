@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="45dp"
-    android:background="@color/white">
+    android:background="@color/color_white">
 
     <View
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:background="@drawable/bg_right_1"
             android:gravity="center"
             android:text="@string/Irregular"
-            android:textColor="@color/white"
+            android:textColor="@color/color_white"
             android:textSize="14sp" />
     </LinearLayout>
 
