@@ -12,8 +12,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
-import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
+import com.huihong.healthydiet.utils.MyUtils;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<TitlePage.ListData2Bean> mList;
+    private List<RecipeInfo> mList;
 
     private ItemOnClickListener mItemOnClickListener;
 
@@ -37,7 +38,7 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
     }
 
 
-    public RvRecommendAdapter(Context pContext, List<TitlePage.ListData2Bean> pList) {
+    public RvRecommendAdapter(Context pContext, List<RecipeInfo> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -84,28 +85,10 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
                 mContext.startActivity(mIn);
             }
         });
-
-
-
         holder.tvPrice.setText("￥"+mList.get(position).getPrice());
-
         int percentage = mList.get(position).getConstitutionPercentage();
-
         holder.tvConstitutionPercentage.setText(percentage+"%");
-
-        if (percentage > 90) {
-           holder.  tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_9));
-        } else if (percentage > 80 & percentage <= 90) {
-          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_8));
-        } else if (percentage > 70 & percentage <= 80) {
-          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_7));
-        } else if (percentage > 60 & percentage <= 70) {
-          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_6));
-        } else {
-          holder.   tvConstitutionPercentage.setTextColor(mContext.getResources().getColor(R.color.percentage_color_5));
-        }
-
-
+        MyUtils.setTextViewColor(holder.tvConstitutionPercentage,percentage,mContext);
     }
 
     @Override

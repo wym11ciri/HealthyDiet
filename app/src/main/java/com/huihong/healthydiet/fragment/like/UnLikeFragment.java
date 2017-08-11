@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.adapter.RvLikeAdapter;
-import com.huihong.healthydiet.bean.SelectUserPreference;
+import com.huihong.healthydiet.model.gsonbean.SelectUserPreference;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;

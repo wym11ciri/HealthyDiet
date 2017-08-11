@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.mybean.IntegralDate;
+import com.huihong.healthydiet.model.mybean.IntegralDate;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.widget.StickyHeaderAdapter;
 

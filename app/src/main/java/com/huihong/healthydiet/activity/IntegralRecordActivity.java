@@ -8,7 +8,7 @@ import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.StickyTestAdapter;
-import com.huihong.healthydiet.mybean.IntegralDate;
+import com.huihong.healthydiet.model.mybean.IntegralDate;
 import com.huihong.healthydiet.widget.StickyHeaderDecoration;
 
 import java.util.ArrayList;

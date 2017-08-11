@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.bean.MaterialInfo;
+import com.huihong.healthydiet.model.gsonbean.MaterialInfo;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.utils.common.SPUtils;

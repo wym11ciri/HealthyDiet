@@ -17,8 +17,9 @@ import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvPhotoAdapter;
 import com.huihong.healthydiet.adapter.RvTagAdapter;
 import com.huihong.healthydiet.adapter.RvTypeAdapter2;
-import com.huihong.healthydiet.bean.RecipeItemInfoForPay;
+import com.huihong.healthydiet.model.gsonbean.RecipeItemInfoForPay;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -196,18 +197,7 @@ public class PayActivity extends BaseTitleActivity {
                                 tvSales.setText("本月销量" + mListDataBean.getSales() + "份");
                                 //设置匹配度
                                 int percentage = mListDataBean.getConstitutionPercentage();
-
-                                if (percentage > 90) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_9));
-                                } else if (percentage > 80 & percentage <= 90) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_8));
-                                } else if (percentage > 70 & percentage <= 80) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_7));
-                                } else if (percentage > 60 & percentage <= 70) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_6));
-                                } else {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_5));
-                                }
+                                MyUtils.setTextViewColor(tvConstitutionPercentage,percentage,PayActivity.this);
                                 tvConstitutionPercentage.setText(percentage + "%");
 
 

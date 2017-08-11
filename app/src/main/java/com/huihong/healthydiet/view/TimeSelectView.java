@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.CircleListener;
-import com.huihong.healthydiet.mybean.TouchCircle;
+import com.huihong.healthydiet.model.mybean.TouchCircle;
 import com.huihong.healthydiet.utils.common.DensityUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;

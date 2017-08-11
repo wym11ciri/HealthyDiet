@@ -2,7 +2,7 @@ package com.huihong.healthydiet.cache.sp;
 
 import android.content.Context;
 
-import com.huihong.healthydiet.mybean.PersonalInfo;
+import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.widget.WeekSelectTextView;
 
@@ -26,9 +26,9 @@ public class CacheUtils {
         String age = (String) SPUtils.get(mContext, "age", "15");//年龄
         String height = (String) SPUtils.get(mContext, "height", "170");//身高
         String weight = (String) SPUtils.get(mContext, "weight", "50");//体重
-        String name = (String) SPUtils.get(mContext, "name", "zangyi");//名称
+        String name = (String) SPUtils.get(mContext, "name", "");//名称
         String constitution = (String) SPUtils.get(mContext, "constitution", "");//体质
-        String phone = (String) SPUtils.get(mContext, "phone", "");//体质
+        String phone = (String) SPUtils.get(mContext, "phone", "");
         PersonalInfo personalInfo = new PersonalInfo();
         personalInfo.setAge(age);
         personalInfo.setHeight(height);
@@ -52,23 +52,25 @@ public class CacheUtils {
         String name = personalInfo.getName();//名称
         String constitution = personalInfo.getConstitution();//体质
         String phone = personalInfo.getPhone();
-        if (!name.equals("")) {
-            SPUtils.put(mContext, "name", name);
-        }
-        if (!constitution.equals("")) {
-            SPUtils.put(mContext, "constitution", constitution);
-        }
 
-        if (!headImageUrl.equals("")) {
-            SPUtils.put(mContext, "headImageUrl", headImageUrl);
-        }
-
+        SPUtils.put(mContext, "name", name);
+        SPUtils.put(mContext, "constitution", constitution);
+        SPUtils.put(mContext, "headImageUrl", headImageUrl);
         SPUtils.put(mContext, "isMan", isMan);
         SPUtils.put(mContext, "age", age);
-
         SPUtils.put(mContext, "height", height);
         SPUtils.put(mContext, "weight", weight);
         SPUtils.put(mContext, "phone", phone);
+    }
+
+    //phone
+    public static void setPhone(Context mContext, String Phone) {
+        SPUtils.put(mContext, "phone", Phone);
+    }
+
+    //
+    public static String getPhone(Context mContext) {
+        return (String) SPUtils.get(mContext, "phone", "") + "";
     }
 
     //UserId

@@ -20,10 +20,10 @@ import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.adapter.RvRecommendNearbyAdapter;
-import com.huihong.healthydiet.bean.RestaurantList;
+import com.huihong.healthydiet.model.gsonbean.RestaurantList;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
-import com.huihong.healthydiet.model.RestaurantInfo;
+import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.current.HttpUtils;
 

@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.mybean.Type;
+import com.huihong.healthydiet.model.mybean.Type;
 
 import java.util.List;
 

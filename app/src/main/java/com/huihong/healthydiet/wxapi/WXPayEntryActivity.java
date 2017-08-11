@@ -24,6 +24,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp baseResp) {
+        LogUtil.i("微信支付回调","onPayFinish,errCode=");
         if(baseResp.getType()== ConstantsAPI.COMMAND_PAY_BY_WX){
             LogUtil.i("微信支付回调","onPayFinish,errCode="+baseResp.errCode);
 //            AlertDialog.Builderbuilder=newAlertDialog.Builder(this);

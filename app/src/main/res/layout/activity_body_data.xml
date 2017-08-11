@@ -118,17 +118,17 @@
                 android:layout_weight="1" />
 
             <EditText
-                android:maxLength="3"
                 android:id="@+id/etHeight"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
                 android:gravity="center|right"
                 android:inputType="number"
-                android:paddingLeft="10dp"
-                android:text="165"
+                android:maxLength="3"
                 android:textColor="#989898"
+                android:textColorHint="#989898"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -177,16 +177,17 @@
                 android:layout_weight="1" />
 
             <EditText
-                android:maxLength="3"
                 android:id="@+id/etWeight"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:background="@null"
-                android:inputType="number"
                 android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:maxLength="3"
                 android:paddingLeft="10dp"
-                android:text="45"
                 android:textColor="#989898"
+                android:textColorHint="#989898"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

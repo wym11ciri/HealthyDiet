@@ -20,7 +20,7 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.adapter.RvHistorySearchAdapter;
 import com.huihong.healthydiet.adapter.RvHotSearchAdapter;
-import com.huihong.healthydiet.bean.HotSearch;
+import com.huihong.healthydiet.model.gsonbean.HotSearch;
 import com.huihong.healthydiet.cache.litepal.SearchHistory;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener2;

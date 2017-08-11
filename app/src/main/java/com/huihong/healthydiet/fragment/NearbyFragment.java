@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.adapter.RvNearbyAdapter;
-import com.huihong.healthydiet.bean.TitlePage;
+import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class NearbyFragment extends Fragment {
     private View  mView;
     private RecyclerView rvNearby;
     private RvNearbyAdapter mAdapter;
-    private List<TitlePage.ListDataBean > mList;
+    private List<RestaurantInfo> mList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class NearbyFragment extends Fragment {
     }
 
 
-    public  void refreshData(List<TitlePage.ListDataBean> pListData){
+    public  void refreshData(List<RestaurantInfo> pListData){
         if(mList!=null){
             LogUtil.i("刷新了");
             mList.clear();

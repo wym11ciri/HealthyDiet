@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.bean.GetQuestionExpressList;
+import com.huihong.healthydiet.model.gsonbean.GetQuestionExpressList;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 
 import java.util.ArrayList;

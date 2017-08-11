@@ -50,6 +50,8 @@ public class PayOnlineActivity extends BaseTitleActivity2 {
     LinearLayout layoutPayWeChart;
     @BindView(R.id.btPay)
     Button btPay;
+
+
     private static final int SDK_PAY_FLAG = 1;
     private boolean isUseAliPay = true;
     private Handler mHandler = new Handler() {
@@ -76,8 +78,6 @@ public class PayOnlineActivity extends BaseTitleActivity2 {
             }
 
         }
-
-        ;
     };
 
     @Override

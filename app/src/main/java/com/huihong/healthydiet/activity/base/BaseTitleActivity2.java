@@ -84,19 +84,41 @@ public abstract class BaseTitleActivity2 extends BaseActivity {
         tvTitleText.setTextColor(getResources().getColor(colorRes));
     }
 
+
+    /**
+     * 销毁当前界面
+     * 本来想直接重写activity finish方法
+     * 由于一些业务逻辑需要使用最普通的finish方法所以不重写finish
+     */
+
     public void finishActivity() {
-        finish();
+        this.finish();
         overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
     }
 
-    //设置绑定页面id
+    /**
+     * finishActivity 被重写了 又想使用finishActivity
+     * 调用这个方法
+     */
+    public void finishActivity2() {
+        this.finish();
+        overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
+    }
+
+    /**
+     * 设置绑定页面id
+     */
     public abstract int setLayoutId();
 
-
+    /**
+     * 返回按钮监听
+     */
     @Override
     public void onBackPressed() {
         finishActivity();
     }
+
+
 
 
 }

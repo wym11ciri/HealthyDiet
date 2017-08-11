@@ -84,14 +84,15 @@ public class HttpUtils {
                     @Override
                     public void onError(okhttp3.Call call, Exception e, int id) {
                         if (mContext != null) {
-                            Activity activity= (Activity) mContext;
-                            ToastUtils.showToast(mContext.getApplicationContext(),mContext.getString(R.string.service_error));
+                            ToastUtils.showToast(mContext.getApplicationContext(), mContext.getString(R.string.service_error));
 //                            Toast.makeText(mContext.getApplicationContext(), R.string.service_error, Toast.LENGTH_SHORT).show();
+                            Activity activity = (Activity) mContext;
+                            if (!activity.isDestroyed()) {
+                                mHttpUtilsListener.onError(call, e, id);
+                            }
+
                         }
-                        Activity activity= (Activity) mContext;
-                        if(!activity.isDestroyed()){
-                            mHttpUtilsListener.onError(call, e, id);
-                        }
+
 
                     }
 
@@ -109,13 +110,13 @@ public class HttpUtils {
                                     mDialog.show();
                                 }
                             } else {
-//                                if(mHttpUtilsListener!=null){
-                                Activity activity= (Activity) mContext;
-                                if(!activity.isDestroyed()){
-                                    mHttpUtilsListener.onResponse(response, id);
-                                }
+                                if (mContext != null) {
+                                    Activity activity = (Activity) mContext;
+                                    if (!activity.isDestroyed()) {
+                                        mHttpUtilsListener.onResponse(response, id);
+                                    }
 
-//                                }
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

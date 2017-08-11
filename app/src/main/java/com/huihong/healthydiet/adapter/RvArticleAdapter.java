@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.bean.GetArticleListInfo;
+import com.huihong.healthydiet.model.gsonbean.GetArticleListInfo;
 import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
 import com.huihong.healthydiet.widget.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;

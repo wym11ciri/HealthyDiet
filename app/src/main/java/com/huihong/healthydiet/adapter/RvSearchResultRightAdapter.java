@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
-import com.huihong.healthydiet.bean.SearchVagueRestaurant;
 import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
-import com.huihong.healthydiet.model.ArticleInfo;
+import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
+import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.widget.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
@@ -41,7 +41,7 @@ public class RvSearchResultRightAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     private List<ArticleInfo> mList02;//推荐文章
-    private List<SearchVagueRestaurant.ListData3Bean> mList01;//推荐饮食
+    private List<RecipeInfo> mList01;//推荐饮食
 
 
     private ArticleItemOnClickListener mItemOnClickListener;
@@ -52,7 +52,7 @@ public class RvSearchResultRightAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     public RvSearchResultRightAdapter(Context pContext, List<ArticleInfo> mList02,
-                                      List<SearchVagueRestaurant.ListData3Bean> mList01) {
+                                      List<RecipeInfo> mList01) {
 
         this.mList02 = mList02;
         this.mList01 = mList01;

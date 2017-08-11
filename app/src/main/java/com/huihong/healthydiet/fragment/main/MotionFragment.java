@@ -38,7 +38,7 @@ import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
 import com.huihong.healthydiet.mInterface.UpdateTimeCallBack;
-import com.huihong.healthydiet.mybean.GetSportList;
+import com.huihong.healthydiet.model.mybean.GetSportList;
 import com.huihong.healthydiet.service.StepService;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;

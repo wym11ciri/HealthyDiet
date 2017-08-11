@@ -14,9 +14,9 @@ import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseActivity;
-import com.huihong.healthydiet.bean.Login;
+import com.huihong.healthydiet.model.gsonbean.Login;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
-import com.huihong.healthydiet.mybean.PersonalInfo;
+import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
@@ -207,11 +207,11 @@ public class LoginActivity extends BaseActivity {
                                 //表示已经成功登录过了
                                 SPUtils.put(LoginActivity.this, "isLogin", true);
                             }
+                        }else {
+                            String Message = mLogin.getMessage();
+                            Toast.makeText(LoginActivity.this, Message, Toast.LENGTH_SHORT).show();
                         }
-                        String Message = mLogin.getMessage();
-                        Toast.makeText(LoginActivity.this, Message, Toast.LENGTH_SHORT).show();
                         mProgressDialog.dismiss();
-
                     }
                 });
     }

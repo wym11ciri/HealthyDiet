@@ -23,10 +23,10 @@ import com.huihong.healthydiet.activity.PersonalPreferenceActivity;
 import com.huihong.healthydiet.activity.SettingsActivity;
 import com.huihong.healthydiet.activity.TestMajorActivity;
 import com.huihong.healthydiet.adapter.RvIntegralAdapter;
-import com.huihong.healthydiet.bean.GetUserBodyInfo;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
-import com.huihong.healthydiet.mybean.PersonalInfo;
+import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
+import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -38,6 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import okhttp3.Call;
 
 /**
@@ -46,6 +49,17 @@ import okhttp3.Call;
  */
 
 public class MyFragment extends Fragment {
+    @BindView(R.id.iv01)
+    ImageView iv01;
+    @BindView(R.id.iv02)
+    ImageView iv02;
+    @BindView(R.id.iv03)
+    ImageView iv03;
+    @BindView(R.id.iv04)
+    ImageView iv04;
+    Unbinder unbinder;
+
+
     private View mView;
     private LinearLayout layoutSettings;
     private LinearLayout layoutBodyData, layoutMajorTest;
@@ -81,8 +95,10 @@ public class MyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_my, null);
+        unbinder = ButterKnife.bind(this, mView);
         initUI();
         initPersonalUI();
+
         return mView;
     }
 
@@ -98,7 +114,7 @@ public class MyFragment extends Fragment {
     }
 
     private void initUI() {
-        LinearLayout layoutSetting= (LinearLayout) mView.findViewById(R.id.layoutSetting);
+        LinearLayout layoutSetting = (LinearLayout) mView.findViewById(R.id.layoutSetting);
 //        ivSetting = (ImageView) mView.findViewById(R.id.ivSetting);
         layoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +193,16 @@ public class MyFragment extends Fragment {
         tvWeight.setText(personalInfo.getWeight() + "kg");
         if (personalInfo.isMan()) {
             tvSex.setText("男");
+            iv01.setImageResource(R.mipmap.male);
+            iv02.setImageResource(R.mipmap.age_male);
+            iv03.setImageResource(R.mipmap.height_male);
+            iv04.setImageResource(R.mipmap.weight_male);
+
         } else {
+            iv01.setImageResource(R.mipmap.female);
+            iv02.setImageResource(R.mipmap.age_female);
+            iv03.setImageResource(R.mipmap.height_female);
+            iv04.setImageResource(R.mipmap.weight_female);
             tvSex.setText("女");
         }
         tvAge.setText(personalInfo.getAge() + "岁");
@@ -188,7 +213,7 @@ public class MyFragment extends Fragment {
                 .error(R.mipmap.error_head)
                 .into(ivHead);
 
-        String type=personalInfo.getConstitution();
+        String type = personalInfo.getConstitution();
         ivConstitution.setVisibility(View.VISIBLE);
         if (type.equals("平和质")) {
             ivConstitution.setImageResource(R.mipmap.temperament_1);
@@ -208,7 +233,7 @@ public class MyFragment extends Fragment {
             ivConstitution.setImageResource(R.mipmap.temperament_2);
         } else if (type.equals("血瘀质")) {
             ivConstitution.setImageResource(R.mipmap.temperament_7);
-        }else {
+        } else {
             ivConstitution.setVisibility(View.GONE);
         }
 
@@ -219,7 +244,7 @@ public class MyFragment extends Fragment {
 
         Map<String, String> map = new HashMap<>();
         map.put("Id", SPUtils.get(getActivity(), "UserId", 0) + "");
-
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_USER_BODY_INFO
                 , map
                 , new HttpUtilsListener() {
@@ -256,4 +281,9 @@ public class MyFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }

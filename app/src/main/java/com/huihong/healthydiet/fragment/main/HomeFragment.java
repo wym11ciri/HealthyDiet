@@ -1,8 +1,12 @@
 package com.huihong.healthydiet.fragment.main;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,22 +30,30 @@ import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.MyApplication;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.ArticleDetailsActivity;
+import com.huihong.healthydiet.activity.DietRecordActivity;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.activity.RecommendActivity;
 import com.huihong.healthydiet.activity.SearchResultActivity;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
 import com.huihong.healthydiet.adapter.RvRecordAdapter;
-import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.cache.litepal.SearchHistory;
 import com.huihong.healthydiet.fragment.NearbyFragment;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
+import com.huihong.healthydiet.model.gsonbean.TitlePage;
+import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
+import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
+import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
+import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
+import com.huihong.healthydiet.widget.GlideImageLoader;
 import com.joooonho.SelectableRoundedImageView;
-import com.stx.xhb.xbanner.XBanner;
+import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,8 +61,6 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
-
-import static com.huihong.healthydiet.MyApplication.mList;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/10
@@ -69,7 +79,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //推荐饮食
     private RecyclerView rvRecommend;
     private RvRecommendAdapter mRvRecommendAdapter;
-    private List<TitlePage.ListData2Bean> recommendList;
+    private List<RecipeInfo> recommendList;
 
     //饮食记录
     private RecyclerView rvRecord;
@@ -98,6 +108,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private EditText etSearch;
 
 
+    private TextView tvRecord;
+
+
+    private ProgressDialog progressDialog;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -114,10 +130,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //                        tvAddress.setText(address);
                         mAddress = address;
 
-                        if (isFirst) {
-                            isFirst = false;
-                            getHomePageInfo();
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
                         }
+                        getHomePageInfo();
+
                     }
                 }
             });
@@ -131,20 +148,55 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        mBannerNet.startAutoPlay();
+//        mBannerNet.startAutoPlay();
     }
 
     @Override
     public void onStop() {
-        mBannerNet.stopAutoPlay();
+//        mBannerNet.stopAutoPlay();
         super.onStop();
     }
 
     TextView tvAddress;
-    XBanner mBannerNet;
+//    XBanner mBannerNet;
+
+    private AlertDialog locationDialog;
 
     private void initUI() {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        tvRecord = (TextView) mView.findViewById(R.id.tvRecord);
         tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
+
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("当前定位地址:");
+                builder.setMessage(mAddress + "");
+                builder.setPositiveButton("重新定位", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.mainActivity.locationService.start();
+                        progressDialog.setMessage("正在定位...");
+                        progressDialog.show();
+                    }
+                });
+                builder.setNegativeButton("知道了", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        locationDialog.dismiss();
+                    }
+                });
+
+                locationDialog=builder.create();
+                locationDialog.show();
+
+
+
+            }
+        });
+
         layoutRefresh = (SwipeRefreshLayout) mView.findViewById(R.id.layoutRefresh);
         layoutRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -163,15 +215,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         initRecord();
         initJump();
         initSearch();
-//
-
-
-//        Glide
-//                .with(getActivity())
-//                .load(MyApplication.mList.get(2))
-//                .asBitmap()
-////                .transform(new GlideRoundTransform(getActivity()))
-//                .into(ivTest);
 
 
     }
@@ -182,14 +225,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         etSearch.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {//修改回车键功能
-                    if(etSearch.getText().toString().trim().length()<2){
+                    if (etSearch.getText().toString().trim().length() < 2) {
                         Toast.makeText(getActivity(), "输入搜索内过短", Toast.LENGTH_SHORT).show();
-                    }else {
-                        SearchHistory mSearchHistory=new SearchHistory();
+                    } else {
+                        SearchHistory mSearchHistory = new SearchHistory();
                         mSearchHistory.setSearchHistory(etSearch.getText().toString().trim());
-                        mSearchHistory.saveOrUpdate("searchHistory=?",mSearchHistory.getSearchHistory());
-                        Intent mIntent=new Intent(getActivity(), SearchResultActivity.class);
-                        mIntent.putExtra("searchText",mSearchHistory.getSearchHistory());
+                        mSearchHistory.saveOrUpdate("searchHistory=?", mSearchHistory.getSearchHistory());
+                        Intent mIntent = new Intent(getActivity(), SearchResultActivity.class);
+                        mIntent.putExtra("searchText", mSearchHistory.getSearchHistory());
                         startActivity(mIntent);
                     }
                 }
@@ -303,21 +346,37 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    private List<ArticleInfo> mArticleInfoList;
+    private List<String> mArticlePathList;
+
+    Banner banner;
+
     //初始化广告轮播
     private void initBanner() {
-        mBannerNet = (XBanner) mView.findViewById(R.id.banner_1);
-        final List<String> imgesUrl = new ArrayList<>();
-        imgesUrl.add(mList.get(0));
-        imgesUrl.add(mList.get(1));
-        imgesUrl.add(mList.get(2));
-        imgesUrl.add(mList.get(3));
+        mArticleInfoList = new ArrayList<>();
+        mArticlePathList = new ArrayList<>();
+        for (int i = 0; i < mArticleInfoList.size(); i++) {
+            mArticlePathList.add(mArticleInfoList.get(i).getTitleImage());
+        }
 
-        //添加广告数据
-        mBannerNet.setData(imgesUrl, null);//第二个参数为提示文字资源集合
-        mBannerNet.setmAdapter(new XBanner.XBannerAdapter() {
+
+        banner = (Banner) mView.findViewById(R.id.banner_1);
+        //设置图片加载器
+        banner.setImageLoader(new GlideImageLoader());
+        //设置图片集合
+//        banner.setImages(mArticlePathList);
+        //banner设置方法全部调用完毕时最后调用
+        banner.start();
+
+        banner.setOnBannerListener(new OnBannerListener() {
             @Override
-            public void loadBanner(XBanner banner, Object model, View view, int position) {
-                Glide.with(getActivity()).load(imgesUrl.get(position)).into((ImageView) view);
+            public void OnBannerClick(int position) {
+                Intent mIntent = new Intent(getActivity(), ArticleDetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("info", mArticleInfoList.get(position));
+                bundle.putInt("pos", position);
+                mIntent.putExtras(bundle);
+                startActivity(mIntent);
             }
         });
     }
@@ -334,7 +393,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 jumpActivity2("2");
                 break;
             case R.id.layoutRecord:
-//                jumpActivity(MainActivity.class);
+                Intent mIntent = new Intent(getActivity(), DietRecordActivity.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), tvRecord, "tvTitle");
+                startActivity(mIntent, options.toBundle());
+
                 break;
         }
 
@@ -373,10 +435,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         int code = mTitlePage.getHttpCode();
                         if (code == 200) {
                             //获取附近餐厅列表
-                            List<TitlePage.ListDataBean> mListData = mTitlePage.getListData();
+                            List<RestaurantInfo> mListData = mTitlePage.getListData();
                             setNearbyInfo(mListData);//设置附近餐厅信息
                             //获取推荐饮食
-                            final List<TitlePage.ListData2Bean> mListData2 = mTitlePage.getListData2();
+                            final List<RecipeInfo> mListData2 = mTitlePage.getListData2();
                             //大于2条数据
                             if (mListData2.size() >= 2) {
                                 recommendList.clear();
@@ -403,20 +465,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                                 int percentage = mListData2.get(0).getConstitutionPercentage();
                                 tvConstitutionPercentage.setText(percentage + "%");
-                                if (percentage > 90) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_9));
-                                } else if (percentage > 80 & percentage <= 90) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_8));
-                                } else if (percentage > 70 & percentage <= 80) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_7));
-                                } else if (percentage > 60 & percentage <= 70) {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_6));
-                                } else {
-                                    tvConstitutionPercentage.setTextColor(getResources().getColor(R.color.percentage_color_5));
-                                }
-
+                                MyUtils.setTextViewColor(tvConstitutionPercentage, percentage, getActivity());
                                 tvRecommendPrice.setText("￥" + mListData2.get(0).getPrice());
                             }
+
+                            mArticleInfoList.clear();
+                            mArticleInfoList.addAll(mTitlePage.getListData3());
+
+                            mArticlePathList.clear();
+                            List<String> mPathList = new ArrayList<>();
+                            for (int i = 0; i < mArticleInfoList.size(); i++) {
+                                mPathList.add(mArticleInfoList.get(i).getTitleImage());
+                            }
+                            banner.update(mPathList);
 
 
                         } else {
@@ -438,7 +499,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         tvAddress.setText(mAddress + "");
     }
 
-    private void setNearbyInfo(List<TitlePage.ListDataBean> mListData) {
+    private void setNearbyInfo(List<RestaurantInfo> mListData) {
 
 
         if (mListData.size() <= 3) {

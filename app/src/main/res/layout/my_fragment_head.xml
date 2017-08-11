@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
-    android:background="#000">
-
+    android:layout_height="140dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,6 +64,7 @@
                 android:layout_height="match_parent" />
 
             <ImageView
+                android:id="@+id/iv01"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@mipmap/male" />
@@ -87,6 +86,7 @@
 
 
             <ImageView
+                android:id="@+id/iv02"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@mipmap/age_male" />
@@ -107,6 +107,7 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/iv03"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@mipmap/height_male" />
@@ -127,6 +128,7 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/iv04"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@mipmap/weight_male" />
@@ -163,12 +165,10 @@
 
     <LinearLayout
         android:id="@+id/layoutSetting"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
         android:gravity="center">
 
         <ImageView

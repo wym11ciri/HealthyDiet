@@ -11,12 +11,14 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
-import com.huihong.healthydiet.bean.GetUserBodyInfo;
-import com.huihong.healthydiet.bean.SetUserBodyInfo;
+import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
+import com.huihong.healthydiet.model.gsonbean.SetUserBodyInfo;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
-import com.huihong.healthydiet.mybean.PersonalInfo;
+import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
+import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.StringUtil;
+import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -47,7 +49,7 @@ public class BodyDataActivity extends BaseTitleActivity {
     private TextView tvSave;
     private EditText etWeight, etHeight;
     //用户生日
-    private String userBirthTime = "2017-7-28";
+    private String userBirthTime = "2017-07-28";
     //劳动强度
     private String labInten = "一般";
     //性别
@@ -89,7 +91,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                 builder.setOnDateSelectedListener(new DataPickerDateDialog.OnDateSelectedListener() {
                     @Override
                     public void onDateSelected(int[] dates) {
-                        tvBirthday.setText(dates[0] + "年" + dates[1] + "月" + dates[2] + "日");
+                        tvBirthday.setText(dates[0] + "年" + DateFormattedUtils.formattedDate(dates[1]) + "月" +  DateFormattedUtils.formattedDate(dates[2]) + "日");
                         userBirthTime = dates[0] + "-" + dates[1] + "-" + dates[2];
                     }
                 });
@@ -155,8 +157,18 @@ public class BodyDataActivity extends BaseTitleActivity {
         tvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String height = etHeight.getText().toString().trim();
                 String weight = etWeight.getText().toString().trim();
+
+                if(height.equals("")){
+                    height=etHeight.getHint().toString().trim();
+                }
+
+                if(weight.equals("")){
+                    weight=etWeight.getHint().toString().trim();
+                }
+
 
                 if ("".equals(height)) {
                     Toast.makeText(BodyDataActivity.this, "请输入身高", Toast.LENGTH_SHORT).show();
@@ -164,7 +176,6 @@ public class BodyDataActivity extends BaseTitleActivity {
                     if ("".equals(weight)) {
                         Toast.makeText(BodyDataActivity.this, "请输入体重", Toast.LENGTH_SHORT).show();
                     } else {
-
                         saveData(height, weight);
                     }
                 }
@@ -214,8 +225,10 @@ public class BodyDataActivity extends BaseTitleActivity {
                                         GetUserBodyInfo.ListDataBean mInfo = mGetUserBodyInfo.getListData().get(0);
 
                                         //设置UI
-                                        etHeight.setText(mInfo.getHeight() + "");
-                                        etWeight.setText(mInfo.getWeight() + "");
+                                        etHeight.setHint(mInfo.getHeight() + "");
+                                        etWeight.setHint(mInfo.getWeight()+"");
+//                                        etHeight.setText(mInfo.getHeight() + "");
+//                                        etWeight.setText(mInfo.getWeight() + "");
 
                                         ivGirl.setImageResource(R.mipmap.body_2);
                                         ivBoy.setImageResource(R.mipmap.body_3);
@@ -233,7 +246,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                                         int day = mCalendar.get(Calendar.DAY_OF_MONTH);
                                         userBirthTime = year + "-" + month + "-" + day;
                                         birthYear = year;
-                                        tvBirthday.setText(year + "年" + month + "月" + day);
+                                        tvBirthday.setText(year + "年" + DateFormattedUtils.formattedDate(month) + "月" +  DateFormattedUtils.formattedDate(day)+"日");
                                         if (mInfo.getLabourIntensity() != null) {
                                             labInten = mInfo.getLabourIntensity();
                                             tvLabour.setText(labInten);
@@ -285,7 +298,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                         String message = mSetUserBodyInfo.getMessage();
                         Toast.makeText(BodyDataActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (code == 200) {
-                            SetUserBodyInfo.ListDataBean mInfo = mSetUserBodyInfo.getListData().get(0);
+                            PersonalAllInfo mInfo = mSetUserBodyInfo.getListData().get(0);
                             personalInfo.setName(mInfo.getName());
                             personalInfo.setHeight(mInfo.getHeight());
                             personalInfo.setWeight(mInfo.getWeight());

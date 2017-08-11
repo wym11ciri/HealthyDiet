@@ -9,16 +9,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.ActivityCollector;
-import com.huihong.healthydiet.bean.SetUserBodyInfo;
-import com.huihong.healthydiet.bean.UploadImage;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
-import com.huihong.healthydiet.mybean.PersonalInfo;
+import com.huihong.healthydiet.model.gsonbean.SetUserBodyInfo;
+import com.huihong.healthydiet.model.gsonbean.UploadImage;
+import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
+import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -35,6 +37,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
@@ -45,6 +50,12 @@ import top.zibin.luban.OnCompressListener;
  */
 
 public class SettingsActivity extends TakePhotoActivity {
+
+
+    @BindView(R.id.tvPhone)
+    TextView tvPhone;
+
+
 
     private BottomGetPhotoDialog bottomGetPhotoDialog;
     private TakePhoto takePhoto;//照片选择器
@@ -62,12 +73,13 @@ public class SettingsActivity extends TakePhotoActivity {
 
 
     private EditText etName;//名称
-    private TextView tvPhone;//手机号
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        ButterKnife.bind(this);
         personalInfo = CacheUtils.getPersonalInfo(SettingsActivity.this);
         takePhoto = getTakePhoto();
         initTopBar();
@@ -94,12 +106,16 @@ public class SettingsActivity extends TakePhotoActivity {
             @Override
             public void onClick(View v) {
                 name = etName.getText().toString().trim();
+                if(name.equals("")){
+                    name=etName.getHint().toString().trim();
+                }
+
                 if (name.equals("")) {
                     Toast.makeText(SettingsActivity.this, "请输入姓名", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(mFile!=null){
+                    if (mFile != null) {
                         save();
-                    }else {
+                    } else {
                         saveData("", false);
 //                        Toast.makeText(SettingsActivity.this, "请重新选择头像", Toast.LENGTH_SHORT).show();
                     }
@@ -150,21 +166,23 @@ public class SettingsActivity extends TakePhotoActivity {
 
 
     public void initUI() {
-        tvPhone= (TextView) findViewById(R.id.tvPhone);
-        String phone=personalInfo.getPhone();
-        if(phone.equals("")){
+
+        String phone = personalInfo.getPhone();
+        if (phone.equals("")) {
             tvPhone.setText("尚未绑定");
-        }else {
+        } else {
             tvPhone.setText(phone);
         }
         etName = (EditText) findViewById(R.id.etName);
-        etName.setText(personalInfo.getName());
+        etName.setHint(personalInfo.getName());
         tvLoginOut = (TextView) findViewById(R.id.tvLoginOut);
         tvLoginOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SPUtils.put(SettingsActivity.this, "isDoSimpleTest", false);
                 SPUtils.put(SettingsActivity.this, "isLogin", false);
+
+
                 ActivityCollector.finishAll();//销毁所有界面
                 Intent mIntent = new Intent(SettingsActivity.this, LoginActivity.class);
                 SettingsActivity.this.startActivity(mIntent);
@@ -237,6 +255,7 @@ public class SettingsActivity extends TakePhotoActivity {
                     public void onStart() {
 
                     }
+
                     @Override
                     public void onSuccess(File file) {
                         Glide
@@ -244,7 +263,7 @@ public class SettingsActivity extends TakePhotoActivity {
                                 .load(file)
                                 .asBitmap()
                                 .into(ivHead);
-                        mFile=file;
+                        mFile = file;
                     }
 
                     @Override
@@ -272,7 +291,7 @@ public class SettingsActivity extends TakePhotoActivity {
         if (isChangeHead) {
             map.put("HeadImage", imageHead);
         }
-        map.put("UserName",name);
+        map.put("UserName", name);
         map.put("UserId", SPUtils.get(SettingsActivity.this, "UserId", 0) + "");
 
         HttpUtils.sendHttpAddToken(SettingsActivity.this
@@ -293,7 +312,7 @@ public class SettingsActivity extends TakePhotoActivity {
                         String message = mSetUserBodyInfo.getMessage();
                         Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (code == 200) {
-                            SetUserBodyInfo.ListDataBean mInfo = mSetUserBodyInfo.getListData().get(0);
+                            PersonalAllInfo mInfo = mSetUserBodyInfo.getListData().get(0);
                             personalInfo.setName(mInfo.getName());
                             personalInfo.setHeight(mInfo.getHeight());
                             personalInfo.setWeight(mInfo.getWeight());
@@ -308,5 +327,20 @@ public class SettingsActivity extends TakePhotoActivity {
                     }
                 });
 
+    }
+
+
+    @OnClick({R.id.tvPhone, R.id.tvChangeWord})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tvPhone:
+                Intent mIntent2 = new Intent(SettingsActivity.this, ChangePhoneActivity01.class);
+                startActivity(mIntent2);
+                break;
+            case R.id.tvChangeWord:
+                Intent mIntent = new Intent(SettingsActivity.this, ChangePasswordActivity.class);
+                startActivity(mIntent);
+                break;
+        }
     }
 }

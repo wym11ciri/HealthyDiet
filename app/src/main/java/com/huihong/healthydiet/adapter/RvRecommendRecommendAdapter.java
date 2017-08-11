@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
-import com.huihong.healthydiet.bean.RecipeListByGPS;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
 import com.huihong.healthydiet.widget.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
 
@@ -30,7 +30,7 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<RecipeListByGPS.ListDataBean> mList;
+    private List<RecipeInfo> mList;
 
     private ItemOnClickListener mItemOnClickListener;
 
@@ -39,7 +39,7 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
     }
 
 
-    public RvRecommendRecommendAdapter(Context pContext, List<RecipeListByGPS.ListDataBean> pList) {
+    public RvRecommendRecommendAdapter(Context pContext, List<RecipeInfo> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);

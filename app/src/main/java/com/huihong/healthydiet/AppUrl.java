@@ -6,8 +6,8 @@ package com.huihong.healthydiet;
 
 public class AppUrl {
     private static final String TEST_URL = "http://192.168.10.102:8051/API/Restaurant/GetRestaurantInfoById";
-        private static final String BASE_URL = "http://192.168.10.100:8051/";
-//    private static final String BASE_URL = "http://106.14.218.31:8020/";
+//        private static final String BASE_URL = "http://192.168.10.100:8051/";
+    private static final String BASE_URL = "http://106.14.218.31:8020/";
     public static final String GET_RESTAURANT_LIST_INFO = BASE_URL + "API/Restaurant/GetRestaurantListInfo";//获取餐厅列表
     public static final String DATA_DICTIONARY = BASE_URL + "API/DataDictionary/Cate";//获取餐厅类型
     public static final String GET_RESTAURANT_INFO_BY_ID = BASE_URL + "API/Restaurant/GetRestaurantInfoById";//获取餐厅详情 上面那部分
@@ -52,5 +52,7 @@ public class AppUrl {
     public static final String GET_SPORT_LIST = BASE_URL + "API/Sport/GetSportList";//获得运动步数
     public static final String UPLOAD_SPORT_INFO = BASE_URL + "API/Sport/UpLoadSportInfo";//提交运动步数
 
+    //修改密码
+    public static final String MODIFY_USER_PASSWORD = BASE_URL + "API/User/ModifyUserPassword";//修改密码
 
 }

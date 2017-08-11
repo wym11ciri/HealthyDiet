@@ -14,8 +14,8 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
-import com.huihong.healthydiet.bean.MailRegister;
-import com.huihong.healthydiet.bean.SendMail;
+import com.huihong.healthydiet.model.gsonbean.MailRegister;
+import com.huihong.healthydiet.model.gsonbean.SendMail;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -25,6 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import okhttp3.Call;
+
+import static com.zhy.http.okhttp.OkHttpUtils.post;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/19
@@ -121,8 +123,8 @@ public class RegisterActivity extends BaseTitleActivity {
 
     private void register(final String phone, String code, String password) {
 
-        OkHttpUtils
-                .post()
+        tvRegister.setClickable(false);
+        post()
                 .url(AppUrl.MAIL_REGISTER)
                 .addParams("Phone", phone)//用户坐标
                 .addParams("Code", code)//用户坐标
@@ -131,11 +133,13 @@ public class RegisterActivity extends BaseTitleActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        tvRegister.setClickable(true);
                         Toast.makeText(RegisterActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        tvRegister.setClickable(true);
                         LogUtil.i("接口，注册" + response);
                         Gson gson = new Gson();
                         MailRegister mMailRegister = gson.fromJson(response, MailRegister.class);
@@ -168,6 +172,7 @@ public class RegisterActivity extends BaseTitleActivity {
             public void onClick(View v) {
                 String sPhone = etPhone.getText().toString().trim();
                 if (isMobileNO(sPhone)) {
+
                     getCode(sPhone);//获取验证码
                 } else {
                     Toast.makeText(RegisterActivity.this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
@@ -199,6 +204,8 @@ public class RegisterActivity extends BaseTitleActivity {
     }
 
     public void getCode(String phone) {
+
+        tvGetCode.setClickable(false);
         OkHttpUtils
                 .post()
                 .url(AppUrl.SEND_MAIL)
@@ -207,21 +214,24 @@ public class RegisterActivity extends BaseTitleActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        tvGetCode.setClickable(true);
                         Toast.makeText(RegisterActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        tvGetCode.setClickable(true);
                         LogUtil.i("接口，获取验证码" + response);
                         Gson gson = new Gson();
                         SendMail mSendMail = gson.fromJson(response, SendMail.class);
                         int code = mSendMail.getHttpCode();
                         if (code == 200) {
                             codeTimer.start();
-                            tvGetCode.setEnabled(false);
+
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RegisterActivity.this, Message, Toast.LENGTH_SHORT).show();
                         } else {
+                            tvGetCode.setClickable(true);
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RegisterActivity.this, Message, Toast.LENGTH_SHORT).show();
                         }

@@ -13,8 +13,8 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
-import com.huihong.healthydiet.bean.MailRegister;
-import com.huihong.healthydiet.bean.SendMail;
+import com.huihong.healthydiet.model.gsonbean.MailRegister;
+import com.huihong.healthydiet.model.gsonbean.SendMail;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -27,7 +27,7 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/19
- * 注册界面
+ * 忘记密码
  */
 
 public class RestPasswordActivity extends BaseTitleActivity {
@@ -199,6 +199,7 @@ public class RestPasswordActivity extends BaseTitleActivity {
     }
 
     public void getCode(String phone) {
+        tvGetCode.setEnabled(false);
         OkHttpUtils
                 .post()
                 .url(AppUrl.SEND_MAIL)
@@ -207,6 +208,7 @@ public class RestPasswordActivity extends BaseTitleActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        tvGetCode.setEnabled(true);
                         Toast.makeText(RestPasswordActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
@@ -218,10 +220,10 @@ public class RestPasswordActivity extends BaseTitleActivity {
                         int code = mSendMail.getHttpCode();
                         if (code == 200) {
                             codeTimer.start();
-                            tvGetCode.setEnabled(false);
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RestPasswordActivity.this, Message, Toast.LENGTH_SHORT).show();
                         } else {
+                            tvGetCode.setEnabled(true);
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RestPasswordActivity.this, Message, Toast.LENGTH_SHORT).show();
                         }

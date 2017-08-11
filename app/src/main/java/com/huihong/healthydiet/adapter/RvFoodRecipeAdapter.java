@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.bean.RecipeListInfoByDRId;
+import com.huihong.healthydiet.model.gsonbean.RecipeListInfoByDRId;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 
 import java.util.List;

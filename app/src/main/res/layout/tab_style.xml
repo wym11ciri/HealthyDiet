@@ -25,12 +25,12 @@
             <ImageView
                 android:id="@+id/ivTab01"
                 style="@style/bottom_tab_imageView"
-                android:src="@mipmap/logo_9" />
+                android:src="@mipmap/logo_5" />
 
             <TextView
                 android:id="@+id/tvTab01"
                 style="@style/bottom_tab_textView"
-                android:text="我 的" />
+                android:text="饮食文章" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -44,12 +44,12 @@
             <ImageView
                 android:id="@+id/ivTab02"
                 style="@style/bottom_tab_imageView"
-                android:src="@mipmap/logo_5" />
+                android:src="@mipmap/logo_7" />
 
             <TextView
                 android:id="@+id/tvTab02"
                 style="@style/bottom_tab_textView"
-                android:text="饮食文章" />
+                android:text="运动" />
         </RelativeLayout>
 
         <LinearLayout
@@ -70,12 +70,12 @@
             <ImageView
                 android:id="@+id/ivTab04"
                 style="@style/bottom_tab_imageView"
-                android:src="@mipmap/logo_7" />
+                android:src="@mipmap/logo_3" />
 
             <TextView
                 android:id="@+id/tvTab04"
                 style="@style/bottom_tab_textView"
-                android:text="运 动" />
+                android:text="睡眠" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -89,12 +89,12 @@
             <ImageView
                 android:id="@+id/ivTab05"
                 style="@style/bottom_tab_imageView"
-                android:src="@mipmap/logo_3" />
+                android:src="@mipmap/logo_9" />
 
             <TextView
                 android:id="@+id/tvTab05"
                 style="@style/bottom_tab_textView"
-                android:text="睡 眠" />
+                android:text="我 的" />
         </RelativeLayout>
 
     </LinearLayout>

@@ -15,9 +15,9 @@ import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.LvTagAdapterForArticleList;
-import com.huihong.healthydiet.model.ArticleInfo;
-import com.huihong.healthydiet.bean.GetArticleItemInfo;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.model.gsonbean.GetArticleItemInfo;
+import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -224,7 +224,7 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
                     public void onResponse(String response, int id) {
                         LogUtil.i("文章详情", response);
                         Gson gson = new Gson();
-                        GetArticleItemInfo mGetArticleItemInfo = gson.fromJson(response, GetArticleItemInfo.class);
+                      GetArticleItemInfo mGetArticleItemInfo = gson.fromJson(response, GetArticleItemInfo.class);
                         mListDataBean = mGetArticleItemInfo.getListData().get(0);
                         isLove = mListDataBean.isPointPraise();
                         if (isLove) {

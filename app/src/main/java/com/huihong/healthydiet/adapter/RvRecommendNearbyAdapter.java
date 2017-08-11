@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
-import com.huihong.healthydiet.model.RestaurantInfo;
+import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;

@@ -30,7 +30,7 @@
 
         <LinearLayout
             android:id="@+id/layoutTopRight"
-            android:layout_width="wrap_content"
+            android:layout_width="28dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -40,8 +40,7 @@
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="6dp"
+                android:layout_gravity="center"
                 android:src="@mipmap/search" />
         </LinearLayout>
     </RelativeLayout>

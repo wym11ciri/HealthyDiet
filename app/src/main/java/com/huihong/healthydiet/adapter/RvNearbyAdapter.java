@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
-import com.huihong.healthydiet.bean.TitlePage;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<TitlePage.ListDataBean> mList;
+    private List<RestaurantInfo> mList;
 
     private ItemOnClickListener mItemOnClickListener;
     public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
@@ -36,7 +36,7 @@ public class RvNearbyAdapter extends RecyclerView.Adapter<RvNearbyViewHolder> {
     }
 
 
-    public RvNearbyAdapter(Context pContext, List<TitlePage.ListDataBean> pList) {
+    public RvNearbyAdapter(Context pContext, List<RestaurantInfo> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);

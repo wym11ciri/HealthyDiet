@@ -12,8 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.mybean.Coordinate;
-import com.huihong.healthydiet.mybean.Leaf;
+import com.huihong.healthydiet.model.mybean.Coordinate;
+import com.huihong.healthydiet.model.mybean.Leaf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +50,10 @@ public class TreeView extends View {
     private boolean isAnimation = false;//是否在执行动画
     private boolean isRunAlphaAnimation = false;//是否需要执行透明度动画
 
-    private boolean isRun = true;
 
-    private AlphaAnimationThread alphaAnimationThread;
-    ValueAnimator animator;
+    private ValueAnimator animatorFloat;//浮动动画
+    private ValueAnimator animatorDisappear;//消失动画
+
 
     private List<Coordinate> mCoordinateList;
 
@@ -72,11 +72,11 @@ public class TreeView extends View {
 
 
         mLeafList = new ArrayList<>();
-        animator = ValueAnimator.ofInt(-5, 5, -5);
-        animator.setDuration(1500);
-        animator.setRepeatCount(-1);
-        animator.start();
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        animatorFloat = ValueAnimator.ofInt(-5, 5, -5);
+        animatorFloat.setDuration(1500);
+        animatorFloat.setRepeatCount(-1);
+        animatorFloat.start();
+        animatorFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int f = (int) animation.getAnimatedValue();
@@ -84,7 +84,6 @@ public class TreeView extends View {
                     mLeafList.get(i).setMove(f);
                 }
                 invalidate();
-//                Log.i("TAG", "AnimatorValue is" + String.valueOf(f));
             }
         });
 
@@ -149,9 +148,9 @@ public class TreeView extends View {
 //        setCoordinate(0.71698,0.79425);
 //
 //        //文件tree5
-        setCoordinate(0.077568,0.6610);
-        setCoordinate(0.18238,0.85336);
-        setCoordinate(0.8134,0.786);
+        setCoordinate(0.077568, 0.6610);
+        setCoordinate(0.18238, 0.85336);
+        setCoordinate(0.8134, 0.786);
 
         for (int i = 0; i < 3; i++) {
             Leaf leaf = new Leaf();
@@ -164,22 +163,6 @@ public class TreeView extends View {
             mLeafList.add(leaf);
         }
 
-    }
-
-    private void valueAnimator() {
-        ValueAnimator animator = ValueAnimator.ofInt(-5, 0, 5);
-        animator.setDuration(400);
-        animator.start();
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float f = (float) animation.getAnimatedValue();
-                for (int i = 0; i < mLeafList.size(); i++) {
-                    mLeafList.get(i).setMove(f);
-                }
-//                Log.i("TAG", "AnimatorValue is" + String.valueOf(f));
-            }
-        });
     }
 
 
@@ -201,19 +184,8 @@ public class TreeView extends View {
             canvas.drawText(mLeafList.get(i).getEvent(), mLeafList.get(i).getDrawEventX(), mLeafList.get(i).getDrawEventY(), textEventPaint);
         }
 
-        if (!isAnimation) {
-            //若没有在执行渐变动画则开启渐变动画
-            if (!isRunAlphaAnimation) {
-                isRunAlphaAnimation = true;
-            }
-        }
-
-        if (mLeafList.size() < 1) {
-            isRun = false;
-        }
-
-        if(!animator.isRunning()){
-            animator.start();
+        if (!animatorFloat.isRunning()) {
+            animatorFloat.start();
         }
     }
 
@@ -228,6 +200,7 @@ public class TreeView extends View {
             if (!isAnimation) {
                 for (int i = 0; i < mLeafList.size(); i++) {
                     if (x > mLeafList.get(i).getStartX() && x < mLeafList.get(i).getLeafXEnd() && y > mLeafList.get(i).getStartY() && y < mLeafList.get(i).getLeafYEnd()) {
+
                         //启动消失动画
                         clickNum = i;
                         isRunAlphaAnimation = false;
@@ -266,49 +239,6 @@ public class TreeView extends View {
             isAnimation = false;
             postInvalidate();//异步更新
         }
-    }
-
-    private class AlphaAnimationThread extends Thread {
-        @Override
-        public void run() {
-            while (isRun) {
-                //是否需要执行渐变动画
-                if (isRunAlphaAnimation) {
-                    try {
-                        sleep(300);
-                        for (int i = 0; i < mLeafList.size(); i++) {
-                            if (i < mLeafList.size()) {
-                                int nowAlpha = mLeafList.get(i).getAlpha();
-
-                                if (nowAlpha < 240 && nowAlpha >= 100) {
-                                    mLeafList.get(i).setAlpha(nowAlpha + 30);
-                                } else {
-                                    mLeafList.get(i).setAlpha(100);
-                                }
-                            }
-                        }
-                        if (mLeafList.size() > 0) {
-                            postInvalidate();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    public void stopThread() {
-        isRun = false;
-        isAnimation = false;
-        isRunAlphaAnimation = false;
-    }
-
-    public void startThread() {
-        isRunAlphaAnimation = false;
-        alphaAnimationThread = new AlphaAnimationThread();
-        alphaAnimationThread.start();
-        invalidate();
     }
 
 }

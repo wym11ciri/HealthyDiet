@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
-import com.huihong.healthydiet.fragment.SearchResultLeftFragment;
-import com.huihong.healthydiet.fragment.SearchResultRightFragment;
-import com.huihong.healthydiet.mybean.Type;
+import com.huihong.healthydiet.fragment.search.SearchResultLeftFragment;
+import com.huihong.healthydiet.fragment.search.SearchResultRightFragment;
+import com.huihong.healthydiet.model.mybean.Type;
 import com.huihong.healthydiet.utils.common.LogUtil;
 
 import java.util.ArrayList;

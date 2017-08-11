@@ -21,11 +21,11 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.LvPopTypeAdapter;
 import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
-import com.huihong.healthydiet.bean.DataDictionary;
+import com.huihong.healthydiet.model.gsonbean.DataDictionary;
 import com.huihong.healthydiet.fragment.RecommendNearbyListFragment;
 import com.huihong.healthydiet.fragment.RecommendRecipeListFragment;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
-import com.huihong.healthydiet.mybean.Type;
+import com.huihong.healthydiet.model.mybean.Type;
 import com.huihong.healthydiet.utils.common.DensityUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.ScreenUtils;
@@ -428,7 +428,7 @@ public class RecommendActivity extends BaseTitleActivity {
 //
                         int code = DataDictionary.getHttpCode();
                         if (code == 200) {
-                            List<com.huihong.healthydiet.bean.DataDictionary.ListDataBean> ListData = DataDictionary.getListData();
+                            List<com.huihong.healthydiet.model.gsonbean.DataDictionary.ListDataBean> ListData = DataDictionary.getListData();
                             for (int i = 0; i < ListData.size(); i++) {
                                 Type mType = new Type();
                                 mType.setId(ListData.get(i).getId());

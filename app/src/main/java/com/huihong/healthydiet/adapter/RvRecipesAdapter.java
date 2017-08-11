@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
-import com.huihong.healthydiet.bean.RecipeListInfoByDRId;
+import com.huihong.healthydiet.model.gsonbean.RecipeListInfoByDRId;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.joooonho.SelectableRoundedImageView;
 
