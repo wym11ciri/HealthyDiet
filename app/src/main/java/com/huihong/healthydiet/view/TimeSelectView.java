@@ -100,7 +100,7 @@ public class TimeSelectView extends View {
         endMin = (int) SPUtils.get(context, "endMin", 0);
     }
 
-
+    LinearGradient lg;
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 
@@ -108,7 +108,7 @@ public class TimeSelectView extends View {
         ringRadius = w / 2 - ringWidth / 2;
         rect = new RectF(-ringRadius, -ringRadius, ringRadius, ringRadius);
         //给画笔设置渐变色
-        LinearGradient lg = new LinearGradient(0, 0, 100, 100, circleColors, null, Shader.TileMode.MIRROR);
+        lg = new LinearGradient(0, 0, 100, 100, circleColors, null, Shader.TileMode.MIRROR);
         circlePaint.setShader(lg);
         //计算初始角度
         float startAngel = (float) ((startHour - 12) * 360.0000001 / 12.00001 + startMin * 15.0000001 / 60.00001) - 90;
@@ -123,13 +123,13 @@ public class TimeSelectView extends View {
         Bitmap bt2 = BitmapFactory.decodeResource(getResources(), R.mipmap.sleep_4);
         endBitmap = Bitmap.createScaledBitmap(bt2, ringWidth, ringWidth, false);
         bt2.recycle();
-
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         canvas.translate(viewWidth / 2, viewWidth / 2);//将canvas 原点平移到画布中心
         canvas.drawCircle(0, 0, ringRadius, ringPaint);//绘制外部灰色圆环背景
 
@@ -147,15 +147,19 @@ public class TimeSelectView extends View {
                 (float) startCircle.getX(), (float) startCircle.getY(),
                 (float) endCircle.getX(), (float) endCircle.getY(),
                 circleColors, null, Shader.TileMode.CLAMP);  //
-
+        circlePaint.reset();
         circlePaint.setShader(lg);
-
+        circlePaint.setStyle(Paint.Style.STROKE);//描边
+        circlePaint.setStrokeWidth(ringWidth);
+        circlePaint.setAntiAlias(true);//设置抗锯齿
 
         canvas.drawArc(rect, startAngle, sweepAngle, false, circlePaint);
         //绘制2张可以点击的图片
 
+
         canvas.drawBitmap(startBitmap, (float) startCircle.getX() - ringWidth / 2, (float) startCircle.getY() - ringWidth / 2, null);
         canvas.drawBitmap(endBitmap, (float) endCircle.getX() - ringWidth / 2, (float) endCircle.getY() - ringWidth / 2, null);
+
     }
 
 
@@ -197,12 +201,18 @@ public class TimeSelectView extends View {
                     } else {
                         endCircle.setAngle(mAngle);
                     }
+                    //把0度的位置移到12点的地方
+//                    mAngle=mAngle+90;
+
+                    if(mAngle<0){
+                        mAngle=mAngle+360;
+                    }
+
                     //通知更新时间
                     if (circleListener != null) {
                         circleListener.move(isStart, mAngle, false);
                     }
                     invalidate();
-//                    return true;
                 }
                 break;
             case MotionEvent.ACTION_UP://松开

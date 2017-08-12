@@ -120,6 +120,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_home, null);
+
             initUI();
 //            getHomePageInfo();
             MainActivity.mainActivity.setLocationListener(new LocationListener() {
@@ -164,7 +165,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void initUI() {
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
+        progressDialog.setMessage("定位中...");
+        progressDialog.show();
+        progressDialog.setCancelable(true);
         tvRecord = (TextView) mView.findViewById(R.id.tvRecord);
         tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
 

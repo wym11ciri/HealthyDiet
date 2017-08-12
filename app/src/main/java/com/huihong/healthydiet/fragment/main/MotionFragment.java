@@ -34,11 +34,14 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.UpdateStepCallBack;
 import com.huihong.healthydiet.mInterface.UpdateTimeCallBack;
+import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
 import com.huihong.healthydiet.model.mybean.GetSportList;
+import com.huihong.healthydiet.model.mybean.StepCount;
 import com.huihong.healthydiet.service.StepService;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -78,8 +81,7 @@ public class MotionFragment extends Fragment {
     private TextView tvDistance, tvTime;//行走的距离
 
 
-    //当前是否在运动
-    private boolean isRun = false;
+    private StepCount mStepCount;
 
 
     //动画
@@ -94,6 +96,10 @@ public class MotionFragment extends Fragment {
     //计步器当前的步数
     private int stepCount = 0;
     private AlertDialog runningDialog;
+
+
+    //运动未开始  运动暂停  正在运动
+    private String runState = "OFF";
 
     @Nullable
     @Override
@@ -120,25 +126,40 @@ public class MotionFragment extends Fragment {
     }
 
     private void setLayoutCircle() {
-
-        isRun = (boolean) SPUtils.get(getActivity(), "isRunning", false);
+        tvDistance = (TextView) mView.findViewById(R.id.tvDistance);
+        mStepCount = CacheUtils.getStepCount(getActivity());
 
         tvStepCount = (TextView) mView.findViewById(R.id.tvStepCount);
         tvCircle01Title = (TextView) mView.findViewById(R.id.tvCircle01Title);
         tvStartStep = (TextView) mView.findViewById(R.id.tvStartStep);
         tvTime = (TextView) mView.findViewById(R.id.tvTime);
-        if (!isRun) {
-            tvStepCount.setVisibility(View.GONE);
-            tvStartStep.setVisibility(View.VISIBLE);
-            tvCircle01Title.setText("尚未开始");
-        } else {
-            tvStepCount.setVisibility(View.VISIBLE);
-            tvStartStep.setVisibility(View.GONE);
-            tvCircle01Title.setText("正在运动");
+
+        runState = CacheUtils.getRunState(getActivity());
+        switch (runState) {
+            case "OFF":
+                tvStepCount.setVisibility(View.GONE);
+                tvStartStep.setVisibility(View.VISIBLE);
+                tvCircle01Title.setText("尚未开始");
+                break;
+            case "ON":
+                tvStepCount.setVisibility(View.VISIBLE);
+                tvStartStep.setVisibility(View.GONE);
+                tvCircle01Title.setText("正在运动");
+                tvStepCount.setText(mStepCount.getStepCount() + "");
+                tvTime.setText(mStepCount.getTime() + "");
+                tvDistance.setText(mStepCount.getStepCount()*0.4 + "");
+                break;
+            default:
+                //STOP
+                tvStepCount.setVisibility(View.VISIBLE);
+                tvStartStep.setVisibility(View.GONE);
+                tvCircle01Title.setText("今日运动");
+                tvStepCount.setText(mStepCount.getStepCount() + "");
+                tvTime.setText(mStepCount.getTime() + "");
+                tvDistance.setText(mStepCount.getStepCount() * 0.4 + "");
+                break;
         }
 
-
-        tvDistance = (TextView) mView.findViewById(R.id.tvDistance);
 
         layoutCircle01 = (LinearLayout) mView.findViewById(R.id.layoutCircle01);
         layoutCircle02 = (LinearLayout) mView.findViewById(R.id.layoutCircle02);
@@ -148,59 +169,41 @@ public class MotionFragment extends Fragment {
         layoutAnimation02 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle02);
         layoutAnimation03 = AnimationUtils.loadAnimation(getActivity(), R.anim.sacle02);
         myYAnimation = new MyYAnimation();
-        myYAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (isRun) {
-                    tvStepCount.setVisibility(View.VISIBLE);
-                    tvStartStep.setVisibility(View.GONE);
-                    tvCircle01Title.setText("正在运动");
-                } else {
-                    tvStepCount.setVisibility(View.GONE);
-                    tvStartStep.setVisibility(View.VISIBLE);
-                    tvCircle01Title.setText("尚未开始");
-                }
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
 
 
         layoutCircle01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (!isRun) {
-                    SPUtils.put(getActivity(), "isRunning", true);
-                    isRun = true;
-                    bindStepService();
-                    //切换到运动状态
-                    layoutCircle01.startAnimation(myYAnimation);
-                } else {
-                    isRun = false;
-                    SPUtils.put(getActivity(), "isRunning", false);
-                    stopStepService();
-                    layoutCircle01.startAnimation(myYAnimation);
-                    //提交成功了做上面的事情
-//                    AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-//                    View view=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_prompt_running,null);
-//
-//                    builder.setView(view);
-//                    runningDialog=builder.create();
-//                    runningDialog.show();
-
-
-                    //关闭计步器功能并提交数据
-                    submitStepCount();
-
+                //执行动画
+                runState = CacheUtils.getRunState(getActivity());
+                switch (runState) {
+                    case "OFF":
+                        //打开操作
+                        CacheUtils.setRunState(getActivity(), "ON");//打开操作
+                        tvStepCount.setVisibility(View.VISIBLE);
+                        tvStartStep.setVisibility(View.GONE);
+                        tvCircle01Title.setText("正在运动");
+                        bindStepService();
+                        layoutCircle01.startAnimation(myYAnimation);
+                        break;
+                    case "ON":
+                        CacheUtils.setRunState(getActivity(), "STOP");//打开操作
+                        tvStepCount.setVisibility(View.VISIBLE);
+                        tvStartStep.setVisibility(View.GONE);
+                        tvCircle01Title.setText("今日运动");
+                        stopStepService();
+                        layoutCircle01.startAnimation(myYAnimation);
+                        submitStepCount();
+                        break;
+                    default:
+                        //STOP
+                        CacheUtils.setRunState(getActivity(), "ON");//打开操作
+                        tvStepCount.setVisibility(View.VISIBLE);
+                        tvStartStep.setVisibility(View.GONE);
+                        tvCircle01Title.setText("正在运动");
+                        bindStepService();
+                        layoutCircle01.startAnimation(myYAnimation);
+                        break;
                 }
             }
         });
@@ -209,28 +212,32 @@ public class MotionFragment extends Fragment {
 
     //向服务器提交数据
     private void submitStepCount() {
-//        Calendar c = Calendar.getInstance();//
-//        int mYear = c.get(Calendar.YEAR); // 获取当前年份
-//        int mMonth = c.get(Calendar.MONTH) + 1;// 获取当前月份
-//        int mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当日期
-//        MotionFragment.this.stepCount = 0;
 
+        mStepCount = CacheUtils.getStepCount(getActivity());
+        layoutCircle01.setClickable(false);
         Map<String, String> map = new HashMap<>();
-        map.put("Steps", MotionFragment.this.stepCount+"");
-        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
-
+        map.put("Steps", mStepCount.getStepCount() + "");
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.UPLOAD_SPORT_INFO
                 , map
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("提交运动步数",response);
+                        layoutCircle01.setClickable(true);
+                        LogUtil.i("提交运动步数", response);
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if (mHttpBaseInfo.getHttpCode() == 200) {
+                            getSportList(nowChoose);
+                        }
+
 
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.i("提交运动步数",e.toString());
+                        layoutCircle01.setClickable(true);
+                        LogUtil.i("提交运动步数", e.toString());
                     }
                 });
 
@@ -288,16 +295,17 @@ public class MotionFragment extends Fragment {
      * 绑定计步器服务
      */
     private void bindStepService() {
-        if (isRun) {
+        if (CacheUtils.getRunState(getActivity()).equals("ON")) {
             Intent intent = new Intent(getActivity(), StepService.class);
             getActivity().bindService(intent, conn, Context.BIND_AUTO_CREATE);
-//            getActivity().startService(intent);
         }
     }
 
     private void stopStepService() {
         getActivity().unbindService(conn);
     }
+
+    private String nowChoose = "day";
 
     private void initTimeSelectBar() {
         tvSelectLeft = (TextView) mView.findViewById(R.id.tvSelectLeft);
@@ -321,6 +329,8 @@ public class MotionFragment extends Fragment {
                         tvSelectRight.setBackgroundResource(R.drawable.motion_bg_right_select);
                         //设置折线图横坐标为年
                         getSportList("year");
+                        nowChoose = "year";
+
                         break;
                     case R.id.tvSelectMiddle:
                         //设置折线图横坐标为月
@@ -328,6 +338,7 @@ public class MotionFragment extends Fragment {
                         tvSelectMiddle.setBackgroundResource(R.drawable.motion_bg_middle_select);
 
                         getSportList("month");
+                        nowChoose = "month";
                         break;
                     case R.id.tvSelectLeft:
                         //设置折线图横坐标为日
@@ -335,6 +346,7 @@ public class MotionFragment extends Fragment {
                         tvSelectLeft.setBackgroundResource(R.drawable.motion_bg_left_select);
                         //
                         getSportList("day");
+                        nowChoose = "day";
 
                         break;
                 }
@@ -396,6 +408,11 @@ public class MotionFragment extends Fragment {
                                     values.add(new Entry(i, mListData.get(i).getSteps()));
                                     values2.add(new Entry(i, 0));
                                 }
+
+                                if (mListData.size() == 1) {
+                                    values2.add(new Entry(1, 0));
+                                }
+
                                 LineDataSet mainLineDataSet = new LineDataSet(values, "DataSet 1");
                                 mainLineDataSet.setColor(getResources().getColor(R.color.circle));
                                 mainLineDataSet.setCircleColor(getResources().getColor(R.color.circle));
@@ -484,7 +501,6 @@ public class MotionFragment extends Fragment {
 
 
     }
-
 
 
     //设置图表控件

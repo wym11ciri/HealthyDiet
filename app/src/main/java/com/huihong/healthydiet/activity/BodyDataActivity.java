@@ -222,7 +222,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                                 if (code == 200) {
 
                                     if (mGetUserBodyInfo.getListData().size() > 0) {
-                                        GetUserBodyInfo.ListDataBean mInfo = mGetUserBodyInfo.getListData().get(0);
+                                        PersonalAllInfo mInfo = mGetUserBodyInfo.getListData().get(0);
 
                                         //设置UI
                                         etHeight.setHint(mInfo.getHeight() + "");

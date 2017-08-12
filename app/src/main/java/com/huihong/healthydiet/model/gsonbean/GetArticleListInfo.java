@@ -20,16 +20,16 @@ public class GetArticleListInfo extends HttpBaseInfo{
      */
 
 
-    private List<ListDataBean> ListData;
+    private List<ArticleInfo> ListData;
     private List<ListData2Bean> ListData2;
 
 
 
-    public List<ListDataBean> getListData() {
+    public List<ArticleInfo> getListData() {
         return ListData;
     }
 
-    public void setListData(List<ListDataBean> ListData) {
+    public void setListData(List<ArticleInfo> ListData) {
         this.ListData = ListData;
     }
 
@@ -41,9 +41,7 @@ public class GetArticleListInfo extends HttpBaseInfo{
         this.ListData2 = ListData2;
     }
 
-    public static class ListDataBean extends ArticleInfo {
 
-    }
 
     public static class ListData2Bean {
         /**

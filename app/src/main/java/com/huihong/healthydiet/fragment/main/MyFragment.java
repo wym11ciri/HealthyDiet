@@ -26,7 +26,9 @@ import com.huihong.healthydiet.adapter.RvIntegralAdapter;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
+import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
+import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -58,24 +60,19 @@ public class MyFragment extends Fragment {
     @BindView(R.id.iv04)
     ImageView iv04;
     Unbinder unbinder;
-
+    @BindView(R.id.mTreeView)
+    TreeView mTreeView;
 
     private View mView;
+
+
     private LinearLayout layoutSettings;
     private LinearLayout layoutBodyData, layoutMajorTest;
-
     private LinearLayout layoutLike;
-
     private SelectableRoundedImageView ivHead;
-
-
     private RecyclerView rvIntegral;//获取积分的列表
     private RvIntegralAdapter rvIntegralAdapter;
-
-
     private ImageView ivSetting;
-    private TreeView mTreeView;
-
     private LinearLayout layoutIntegralRecord;
 
 
@@ -87,6 +84,7 @@ public class MyFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //创建Fragment的时候获取最新的用户信息
         getPersonalInfo();
     }
 
@@ -146,7 +144,6 @@ public class MyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent mIntent = new Intent(getActivity(), TestMajorActivity.class);
-//                Intent mIntent=new Intent(getActivity(), SimpleTestActivity.class);
                 startActivity(mIntent);
             }
         });
@@ -164,8 +161,6 @@ public class MyFragment extends Fragment {
         rvIntegral.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rvIntegral.setAdapter(rvIntegralAdapter);
 
-        mTreeView = (TreeView) mView.findViewById(R.id.mTreeView);
-//        mTreeView.startThread();
 
         layoutIntegralRecord = (LinearLayout) mView.findViewById(R.id.layoutIntegralRecord);
         layoutIntegralRecord.setOnClickListener(new View.OnClickListener() {
@@ -185,10 +180,9 @@ public class MyFragment extends Fragment {
         LogUtil.i("嘻嘻");
         //由于个人信息会随时改变这里会从缓存中重新读取个人信息
         PersonalInfo personalInfo = CacheUtils.getPersonalInfo(getActivity());
-        //        private TextView tvConstitution,tvAge,tvName,tvSex,tvHeight,tvWeight;
-
 
         tvName.setText(personalInfo.getName());
+        LogUtil.i("zangyi222",personalInfo.getName());
         tvHeight.setText(personalInfo.getHeight() + "cm");
         tvWeight.setText(personalInfo.getWeight() + "kg");
         if (personalInfo.isMan()) {
@@ -215,31 +209,13 @@ public class MyFragment extends Fragment {
 
         String type = personalInfo.getConstitution();
         ivConstitution.setVisibility(View.VISIBLE);
-        if (type.equals("平和质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_1);
-        } else if (type.equals("气郁质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_2);
-        } else if (type.equals("阴虚质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_8);
-        } else if (type.equals("痰湿质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_5);
-        } else if (type.equals("阳虚质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_9);
-        } else if (type.equals("特禀质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_6);
-        } else if (type.equals("湿热质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_4);
-        } else if (type.equals("气虚质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_2);
-        } else if (type.equals("血瘀质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_7);
-        } else {
-            ivConstitution.setVisibility(View.GONE);
-        }
-
-//        ivConstitution
+        MyUtils.setImageViewType(ivConstitution, type);
     }
 
+
+    /**
+     * 获取用户个人信息
+     */
     private void getPersonalInfo() {
 
         Map<String, String> map = new HashMap<>();
@@ -256,7 +232,7 @@ public class MyFragment extends Fragment {
                         int code = mGetUserBodyInfo.getHttpCode();
                         if (code == 200) {
                             if (mGetUserBodyInfo.getListData().size() > 0) {
-                                GetUserBodyInfo.ListDataBean mInfo = mGetUserBodyInfo.getListData().get(0);
+                                PersonalAllInfo mInfo = mGetUserBodyInfo.getListData().get(0);
 
                                 PersonalInfo personalInfo = new PersonalInfo();
                                 personalInfo.setName(mInfo.getName());

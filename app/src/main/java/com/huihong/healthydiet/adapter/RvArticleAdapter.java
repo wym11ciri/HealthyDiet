@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.model.gsonbean.GetArticleListInfo;
 import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
+import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
 import com.huihong.healthydiet.widget.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
 
@@ -29,7 +29,7 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<GetArticleListInfo.ListDataBean> mList;
+    private List<ArticleInfo> mList;
 
     private ArticleItemOnClickListener mItemOnClickListener;
 
@@ -38,7 +38,7 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
     }
 
 
-    public RvArticleAdapter(Context pContext, List<GetArticleListInfo.ListDataBean> pList) {
+    public RvArticleAdapter(Context pContext, List<ArticleInfo> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);

@@ -18,6 +18,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
@@ -26,9 +27,13 @@ import com.huihong.healthydiet.mInterface.UpdateTimeCallBack;
 import com.huihong.healthydiet.stepcount.accelerometer.StepCount;
 import com.huihong.healthydiet.stepcount.accelerometer.StepValuePassListener;
 import com.huihong.healthydiet.utils.common.LogUtil;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import okhttp3.Call;
 
 
 /**
@@ -37,28 +42,18 @@ import java.util.Date;
 public class StepService extends Service {
     private String TAG = "StepService";
 
-    private static int DURATION = 30 * 1000;//设置多久去存储一下数据
-    private static String CURRENT_DATE = "";//当前的日期
+
+    //////////////
+    private com.huihong.healthydiet.model.mybean.StepCount stepCount;//步数信息
+    private int CURRENT_STEP;//当前所走的步数
+    private int STEP_RUN_TIME;//运动总共的时长
+    private float STEP_RUN_DISTANCE;//运动的距离
+
+
+
     private SensorManager sensorManager;//传感器管理对象
     private BroadcastReceiver mBatInfoReceiver;//广播接受者
 
-    private int CURRENT_STEP;//当前所走的步数
-    /**
-     * 计步传感器类型  Sensor.TYPE_STEP_COUNTER或者Sensor.TYPE_STEP_DETECTOR
-     */
-    private static int stepSensorType = -1;
-    /**
-     * 每次第一次启动记步服务时是否从系统中获取了已有的步数记录
-     */
-    private boolean hasRecord = false;
-    /**
-     * 系统中获取到的已有的步数
-     */
-    private int hasStepCount = 0;
-    /**
-     * 上一次的步数
-     */
-    private int previousStepCount = 0;
     /**
      * 通知管理对象
      */
@@ -93,17 +88,12 @@ public class StepService extends Service {
         this.updateTimeCallBack = updateTimeCallBack;
     }
 
-    private long startTime;
+
 
     //服务第一次创建的时候会调用onCreate
     @Override
     public void onCreate() {
         super.onCreate();
-        //获得计步器开始的时间
-        startTime = System.currentTimeMillis();
-
-//        initNotification();
-//        initTodayData();
         initBroadcastReceiver();
         stepThread = new Thread(new Runnable() {//开启一个线程接收从传感器获得过来的数据
             public void run() {
@@ -111,8 +101,23 @@ public class StepService extends Service {
             }
         });
         stepThread.start();
-
     }
+
+
+    /**
+     * 每一次绑定服务都会调用这个方法在这里初始化
+     */
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        //从缓存中去拿步数信息
+        stepCount = CacheUtils.getStepCount(this);
+        CURRENT_STEP = stepCount.getStepCount();
+        STEP_RUN_TIME = stepCount.getTime();
+        STEP_RUN_DISTANCE = stepCount.getDistance();
+        return stepBinder;
+    }
+
 
     /**
      * 获取当天日期
@@ -149,59 +154,23 @@ public class StepService extends Service {
      */
     private void initBroadcastReceiver() {
         final IntentFilter filter = new IntentFilter();
-
-        filter.addAction(Intent.ACTION_SCREEN_OFF);// 屏幕灭屏广播
-        filter.addAction(Intent.ACTION_SHUTDOWN); //关机广播
-        filter.addAction(Intent.ACTION_SCREEN_ON);// 屏幕亮屏广播
-        filter.addAction(Intent.ACTION_USER_PRESENT); // 屏幕解锁广播
-
-        filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);//按下Home建
-        //监听日期变化
-        filter.addAction(Intent.ACTION_DATE_CHANGED);
-        filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_TIME_TICK);
 
         mBatInfoReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 String action = intent.getAction();
-                if (Intent.ACTION_SCREEN_ON.equals(action)) {
-                    Log.d(TAG, "screen on");
-                } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                    Log.d(TAG, "screen off");
-                } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
-                    Log.d(TAG, "screen unlock");
-                } else if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(intent.getAction())) {
-                    Log.i(TAG, " receive Intent.ACTION_CLOSE_SYSTEM_DIALOGS");//点击Home键按钮
-                    //保存一次
-                    saveStepCount();
-                } else if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
-                    Log.i(TAG, " receive ACTION_SHUTDOWN");
-                    saveStepCount();
-                } else if (Intent.ACTION_DATE_CHANGED.equals(action)) {//日期变化步数重置为0
-//                    Logger.d("重置步数" + StepDcretor.CURRENT_STEP);
-                    saveStepCount();
-                    isNewDay();
-                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
-                    if(updateTimeCallBack!=null){
-                        updateTimeCallBack.updateTime(min);
+                if (Intent.ACTION_TIME_TICK.equals(action)) {
+                    //系统每分钟会发出该广播
+                    STEP_RUN_TIME++;//服务运行的时间+1
+                    //每分钟去保存一次当前的状态
+                    if (updateTimeCallBack != null) {
+                        updateTimeCallBack.updateTime(STEP_RUN_TIME);
                     }
-                } else if (Intent.ACTION_TIME_CHANGED.equals(action)) {
-                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
-                    if(updateTimeCallBack!=null){
-                        updateTimeCallBack.updateTime(min);
-                    }
-                    //时间变化步数重置为0
                     saveStepCount();
+                    submitStepCount();
+
                     isNewDay();
-                } else if (Intent.ACTION_TIME_TICK.equals(action)) {//日期变化步数重置为0
-//                    Logger.d("重置步数" + StepDcretor.CURRENT_STEP);
-                    saveStepCount();
-                    isNewDay();
-                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
-                    if(updateTimeCallBack!=null){
-                        updateTimeCallBack.updateTime(min);
-                    }
                 }
             }
         };
@@ -217,23 +186,51 @@ public class StepService extends Service {
      * 并且把缓存中的数据清空
      */
     private void isNewDay() {
-        String time = "00:00";
-        if (time.equals(new SimpleDateFormat("HH:mm").format(new Date())) || !CURRENT_DATE.equals(getTodayDate())) {
-            submitStepCount();
+        //每天11点的时候去提交这次数据
+        String nowTime = new SimpleDateFormat("HH:mm").format(new Date()) + "";//这里就取分钟
+        if (nowTime.equals("00:00")) {
+            //关闭服务 并清空数据
+            stepCount.setStepCount(0);
+            stepCount.setTime(0);
+            CacheUtils.putStepCount(this, stepCount);
+            CacheUtils.setRunState(this, "OFF");
+            stopSelf();//关闭服务
         }
     }
 
     /**
      * 向服务器提交数据
      */
-    private void submitStepCount() {
-        //提交成功
-        //设置缓存
-        CacheUtils.putStepCount(this, 0);
-        CacheUtils.setRun(this, false);
-        //关闭服务
-        stopSelf();
+    private int LAST_SUBMIT_STEP = 0;//最近一次提交的数据
 
+    private void submitStepCount() {
+        //这里定时向服务器去定时提交最新的运动记录
+        String nowTime = new SimpleDateFormat("mm").format(new Date()) + "";//这里就取分钟
+        if (nowTime.equals("15") | nowTime.equals("30") | nowTime.equals("45") | nowTime.equals("00")) {
+            //向服务器提交数据
+            //如果上次提交的数据小于当前的数据那么去提交
+            if (LAST_SUBMIT_STEP < CURRENT_STEP) {
+                LAST_SUBMIT_STEP = CURRENT_STEP;
+                OkHttpUtils
+                        .post()
+                        .url(AppUrl.UPLOAD_SPORT_INFO)
+                        .addParams("UserId", CacheUtils.getUserId(this))
+                        .addParams("steps", CURRENT_STEP + "")
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                LogUtil.i("在运动服务中调接口" + e);
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                LogUtil.i("在运动服务中调接口" + response);
+
+                            }
+                        });
+            }
+        }
     }
 
     /**
@@ -273,10 +270,6 @@ public class StepService extends Service {
         return pendingIntent;
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return stepBinder;
-    }
 
     /**
      * 向Activity传递数据的纽带
@@ -287,12 +280,6 @@ public class StepService extends Service {
         }
     }
 
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.i("服务onStartCommand");
-        return START_STICKY;
-    }
 
     /**
      * 判断使用哪种计步器传感器
@@ -321,7 +308,6 @@ public class StepService extends Service {
      * 如果设备支持计步器传感器
      * 那么使用计步器传感器
      */
-    private int PEDOMETER_STEP_COUNT = 0;//使用计步器传感器的步数值
     private Sensor detectorSensor;//计步器传感器
     private SensorEventListener mSensorEventListener;//计步器传感器监听
 
@@ -330,21 +316,18 @@ public class StepService extends Service {
         //获取计步器传感器
         detectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         if (detectorSensor != null) {
-            isUseGravitySensor = true;
-            stepSensorType = Sensor.TYPE_STEP_DETECTOR;
+
             LogUtil.i(TAG, "有计步器传感器 使用计步器传感器");
             mSensorEventListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
                     if (event.values[0] == 1.0f) {
-                        LogUtil.i(TAG, "计步啦2");
-                        PEDOMETER_STEP_COUNT++;
+                        CURRENT_STEP++;
+                        LogUtil.i(TAG, "计步器传感器计步" + CURRENT_STEP);
                         if (updateStepCallBack != null) {
                             //计算时间差
-                            int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
-                            updateStepCallBack.updateStep(PEDOMETER_STEP_COUNT, min);
+                            updateStepCallBack.updateStep(CURRENT_STEP, STEP_RUN_TIME);
                         }
-//                        updateNotification();
                     }
                 }
 
@@ -367,13 +350,11 @@ public class StepService extends Service {
      * 那么使用重力传感器来代替
      */
     private Sensor sensor;//重力传感器
-    private int GRAVITY_SENSOR_STEP_COUNT = 0;//使用重力传感器计步器数据
-    private boolean isUseGravitySensor = false;//是否使用重力传感器来计步的
 
     private void addBasePedometerListener() {
-        isUseGravitySensor = true;
+
         mStepCount = new StepCount();
-        mStepCount.setSteps(GRAVITY_SENSOR_STEP_COUNT);//设置开始值
+        mStepCount.setSteps(CURRENT_STEP);//设置开始值
         //获取重力传感器
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         //注册重力传感器
@@ -382,13 +363,10 @@ public class StepService extends Service {
             @Override
             public void stepChanged(int steps) {
                 LogUtil.i(TAG, "重力传感器计步器" + steps);//返回的值是累加的
-                GRAVITY_SENSOR_STEP_COUNT = steps;
-//                updateNotification();
+                CURRENT_STEP = steps;
                 if (updateStepCallBack != null) {
-                    int min = (int) ((System.currentTimeMillis() - startTime) / (1000 * 60));
-                    updateStepCallBack.updateStep(GRAVITY_SENSOR_STEP_COUNT, min);
+                    updateStepCallBack.updateStep(CURRENT_STEP, STEP_RUN_TIME);
                 }
-
             }
         });
         if (isAvailable) {
@@ -399,15 +377,13 @@ public class StepService extends Service {
     }
 
 
-    // 保存记步数据
+    /**
+     * 保存当前步数的信息
+     */
     private void saveStepCount() {
-        int tempStep;
-        if (isUseGravitySensor) {
-            tempStep = GRAVITY_SENSOR_STEP_COUNT; //使用重力传感器计步
-        } else {
-            tempStep = PEDOMETER_STEP_COUNT;//使用计步器传感器计步
-        }
-        CacheUtils.putStepCount(this, tempStep);
+        stepCount.setStepCount(CURRENT_STEP);
+        stepCount.setTime(STEP_RUN_TIME);
+        CacheUtils.putStepCount(this, stepCount);
     }
 
 

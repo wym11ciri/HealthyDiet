@@ -1,7 +1,9 @@
 package com.huihong.healthydiet;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +29,12 @@ import com.huihong.healthydiet.service.AlarmClockService;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
 import com.huihong.healthydiet.widget.MyViewPager;
+import com.yanzhenjie.alertdialog.AlertDialog;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.PermissionListener;
+import com.yanzhenjie.permission.Rationale;
+import com.yanzhenjie.permission.RationaleListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +57,11 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     }
 
     public static MainActivity mainActivity;
+
+
+    private static final int REQUEST_CODE_PERMISSION = 100;
+
+    private static final int REQUEST_CODE_SETTING = 300;
 
     //5个底部导航栏的监听回调
     private ItemOnClickListener itemOnClickListener01;
@@ -86,6 +99,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         setContentView(R.layout.activity_main);
 //        StatusBarUtil.setTransparent(this);//设置状态栏沉浸
         mainActivity = this;
+        getPermission();
         initUI();
         setupService();
 
@@ -109,6 +123,95 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 
 
     }
+
+    private void getPermission() {
+
+        // 申请权限。
+        AndPermission.with(MainActivity.this)
+                .requestCode(REQUEST_CODE_PERMISSION)
+                .permission(Permission.LOCATION)
+                .callback(permissionListener)
+                // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框；
+                // 这样避免用户勾选不再提示，导致以后无法申请权限。
+                // 你也可以不设置。
+                .rationale(rationaleListener)
+                .start();
+
+    }
+    /**
+     * Rationale支持，这里自定义对话框。
+     */
+    private RationaleListener rationaleListener = new RationaleListener() {
+        @Override
+        public void showRequestPermissionRationale(int requestCode, final Rationale rationale) {
+            // 这里使用自定义对话框，如果不想自定义，用AndPermission默认对话框：
+            // AndPermission.rationaleDialog(Context, Rationale).show();
+
+            // 自定义对话框。
+            AlertDialog.newBuilder(MainActivity.this)
+                    .setTitle("提示")
+                    .setMessage("我们需要的一些必要权限被禁止，请授权给我们。")
+                    .setPositiveButton("好的", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            rationale.resume();
+                        }
+                    })
+                    .setNegativeButton("就不", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            rationale.cancel();
+                        }
+                    }).show();
+        }
+    };
+    /**
+     * 回调监听。
+     */
+    private PermissionListener permissionListener = new PermissionListener() {
+        @Override
+        public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
+            switch (requestCode) {
+                case REQUEST_CODE_PERMISSION: {
+//                    Toast.makeText(MainActivity.this,, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
+            switch (requestCode) {
+                case REQUEST_CODE_PERMISSION: {
+                    Toast.makeText(MainActivity.this,"授权失败", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+
+            // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+            if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, deniedPermissions)) {
+                // 第一种：用默认的提示语。
+                AndPermission.defaultSettingDialog(MainActivity.this, REQUEST_CODE_SETTING).show();
+
+                // 第二种：用自定义的提示语。
+//             AndPermission.defaultSettingDialog(this, REQUEST_CODE_SETTING)
+//                     .setTitle("权限申请失败")
+//                     .setMessage("我们需要的一些权限被您拒绝或者系统发生错误申请失败，请您到设置页面手动授权，否则功能无法正常使用！")
+//                     .setPositiveButton("好，去设置")
+//                     .show();
+
+//            第三种：自定义dialog样式。
+//            SettingService settingHandle = AndPermission.defineSettingDialog(this, REQUEST_CODE_SETTING);
+//            你的dialog点击了确定调用：
+//            settingHandle.execute();
+//            你的dialog点击了取消调用：
+//            settingHandle.cancel();
+            }
+        }
+    };
+
 
     /**
      * 开启计步服务
@@ -205,27 +308,30 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 ivTab02.setImageResource(R.mipmap.logo_8);
                 mViewPager.setCurrentItem(1, false);
                 tvTab02.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
-                if (itemOnClickListener02 != null) {
-                    itemOnClickListener02.onClick();
+                if (itemOnClickListener04 != null) {
+                    itemOnClickListener04.onClick();
                 }
+//                if (itemOnClickListener02 != null) {
+//                    itemOnClickListener02.onClick();
+//                }
 
                 break;
             case R.id.layoutTab03:
                 ivTab03.setImageResource(R.mipmap.logo_1);
                 mViewPager.setCurrentItem(2, false);
                 tvTab03.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
-                if (itemOnClickListener03 != null) {
-                    itemOnClickListener03.onClick();
-                }
+//                if (itemOnClickListener04 != null) {
+//                    itemOnClickListener04.onClick();
+//                }
 
                 break;
             case R.id.layoutTab04:
                 ivTab04.setImageResource(R.mipmap.logo_4);
                 mViewPager.setCurrentItem(3, false);
                 tvTab04.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
-                if (itemOnClickListener04 != null) {
-                    itemOnClickListener04.onClick();
-                }
+//                if (itemOnClickListener04 != null) {
+//                    itemOnClickListener04.onClick();
+//                }
 
                 break;
             case R.id.layoutTab05:

@@ -16,6 +16,7 @@ import com.huihong.healthydiet.activity.SleepSettingsActivity;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.mInterface.SwitchListener;
+import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.view.SleepChartView;
@@ -34,27 +35,17 @@ public class SleepFragment extends Fragment {
     private TimeSelectView mTimeSelectView;
     private TextView tvTimeStart, tvTimeEnd;
     private TextView tvDHour, tvDMin;
-
     private int startHour = 23;
     private int endHour = 8;
     private int startMin = 0;
     private int endMin = 0;
-
     private int _DH = 0;
     private int _DM = 0;
-
     private LinearLayout layoutSettings;
-
-
     //是否开启闹铃切换按钮
     private SwitchImageView mSwitchImageView;
-
-
     private TextView tvWeek;
-
-
     private NestedScrollView mNestedScrollView;
-
     private SleepChartView mSleepChartView;
 
 
@@ -70,8 +61,6 @@ public class SleepFragment extends Fragment {
 
     private void initUI() {
         mNestedScrollView = (NestedScrollView) mView.findViewById(R.id.mNestedScrollView);
-
-
         mSleepChartView = (SleepChartView) mView.findViewById(R.id.mSleepChartView);
         initWeekText();
         initTimeSelectView();//初始化自定义时间选择器
@@ -84,7 +73,7 @@ public class SleepFragment extends Fragment {
         String text = "";
         for (int i = 0; i < cacheValueList.size(); i++) {
             if (cacheValueList.get(i)) {
-                text = text + getWeek(i) + " ";
+                text = text + MyUtils.getWeek(i) + " ";
             }
         }
         tvWeek.setText(text);
@@ -121,7 +110,6 @@ public class SleepFragment extends Fragment {
         });
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -131,38 +119,16 @@ public class SleepFragment extends Fragment {
                 String text = "";
                 for (int i = 0; i < cacheValueList.size(); i++) {
                     if (cacheValueList.get(i)) {
-                        text = text + getWeek(i) + " ";
+                        text = text +MyUtils.getWeek(i) + " ";
                     }
                 }
                 tvWeek.setText(text);
             }
         }
-
-
     }
 
-    private String getWeek(int i) {
-
-        switch (i) {
-            case 0:
-                return "周一";
-            case 1:
-                return "周二";
-            case 2:
-                return "周三";
-            case 3:
-                return "周四";
-            case 4:
-                return "周五";
-            case 5:
-                return "周六";
-            case 6:
-                return "周日";
-        }
-        return " ";
-    }
-
-
+    private boolean isStartAfter=false;
+    private  float lastStartmAngle=250;
     //初始化时间选择器及其附属控件
     private void initTimeSelectView() {
         startHour = (int) SPUtils.get(getActivity(), "startHour", 23);
@@ -207,13 +173,46 @@ public class SleepFragment extends Fragment {
             public void move(boolean isSetStart, float mAngle, boolean isEnd) {
 
 
+
+
+
+
+
+                //
                 if (mAngle < 0) {
                     mAngle = mAngle + 360;
                 }
 
                 if (!isEnd) {
                     mNestedScrollView.requestDisallowInterceptTouchEvent(true);
+
                     if (isSetStart) {
+                        //这里拿到了角度我们需要去判断当前是24小时中的 0-12 小时还是13-24
+                        if(isStartAfter){
+                            LogUtil.i("测试","下午");
+                        }else {
+                            LogUtil.i("测试","上午");
+                        }
+
+                        //需要去判断临界值
+                        //上次角度上350度到360度
+                        //这次角度是0度到10度的
+                        //那么触发临界
+
+                        if(lastStartmAngle>350&&lastStartmAngle<=360){
+                            if(mAngle<10&&mAngle>=0){
+                                //触发临界
+                                isStartAfter=!isStartAfter;
+                            }
+                        }
+                        lastStartmAngle=mAngle;
+                        if(isStartAfter){
+                            LogUtil.i("测试","下午");
+                        }else {
+                            LogUtil.i("测试","上午");
+                        }
+
+
 
                         //就寝时间需要加上12小时
                         int a = (int) mAngle / 30;//获得小时

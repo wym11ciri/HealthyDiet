@@ -3,6 +3,7 @@ package com.huihong.healthydiet.cache.sp;
 import android.content.Context;
 
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
+import com.huihong.healthydiet.model.mybean.StepCount;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.widget.WeekSelectTextView;
 
@@ -131,14 +132,36 @@ public class CacheUtils {
 
     //步数
     //获得当前行走的步数
-    public static int getStepCount(Context mContext) {
-        return (int) SPUtils.get(mContext, "stepCount", 0);
-    }
+//    public static int getStepCount(Context mContext) {
+//        return (int) SPUtils.get(mContext, "stepCount", 0);
+//    }
 
     //保存步数
     public static void putStepCount(Context mContext, int nowCount) {
         SPUtils.put(mContext, "stepCount", nowCount);
     }
+
+    //保存当前运动状态
+
+    //保存步数
+    public static void putStepCount(Context mContext, StepCount stepCount) {
+        SPUtils.put(mContext, "stepCount", stepCount.getStepCount());
+        SPUtils.put(mContext, "stepTime", stepCount.getTime());
+        SPUtils.put(mContext, "stepDistance", stepCount.getDistance());
+    }
+
+    //获得当前行走的步数
+    public static StepCount getStepCount(Context mContext) {
+        StepCount stepCount = new StepCount();
+        int mStepCount = (int) SPUtils.get(mContext, "stepCount", 0);
+        int stepTime = (int) SPUtils.get(mContext, "stepTime", 0);
+//        float stepDistance= (float) SPUtils.get(mContext,"stepDistance",0);
+        stepCount.setTime(stepTime);
+//        stepCount.setDistance(stepDistance);
+        stepCount.setStepCount(mStepCount);
+        return stepCount;
+    }
+
 
     //运动状态
     //设置运动状态
@@ -149,6 +172,15 @@ public class CacheUtils {
     //获得运动状态
     public static boolean getRun(Context mContext) {
         return (boolean) SPUtils.get(mContext, "isRunning", false);
+    }
+
+
+    public static void setRunState(Context mContext, String state) {
+        SPUtils.put(mContext, "RunState", state);
+    }
+
+    public static String getRunState(Context mContext) {
+        return (String) SPUtils.get(mContext, "RunState", "OFF");
     }
 
     //闹铃状态

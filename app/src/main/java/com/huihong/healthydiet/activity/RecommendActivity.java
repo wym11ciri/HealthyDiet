@@ -21,10 +21,10 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.LvPopTypeAdapter;
 import com.huihong.healthydiet.adapter.RecommendFragmentPagerAdapter;
-import com.huihong.healthydiet.model.gsonbean.DataDictionary;
 import com.huihong.healthydiet.fragment.RecommendNearbyListFragment;
 import com.huihong.healthydiet.fragment.RecommendRecipeListFragment;
 import com.huihong.healthydiet.mInterface.ScreenTypeListener;
+import com.huihong.healthydiet.model.gsonbean.DataDictionary;
 import com.huihong.healthydiet.model.mybean.Type;
 import com.huihong.healthydiet.utils.common.DensityUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
@@ -61,9 +61,7 @@ public class RecommendActivity extends BaseTitleActivity {
     private TextView tvRight, tvLeft2;
 
 
-
     private boolean isRight = true;
-
 
 
     private String TypeValue;
@@ -80,17 +78,14 @@ public class RecommendActivity extends BaseTitleActivity {
 
     //筛选
     private ListPopupWindow mListPopupWindow;//类型列表
-    private  ImageView ivType;//第四个筛选里面那个箭头
+    private ImageView ivType;//第四个筛选里面那个箭头
     private String GroupBy;
-
-
 
 
     //底部弹出菜单
     private ImageView ivTest;
     private LinearLayout layoutFloatButton;
     private boolean nowIsOpen = false;
-
 
 
     public void setLeftScreenTypeListener(ScreenTypeListener pScreenTypeListener) {
@@ -121,7 +116,6 @@ public class RecommendActivity extends BaseTitleActivity {
         initScreenBar();//初始化筛选栏
 
         getDataDictionary();//获取数据
-
 
 
         setShowFragment();//设置要显示的界面
@@ -368,7 +362,6 @@ public class RecommendActivity extends BaseTitleActivity {
         layoutRight.setOnClickListener(topBarOnClickListener);
 
 
-
         //下面
 
 
@@ -490,7 +483,7 @@ public class RecommendActivity extends BaseTitleActivity {
         ivTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RecommendActivity.this, "点我干嘛呀", Toast.LENGTH_SHORT).show();
+                vpRecommend.setCurrentItem(1);
             }
         });
         openButton(true);

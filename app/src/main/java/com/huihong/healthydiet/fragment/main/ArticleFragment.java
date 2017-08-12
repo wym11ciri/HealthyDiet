@@ -23,10 +23,11 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.ArticleDetailsActivity;
 import com.huihong.healthydiet.activity.SearchActivity;
 import com.huihong.healthydiet.adapter.RvArticleAdapter;
-import com.huihong.healthydiet.model.gsonbean.GetArticleItemInfo;
-import com.huihong.healthydiet.model.gsonbean.GetArticleListInfo;
 import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.model.gsonbean.GetArticleItemInfo;
+import com.huihong.healthydiet.model.gsonbean.GetArticleListInfo;
+import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -41,6 +42,7 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/11
+ * 文章列表界面
  */
 
 public class ArticleFragment extends Fragment {
@@ -48,11 +50,9 @@ public class ArticleFragment extends Fragment {
     private View mView;
     private ListView lvArticle;
     private List<String> articleList;
-//    private LvArticleAdapter mLvArticleAdapter;
-
     private LRecyclerView recyclerView;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
-    private List<GetArticleListInfo.ListDataBean> mList;
+    private List<ArticleInfo> mList;
 
 
     private TextView tvTop01, tvTop02, tvTop03;
@@ -111,7 +111,7 @@ public class ArticleFragment extends Fragment {
                     bundle.putSerializable("info", mList.get(position));
                     bundle.putInt("pos", position);
                     mIntent.putExtras(bundle);
-                   startActivityForResult(mIntent, 10086);
+                    startActivityForResult(mIntent, 10086);
                 }
             });
 
@@ -124,13 +124,9 @@ public class ArticleFragment extends Fragment {
                     startActivity(mIntent);
                 }
             });
-
         }
-
-
         return mView;
     }
-
 
     //获得信息
     private void getInfo(int pageNum) {
@@ -177,7 +173,6 @@ public class ArticleFragment extends Fragment {
         tvTop01 = (TextView) mView.findViewById(R.id.tvTop01);
         tvTop02 = (TextView) mView.findViewById(R.id.tvTop02);
         tvTop03 = (TextView) mView.findViewById(R.id.tvTop03);
-
     }
 
 
@@ -186,22 +181,16 @@ public class ArticleFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10086) {
 //            if(resultCode==2)
-
             int pos = data.getIntExtra("pos", -1);
             if (pos != -1) {
                 GetArticleItemInfo.ListDataBean mListDataBean = (GetArticleItemInfo.ListDataBean) data.getSerializableExtra("info");
-
-               if(mListDataBean!=null){
-                   mList.get(pos).setLoveCount(mListDataBean.getLoveCount());
-                   mList.get(pos).setPointPraise(mListDataBean.isPointPraise());
-                   mList.get(pos).setCilckCount(mListDataBean.getCilckCount());
-                   mLRecyclerViewAdapter.notifyDataSetChanged();
-               }
-
-
+                if (mListDataBean != null) {
+                    mList.get(pos).setLoveCount(mListDataBean.getLoveCount());
+                    mList.get(pos).setPointPraise(mListDataBean.isPointPraise());
+                    mList.get(pos).setCilckCount(mListDataBean.getCilckCount());
+                    mLRecyclerViewAdapter.notifyDataSetChanged();
+                }
             }
-
         }
-
     }
 }
