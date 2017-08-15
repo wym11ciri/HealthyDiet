@@ -1,9 +1,13 @@
 package com.huihong.healthydiet.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
@@ -26,6 +30,8 @@ public class SleepSettingsActivity extends BaseTitleActivity {
     private WeekSelectTextView ws01, ws02, ws03, ws04, ws05, ws06, ws07;
     private List<WeekSelectTextView> wsList;//把这7个按钮存到集合中去
     private String valueString = "";//把7个按钮的值拼接起来传递
+    private AudioManager mAudioManager;
+    private SeekBar mSeekBar;
 
 
     @Override
@@ -61,7 +67,7 @@ public class SleepSettingsActivity extends BaseTitleActivity {
             @Override
             public void onClick(View v) {
                 //保存睡眠星期
-                CacheUtils.setSleepWeek(SleepSettingsActivity.this,wsList);
+                CacheUtils.setSleepWeek(SleepSettingsActivity.this, wsList);
                 SPUtils.put(SleepSettingsActivity.this, "nowChooseTime", nowChooseTime);
                 Intent mIntent = new Intent();
                 mIntent.putExtra("valueString", valueString);
@@ -73,6 +79,30 @@ public class SleepSettingsActivity extends BaseTitleActivity {
 
 
         initSleepTime();
+        mSeekBar = (SeekBar) findViewById(R.id.mSeekBar);
+
+        //音量控制,初始化定义
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        mSeekBar.setMax(mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        mSeekBar.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0); //tempVolume:音量绝对值
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
     }
 
@@ -93,7 +123,6 @@ public class SleepSettingsActivity extends BaseTitleActivity {
         ivTime02 = (ImageView) findViewById(R.id.ivTime02);
         ivTime03 = (ImageView) findViewById(R.id.ivTime03);
         ivTime04 = (ImageView) findViewById(R.id.ivTime04);
-
 
 
         //从缓存中去取设置的提前提醒类型
@@ -152,5 +181,25 @@ public class SleepSettingsActivity extends BaseTitleActivity {
     @Override
     public void initOnClickListener() {
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                int a = mSeekBar.getProgress();
+                a--;
+                mSeekBar.setProgress(a);
+                return false;
+
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                int a2 = mSeekBar.getProgress();
+                a2++;
+                mSeekBar.setProgress(a2);
+                return false;
+
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

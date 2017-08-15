@@ -14,8 +14,8 @@ import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseActivity;
-import com.huihong.healthydiet.model.gsonbean.Login;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
+import com.huihong.healthydiet.model.gsonbean.Login;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -37,8 +37,12 @@ import okhttp3.Call;
 public class LoginActivity extends BaseActivity {
 
     private TextView tvLogin, tvRegister, tvRestPassword;
+
+    //注册完成之后返回当前界面
     private final int REQUEST_REGISTER_CODE = 100;
+    //忘记密码之后返回当前界面
     private final int REQUEST_RESET_CODE = 101;
+
     UMShareAPI mShareAPI;
 
     private EditText etPhone, etPassword;
@@ -48,7 +52,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         mShareAPI=UMShareAPI.get(LoginActivity.this);
+        mShareAPI = UMShareAPI.get(LoginActivity.this);
         setContentView(R.layout.activity_login);
         StatusBarUtil.setTransparent(this);//设置状态栏沉浸
         initUI();
@@ -74,16 +78,10 @@ public class LoginActivity extends BaseActivity {
                     if (password.equals("")) {
                         Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     } else {
-                        tvLogin.setClickable(false);
+
                         passwordLogin(phone, password);
                     }
                 }
-
-//                UMShareAPI.get(LoginActivity.this).deleteOauth(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
-//                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
-//                UMShareAPI.get(LoginActivity.this).deleteOauth(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
-//                UMShareAPI.get(LoginActivity.this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, authListener);
-
             }
         });
 
@@ -105,21 +103,23 @@ public class LoginActivity extends BaseActivity {
         });
 
 
-        ivWeChartLogin= (ImageView) findViewById(R.id.ivWeChartLogin);
+        ivWeChartLogin = (ImageView) findViewById(R.id.ivWeChartLogin);
         ivWeChartLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-             mShareAPI   .getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, umAuthListener);
+                mShareAPI.getPlatformInfo(LoginActivity.this, SHARE_MEDIA.WEIXIN, umAuthListener);
             }
         });
 
     }
+
     private UMAuthListener umAuthListener = new UMAuthListener() {
         @Override
         public void onStart(SHARE_MEDIA platform) {
             //授权开始的回调
         }
+
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             Toast.makeText(getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
@@ -128,12 +128,12 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            Toast.makeText( getApplicationContext(), "Authorize fail", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Authorize fail", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
-            Toast.makeText( getApplicationContext(), "Authorize cancel", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Authorize cancel", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -141,6 +141,10 @@ public class LoginActivity extends BaseActivity {
      * 登录模式
      */
     private void passwordLogin(String phone, String password) {
+
+        //设置按钮不可点击
+        tvLogin.setClickable(false);
+        //显示登录窗口
         if (mProgressDialog != null) {
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
@@ -174,12 +178,11 @@ public class LoginActivity extends BaseActivity {
                         if (code == 200) {
                             if (mLogin.getListData().size() > 0) {
                                 Login.ListDataBean mInfo = mLogin.getListData().get(0);
+                                //访问成功保存个人信息
                                 SPUtils.put(LoginActivity.this, "UserId", mInfo.getUserId());
-                                SPUtils.put(LoginActivity.this, "phone", mInfo.getPhone());
                                 SPUtils.put(LoginActivity.this, "Token", mInfo.getToken());
 
                                 PersonalInfo personalInfo = new PersonalInfo();
-
                                 personalInfo.setName(mInfo.getName());
                                 personalInfo.setHeight(mInfo.getHeight());
                                 personalInfo.setWeight(mInfo.getWeight());
@@ -187,8 +190,9 @@ public class LoginActivity extends BaseActivity {
                                 personalInfo.setHeadImageUrl(mInfo.getHeadImage());
                                 personalInfo.setConstitution(mInfo.getConstitution());
                                 personalInfo.setConstitution(mInfo.getAge());
-
+                                personalInfo.setPhone(mInfo.getPhone());
                                 CacheUtils.putPersonalInfo(LoginActivity.this, personalInfo);
+
                                 //用户体质是根据简易测试来得到的
                                 String constitution = mInfo.getConstitution();
                                 if (constitution == null) {
@@ -207,7 +211,7 @@ public class LoginActivity extends BaseActivity {
                                 //表示已经成功登录过了
                                 SPUtils.put(LoginActivity.this, "isLogin", true);
                             }
-                        }else {
+                        } else {
                             String Message = mLogin.getMessage();
                             Toast.makeText(LoginActivity.this, Message, Toast.LENGTH_SHORT).show();
                         }
@@ -225,11 +229,9 @@ public class LoginActivity extends BaseActivity {
 
                 if (resultCode == 200) {
                     String phone = (String) SPUtils.get(LoginActivity.this, "phone", "");
-
                     if (!phone.equals("")) {
                         etPhone.setText(phone);
                     }
-
                 }
 
                 break;

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class DataPickerDateDialog extends Dialog {
 
-    private static final int MIN_YEAR = 1970;
+    private static final int MIN_YEAR = 1870;
     private Params params;
 
     public DataPickerDateDialog(Context context, int themeResId) {

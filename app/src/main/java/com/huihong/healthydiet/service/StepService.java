@@ -50,9 +50,14 @@ public class StepService extends Service {
     private float STEP_RUN_DISTANCE;//运动的距离
 
 
-
     private SensorManager sensorManager;//传感器管理对象
     private BroadcastReceiver mBatInfoReceiver;//广播接受者
+
+    //服务开启时间
+    private int OPEN_TIME = 0;
+    //服务开启时候走过的步数
+    private int OPEN_STEP = 0;
+
 
     /**
      * 通知管理对象
@@ -87,7 +92,6 @@ public class StepService extends Service {
     public void setUpdateTimeCallBack(UpdateTimeCallBack updateTimeCallBack) {
         this.updateTimeCallBack = updateTimeCallBack;
     }
-
 
 
     //服务第一次创建的时候会调用onCreate
@@ -163,18 +167,57 @@ public class StepService extends Service {
                 if (Intent.ACTION_TIME_TICK.equals(action)) {
                     //系统每分钟会发出该广播
                     STEP_RUN_TIME++;//服务运行的时间+1
+                    OPEN_TIME++;
                     //每分钟去保存一次当前的状态
                     if (updateTimeCallBack != null) {
                         updateTimeCallBack.updateTime(STEP_RUN_TIME);
                     }
+                    //当天运动的步数每分钟保存本地一次
                     saveStepCount();
+                    //当天运动的步数每15分钟提交一次
                     submitStepCount();
-
+                    //没分钟去判断一次是否为新的一天
                     isNewDay();
+                    //没分钟去判断一次是否获得积分
+                    canGetIntegral();
                 }
             }
         };
         registerReceiver(mBatInfoReceiver, filter);
+    }
+
+    /**
+     * 是否能获得积分
+     */
+    private void canGetIntegral() {
+        //如果计时30分钟 步数大于3000步则调接口
+        LogUtil.i("此次计步器服务开启时间" + OPEN_TIME + "s  此时运动的步数" + OPEN_STEP);
+        if (OPEN_TIME % 30 == 0) {
+            if (OPEN_STEP >= 3000) {
+
+                OkHttpUtils
+                        .post()
+                        .url(AppUrl.ADD_SCORE_RECORD)
+                        .addParams("UserId", CacheUtils.getUserId(this))
+                        .addParams("ScoreType", "Sport")
+                        .addParams("token",CacheUtils.getToken(this))
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                LogUtil.i("在运动服务中调接口 获得运动积分" + e);
+                            }
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                LogUtil.i("在运动服务中调接口 获得运动积分" + response);
+
+                            }
+                        });
+
+            }
+            OPEN_STEP = 0;//没30分钟清0
+        }
     }
 
 
@@ -216,6 +259,7 @@ public class StepService extends Service {
                         .url(AppUrl.UPLOAD_SPORT_INFO)
                         .addParams("UserId", CacheUtils.getUserId(this))
                         .addParams("steps", CURRENT_STEP + "")
+                        .addParams("token",CacheUtils.getToken(this))
                         .build()
                         .execute(new StringCallback() {
                             @Override
@@ -323,6 +367,7 @@ public class StepService extends Service {
                 public void onSensorChanged(SensorEvent event) {
                     if (event.values[0] == 1.0f) {
                         CURRENT_STEP++;
+                        OPEN_STEP++;
                         LogUtil.i(TAG, "计步器传感器计步" + CURRENT_STEP);
                         if (updateStepCallBack != null) {
                             //计算时间差
@@ -354,7 +399,7 @@ public class StepService extends Service {
     private void addBasePedometerListener() {
 
         mStepCount = new StepCount();
-        mStepCount.setSteps(CURRENT_STEP);//设置开始值
+        mStepCount.setSteps(0);//设置开始值
         //获取重力传感器
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         //注册重力传感器
@@ -363,7 +408,8 @@ public class StepService extends Service {
             @Override
             public void stepChanged(int steps) {
                 LogUtil.i(TAG, "重力传感器计步器" + steps);//返回的值是累加的
-                CURRENT_STEP = steps;
+                CURRENT_STEP++;
+                OPEN_STEP++;
                 if (updateStepCallBack != null) {
                     updateStepCallBack.updateStep(CURRENT_STEP, STEP_RUN_TIME);
                 }

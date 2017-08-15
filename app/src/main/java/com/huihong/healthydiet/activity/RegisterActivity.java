@@ -121,14 +121,15 @@ public class RegisterActivity extends BaseTitleActivity {
 
     }
 
+    //注册按钮
     private void register(final String phone, String code, String password) {
 
         tvRegister.setClickable(false);
         post()
                 .url(AppUrl.MAIL_REGISTER)
-                .addParams("Phone", phone)//用户坐标
-                .addParams("Code", code)//用户坐标
-                .addParams("PassWord", password)//用户坐标
+                .addParams("Phone", phone)
+                .addParams("Code", code)
+                .addParams("PassWord", password)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -145,13 +146,13 @@ public class RegisterActivity extends BaseTitleActivity {
                         MailRegister mMailRegister = gson.fromJson(response, MailRegister.class);
                         int code = mMailRegister.getHttpCode();
                         if (code == 200) {
+                            //注册成功
                             SPUtils.put(RegisterActivity.this,"phone",phone);
                             Intent mIntent = new Intent(RegisterActivity.this, RegisterSuccessfulActivity.class);
                             startActivity(mIntent);
-
                             setResult(200);
                             finish();
-
+                            overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
                             String Message = mMailRegister.getMessage();
                             Toast.makeText(RegisterActivity.this, Message, Toast.LENGTH_SHORT).show();
                         } else {

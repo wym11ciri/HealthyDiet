@@ -12,11 +12,17 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.mInterface.CustomViewOnSizeChangedListener;
+import com.huihong.healthydiet.mInterface.OnLeafClickListener;
+import com.huihong.healthydiet.model.httpmodel.LeafInfo;
 import com.huihong.healthydiet.model.mybean.Coordinate;
 import com.huihong.healthydiet.model.mybean.Leaf;
+import com.huihong.healthydiet.utils.common.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.huihong.healthydiet.R.mipmap.leaf;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/26
@@ -27,6 +33,9 @@ public class TreeView extends View {
 
     private List<Leaf> mLeafList;//叶子集合
 
+    private Leaf leaf01;
+    private Leaf leaf02;
+    private Leaf leaf03;
 
     private Bitmap LeafBitmap;//叶子图片
     private Paint textIntegralPaint;//绘制积分的画笔
@@ -56,6 +65,19 @@ public class TreeView extends View {
 
 
     private List<Coordinate> mCoordinateList;
+
+    private CustomViewOnSizeChangedListener customViewOnSizeChangedListener;
+
+    public void setCustomViewOnSizeChangedListener(CustomViewOnSizeChangedListener customViewOnSizeChangedListener) {
+        this.customViewOnSizeChangedListener = customViewOnSizeChangedListener;
+    }
+
+    private OnLeafClickListener onLeafClickListener;
+
+    public void setOnLeafClickListener(OnLeafClickListener onLeafClickListener) {
+        this.onLeafClickListener = onLeafClickListener;
+    }
+
 
     public TreeView(Context context) {
         this(context, null);
@@ -100,12 +122,13 @@ public class TreeView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        LogUtil.i("onSizeChanged");
         viewW = w;
         viewH = h;
         leafSize = w / 16;
         textSize01 = (int) (leafSize * 0.8);
         textSize02 = (int) (leafSize * 0.6);
-        Bitmap bt1 = BitmapFactory.decodeResource(getResources(), R.mipmap.leaf);
+        Bitmap bt1 = BitmapFactory.decodeResource(getResources(), leaf);
         LeafBitmap = Bitmap.createScaledBitmap(bt1, leafSize, leafSize, false);
         bt1.recycle();//释放旧的图片资源
 
@@ -150,17 +173,47 @@ public class TreeView extends View {
 //        //文件tree5
         setCoordinate(0.077568, 0.6610);
         setCoordinate(0.18238, 0.85336);
-        setCoordinate(0.8134, 0.786);
+        setCoordinate(0.7134, 0.7);
 
-        for (int i = 0; i < 3; i++) {
-            Leaf leaf = new Leaf();
-            leaf.setStartX((int) (mCoordinateList.get(i).getX() * viewW));
-            leaf.setStartY((int) (mCoordinateList.get(i).getY() * viewH));
-            leaf.setEvent("事件" + i);
-            leaf.setIntegral(" +" + i);
-            leaf.setLeafSize(leafSize);
-            leaf.setAlpha(255);
-            mLeafList.add(leaf);
+        leaf01 = new Leaf();
+        leaf01.setLeafSize(leafSize);
+        leaf01.setStartX((int) (mCoordinateList.get(0).getX() * viewW));
+        leaf01.setStartY((int) (mCoordinateList.get(0).getY() * viewH));
+        leaf01.setAlpha(255);
+
+        leaf02 = new Leaf();
+        leaf02.setLeafSize(leafSize);
+        leaf02.setStartX((int) (mCoordinateList.get(1).getX() * viewW));
+        leaf02.setStartY((int) (mCoordinateList.get(1).getY() * viewH));
+        leaf02.setAlpha(255);
+
+
+        leaf03 = new Leaf();
+        leaf03.setLeafSize(leafSize);
+        leaf03.setStartX((int) (mCoordinateList.get(2).getX() * viewW));
+        leaf03.setStartY((int) (mCoordinateList.get(2).getY() * viewH));
+        leaf03.setAlpha(255);
+
+        mLeafList.clear();
+        mLeafList.add(leaf01);
+        mLeafList.add(leaf02);
+        mLeafList.add(leaf03);
+
+        //设置坐标
+
+//        for (int i = 0; i < 3; i++) {
+//            Leaf leaf = new Leaf();
+//            leaf.setStartX((int) (mCoordinateList.get(i).getX() * viewW));
+//            leaf.setStartY((int) (mCoordinateList.get(i).getY() * viewH));
+//            leaf.setEvent("事件" + i);
+//            leaf.setIntegral(" +" + i);
+//            leaf.setLeafSize(leafSize);
+//            leaf.setAlpha(255);
+//            mLeafList.add(leaf);
+//        }
+
+        if (customViewOnSizeChangedListener != null) {
+            customViewOnSizeChangedListener.OnSizeChanged();
         }
 
     }
@@ -173,15 +226,18 @@ public class TreeView extends View {
         //是否在执行动画
 
         for (int i = 0; i < mLeafList.size(); i++) {
-            //绘制叶子
-            textIntegralPaint.setAlpha(mLeafList.get(i).getAlpha());
-            canvas.drawBitmap(LeafBitmap, mLeafList.get(i).getStartX(), mLeafList.get(i).getStartY(), textIntegralPaint);
-            //绘制积分
-            textIntegralPaint.setAlpha(mLeafList.get(i).getAlpha());
-            canvas.drawText(mLeafList.get(i).getIntegral(), mLeafList.get(i).getDrawIntegralX(), mLeafList.get(i).getDrawIntegralY(), textIntegralPaint);
-            //绘制事件
-            textEventPaint.setAlpha(mLeafList.get(i).getAlpha());
-            canvas.drawText(mLeafList.get(i).getEvent(), mLeafList.get(i).getDrawEventX(), mLeafList.get(i).getDrawEventY(), textEventPaint);
+
+            if (mLeafList.get(i).isShow()) {
+                //绘制叶子
+                textIntegralPaint.setAlpha(mLeafList.get(i).getAlpha());
+                canvas.drawBitmap(LeafBitmap, mLeafList.get(i).getStartX(), mLeafList.get(i).getStartY(), textIntegralPaint);
+                //绘制积分
+                textIntegralPaint.setAlpha(mLeafList.get(i).getAlpha());
+                canvas.drawText("+" + mLeafList.get(i).getIntegral(), mLeafList.get(i).getDrawIntegralX(), mLeafList.get(i).getDrawIntegralY(), textIntegralPaint);
+                //绘制事件
+                textEventPaint.setAlpha(mLeafList.get(i).getAlpha());
+                canvas.drawText(mLeafList.get(i).getEvent(), mLeafList.get(i).getDrawEventX(), mLeafList.get(i).getDrawEventY(), textEventPaint);
+            }
         }
 
         if (!animatorFloat.isRunning()) {
@@ -189,6 +245,50 @@ public class TreeView extends View {
         }
     }
 
+
+    public void invalidateView(LeafInfo info1, LeafInfo info2, LeafInfo info3) {
+        if (leaf01 != null) {
+
+            if (info1 != null) {
+//                leaf01.setEvent(info1.getScoreContent());
+                leaf01.setEvent("饮食");
+                leaf01.setIntegral(info1.getScore() + "");
+                leaf01.setShow(true);
+                leaf01.setStartX((int) (mCoordinateList.get(0).getX() * viewW));
+                leaf01.setStartY((int) (mCoordinateList.get(0).getY() * viewH));
+            } else {
+                leaf01.setShow(false);
+            }
+
+            if (info2 != null) {
+//                leaf01.setEvent(info1.getScoreContent());
+                leaf02.setEvent("睡眠");
+                leaf02.setIntegral(info2.getScore() + "");
+                leaf02.setShow(true);
+                leaf02.setStartX((int) (mCoordinateList.get(1).getX() * viewW));
+                leaf02.setStartY((int) (mCoordinateList.get(1).getY() * viewH));
+            } else {
+                leaf02.setShow(false);
+            }
+
+            if (info3 != null) {
+//                leaf01.setEvent(info1.getScoreContent());
+                leaf03.setEvent("运动");
+                leaf03.setIntegral(info3.getScore() + "");
+                leaf03.setShow(true);
+                leaf03.setStartX((int) (mCoordinateList.get(2).getX() * viewW));
+                leaf03.setStartY((int) (mCoordinateList.get(2).getY() * viewH));
+            } else {
+                leaf03.setShow(false);
+            }
+
+            mLeafList.clear();
+            mLeafList.add(leaf01);
+            mLeafList.add(leaf02);
+            mLeafList.add(leaf03);
+        }
+        invalidate();
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -200,14 +300,19 @@ public class TreeView extends View {
             if (!isAnimation) {
                 for (int i = 0; i < mLeafList.size(); i++) {
                     if (x > mLeafList.get(i).getStartX() && x < mLeafList.get(i).getLeafXEnd() && y > mLeafList.get(i).getStartY() && y < mLeafList.get(i).getLeafYEnd()) {
+                        if (mLeafList.get(i).isShow()) {
+                            //启动消失动画
+                            clickNum = i;
+                            if (onLeafClickListener != null) {
+                                onLeafClickListener.onClick(clickNum);
+                            }
 
-                        //启动消失动画
-                        clickNum = i;
-                        isRunAlphaAnimation = false;
-                        PositionAnimationThread positionAnimationThread = new PositionAnimationThread();
-                        positionAnimationThread.start();
-                        isAnimation = true;
-                        break;
+                            isRunAlphaAnimation = false;
+                            PositionAnimationThread positionAnimationThread = new PositionAnimationThread();
+                            positionAnimationThread.start();
+                            isAnimation = true;
+                            break;
+                        }
                     }
                 }
             }

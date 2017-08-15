@@ -12,13 +12,6 @@ import java.util.List;
 public class GetRestaurantInfoById extends HttpBaseInfo {
 
 
-    /**
-     * HttpCode : 200
-     * Message :
-     * ListData : [{"id":98,"name":"餐厅7","images":["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg","http://106.14.218.31:8081/img//restaurant//restaurant98-19834101.jpg"],"address":"杭州市拱墅区浙大网新智慧立方","phone":"18857120152","category":"西餐","sales":5,"consumption":7,"discount":"满100减200|满100减200","distance":0}]
-     */
-
-
     private List<ListDataBean> ListData;
 
     public List<ListDataBean> getListData() {
@@ -31,16 +24,17 @@ public class GetRestaurantInfoById extends HttpBaseInfo {
 
     public static class ListDataBean {
         /**
-         * id : 98
-         * name : 餐厅7
-         * images : ["http://106.14.218.31:8081/img//restaurant//restaurant98-198550116.jpg","http://106.14.218.31:8081/img//restaurant//restaurant98-19834101.jpg"]
-         * address : 杭州市拱墅区浙大网新智慧立方
+         * id : 100
+         * name : 餐厅9
+         * images : ["http://106.14.218.31:8081/img//restaurant//restaurant100-19812692.jpg","http://106.14.218.31:8081/img//restaurant//restaurant100-198550116.jpg"]
+         * address : 杭州市拱墅区杭州运河广告产业大厦
          * phone : 18857120152
          * category : 西餐
-         * sales : 5
-         * consumption : 7
-         * discount : 满100减200|满100减200
-         * distance : 0
+         * sales : 2
+         * consumption : 2
+         * discount : 满100减200
+         * distance : 541
+         * cusLikeOrNot : false
          */
 
         private int id;
@@ -52,6 +46,7 @@ public class GetRestaurantInfoById extends HttpBaseInfo {
         private int consumption;
         private String discount;
         private int distance;
+        private boolean cusLikeOrNot;
         private List<String> images;
 
         public int getId() {
@@ -124,6 +119,14 @@ public class GetRestaurantInfoById extends HttpBaseInfo {
 
         public void setDistance(int distance) {
             this.distance = distance;
+        }
+
+        public boolean isCusLikeOrNot() {
+            return cusLikeOrNot;
+        }
+
+        public void setCusLikeOrNot(boolean cusLikeOrNot) {
+            this.cusLikeOrNot = cusLikeOrNot;
         }
 
         public List<String> getImages() {

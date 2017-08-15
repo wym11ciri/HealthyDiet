@@ -2,10 +2,12 @@ package com.huihong.healthydiet.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,9 +18,10 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvDetailRecipesAdapter;
 import com.huihong.healthydiet.adapter.RvRecipesAdapter;
+import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.model.gsonbean.GetRestaurantInfoById;
 import com.huihong.healthydiet.model.gsonbean.RecipeListInfoByDRId;
-import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -28,6 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 
 /**
@@ -36,6 +42,17 @@ import okhttp3.Call;
  */
 
 public class RestaurantDetailsActivity extends BaseTitleActivity {
+    @BindView(R.id.ivLike)
+    ImageView ivLike;
+    @BindView(R.id.layoutRestaurantLike)
+    LinearLayout layoutRestaurantLike;
+
+
+    int Id;
+
+    private boolean isLike = false;
+
+
     private int id;
 
     @Override
@@ -49,6 +66,7 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
+        ButterKnife.bind(this);
         id = getIntent().getIntExtra("id", 0);
 
 
@@ -84,7 +102,7 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
         map.put("id", id + "");
         map.put("CoordY", MyApplication.Latitude + "");
         map.put("CoordX", MyApplication.Longitude + "");
-        map.put("UserId",  SPUtils.get(RestaurantDetailsActivity.this,"UserId",0)+"");
+        map.put("UserId", SPUtils.get(RestaurantDetailsActivity.this, "UserId", 0) + "");
 
         HttpUtils.sendHttpAddToken(RestaurantDetailsActivity.this
                 , AppUrl.RECIPE_LIST_INFO_BY_DR_ID
@@ -154,8 +172,9 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
 
         Map<String, String> map = new HashMap<>();
         map.put("id", id + "");
-        map.put("CoordY", MyApplication.Latitude+"");
-        map.put("CoordX", MyApplication.Longitude+"");
+        map.put("CoordY", MyApplication.Latitude + "");
+        map.put("CoordX", MyApplication.Longitude + "");
+        map.put("UserId",  SPUtils.get(RestaurantDetailsActivity.this,"UserId",0)+"");
 
 
         HttpUtils.sendHttpAddToken(RestaurantDetailsActivity.this
@@ -191,7 +210,7 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
 //                                distance	double	距离
 //                                category	字符串	餐厅类型
 
-                                int Id = mListDataBean.getId();
+                                Id = mListDataBean.getId();
                                 String name = mListDataBean.getName();
                                 String address = mListDataBean.getAddress();
                                 final String phone = mListDataBean.getPhone();
@@ -240,6 +259,13 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
                                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                                 rvDetailPhoto.setLayoutManager(linearLayoutManager);
                                 rvDetailPhoto.setAdapter(new RvDetailRecipesAdapter(RestaurantDetailsActivity.this, images));
+
+                                isLike = mListDataBean.isCusLikeOrNot();
+                                if (isLike) {
+                                    ivLike.setImageResource(R.mipmap.restaurant_like);
+                                } else {
+                                    ivLike.setImageResource(R.mipmap.restaurant_8);
+                                }
                             }
                         }
                     }
@@ -336,5 +362,57 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
 //                        }
 //                    }
 //                });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+
+    }
+
+    @OnClick(R.id.layoutRestaurantLike)
+    public void onViewClicked() {
+        if (isLike) {
+            setLikeOrUnlike("Delete", Id + "");
+        } else {
+            setLikeOrUnlike("Insert", Id + "");
+        }
+    }
+
+    private void setLikeOrUnlike(String Opertion, String OtherId) {
+        layoutRestaurantLike.setClickable(false);
+        Map<String, String> map = new HashMap<>();
+        map.put("Type_Like", "restlike");
+        map.put("OtherId", OtherId);
+        map.put("Opertion", Opertion);
+        map.put("UserId", SPUtils.get(RestaurantDetailsActivity.this, "UserId", 0) + "");
+
+        HttpUtils.sendHttpAddToken(RestaurantDetailsActivity.this, AppUrl.CUSTOMER_LIKE_OR_NOT
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        layoutRestaurantLike.setClickable(true);
+                        LogUtil.i("餐厅收藏", response);
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if (mHttpBaseInfo.getHttpCode() == 200) {
+                            isLike = !isLike;
+                            if (isLike) {
+                                ivLike.setImageResource(R.mipmap.restaurant_like);
+                            } else {
+                                ivLike.setImageResource(R.mipmap.restaurant_8);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("餐厅收藏", e.toString());
+                        layoutRestaurantLike.setClickable(true);
+                    }
+                });
+
     }
 }

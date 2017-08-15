@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,20 +47,11 @@ import okhttp3.Call;
 public class ArticleFragment extends Fragment {
 
     private View mView;
-    private ListView lvArticle;
-    private List<String> articleList;
     private LRecyclerView recyclerView;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
     private List<ArticleInfo> mList;
-
-
     private TextView tvTop01, tvTop02, tvTop03;
-
-
     private int mNum = 1;
-
-
-    private LinearLayout layoutTopRight;
 
 
     @Override
@@ -116,7 +106,7 @@ public class ArticleFragment extends Fragment {
             });
 
 
-            layoutTopRight = (LinearLayout) mView.findViewById(R.id.layoutTopRight);
+            LinearLayout layoutTopRight = (LinearLayout) mView.findViewById(R.id.layoutTopRight);
             layoutTopRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -128,7 +118,7 @@ public class ArticleFragment extends Fragment {
         return mView;
     }
 
-    //获得信息
+    //获取文章列表
     private void getInfo(int pageNum) {
 
         Map<String, String> map = new HashMap<>();
@@ -156,10 +146,9 @@ public class ArticleFragment extends Fragment {
                             tvTop01.setText("您的体质是" + ListData2Bean.getConstitution());
                             tvTop02.setText("适合吃" + ListData2Bean.getSuitEat());
                             tvTop03.setText("尽量少吃" + ListData2Bean.getNotSuitEat());
-
+                            //刷新列表
                             mList.addAll(mGetArticleListInfo.getListData());
                             mLRecyclerViewAdapter.notifyDataSetChanged();
-//
                         } else {
                             String Message = mGetArticleListInfo.getMessage();
                             Toast.makeText(getActivity(), Message, Toast.LENGTH_SHORT).show();

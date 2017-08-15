@@ -127,13 +127,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void isReLocation(boolean isReLocation, String address) {
                     if (isReLocation) {
-//                        tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
-//                        tvAddress.setText(address);
                         mAddress = address;
-
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
                         getHomePageInfo();
 
                     }
@@ -154,7 +148,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onStop() {
-//        mBannerNet.stopAutoPlay();
+        banner.stopAutoPlay();
         super.onStop();
     }
 
@@ -192,9 +186,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     }
                 });
 
-                locationDialog=builder.create();
+                locationDialog = builder.create();
                 locationDialog.show();
-
 
 
             }
@@ -249,7 +242,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-
+        banner.startAutoPlay();
 
     }
 
@@ -421,7 +414,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      * 获取首页信息
      */
     private void getHomePageInfo() {
-        LogUtil.i("调用我");
         Map<String, String> map = new HashMap<>();
         map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         map.put("CoordY", MyApplication.Latitude + "");
@@ -431,6 +423,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         layoutRefresh.setRefreshing(false);
                         LogUtil.i("首页数据", response);
                         Gson gson = new Gson();
@@ -493,6 +488,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         LogUtil.i("首页数据", e.toString());
                         if (layoutRefresh != null) {
                             layoutRefresh.setRefreshing(false);
@@ -525,7 +523,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             ivCircle02.setVisibility(View.VISIBLE);
             ivCircle03.setVisibility(View.GONE);
         } else {
-            LogUtil.i("测试222", "重新拿到数据了");
             nearbyFragmentLeft.refreshData(mListData.subList(0, 3));
             nearbyFragmentMiddle.refreshData(mListData.subList(3, 6));
             nearbyFragmentRight.refreshData(mListData.subList(6, mListData.size()));

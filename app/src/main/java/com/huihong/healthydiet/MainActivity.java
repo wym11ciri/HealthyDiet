@@ -26,6 +26,7 @@ import com.huihong.healthydiet.fragment.main.SleepFragment;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.service.AlarmClockService;
+import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
 import com.huihong.healthydiet.widget.MyViewPager;
@@ -100,6 +101,13 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 //        StatusBarUtil.setTransparent(this);//设置状态栏沉浸
         mainActivity = this;
         getPermission();
+
+        locationService = ((MyApplication) getApplication()).locationService;
+        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
+        locationService.registerListener(mListener);
+        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
+        locationService.start();// 定位SDK
+
         initUI();
         setupService();
 
@@ -366,14 +374,13 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     }
 
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
-        locationService = ((MyApplication) getApplication()).locationService;
-        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
-        locationService.registerListener(mListener);
-        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
-        locationService.start();// 定位SDK
+        LogUtil.i("onStart");
+
     }
 
     /*****
@@ -392,9 +399,12 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 MyApplication.Longitude = location.getLongitude();
                 MyApplication.address = location.getLocationDescribe();
 
+
+                LogUtil.i("定位了");
                 if (locationListener != null) {
-                    locationListener.isReLocation(true, location.getLocationDescribe());
+                    LogUtil.i("定位了  调停止");
                     locationService.stop();
+                    locationListener.isReLocation(true, location.getLocationDescribe());
                 }
             }
         }

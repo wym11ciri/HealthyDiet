@@ -24,8 +24,13 @@ import com.huihong.healthydiet.activity.SettingsActivity;
 import com.huihong.healthydiet.activity.TestMajorActivity;
 import com.huihong.healthydiet.adapter.RvIntegralAdapter;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
+import com.huihong.healthydiet.mInterface.CustomViewOnSizeChangedListener;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.mInterface.OnLeafClickListener;
+import com.huihong.healthydiet.model.gsonbean.GetClickScore;
+import com.huihong.healthydiet.model.gsonbean.GetScoreList;
 import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
+import com.huihong.healthydiet.model.httpmodel.LeafInfo;
 import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.MyUtils;
@@ -65,6 +70,8 @@ public class MyFragment extends Fragment {
 
     private View mView;
 
+    private  boolean treeView=false;
+
 
     private LinearLayout layoutSettings;
     private LinearLayout layoutBodyData, layoutMajorTest;
@@ -85,6 +92,7 @@ public class MyFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //创建Fragment的时候获取最新的用户信息
+
         getPersonalInfo();
     }
 
@@ -94,10 +102,66 @@ public class MyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_my, null);
         unbinder = ButterKnife.bind(this, mView);
+        mTreeView.setCustomViewOnSizeChangedListener(new CustomViewOnSizeChangedListener() {
+            @Override
+            public void OnSizeChanged() {
+                treeView=true;
+                getLeafInfo();
+            }
+        });
+
+        mTreeView.setOnLeafClickListener(new OnLeafClickListener() {
+            @Override
+            public void onClick(int pos) {
+                switch (pos) {
+                    case 0:
+                        if(leafinfo01!=null){
+                            getScore(leafinfo01.getListId());
+                        }
+                        break;
+                    case 1:
+                        if(leafinfo02!=null){
+                            getScore(leafinfo02.getListId());
+                        }
+                        break;
+                    case 2:
+                        if(leafinfo03!=null){
+                            getScore(leafinfo03.getListId());
+                        }
+                        break;
+                }
+
+            }
+        });
+
         initUI();
         initPersonalUI();
 
         return mView;
+    }
+
+    private void getScore(String listId) {
+        Map<String, String> map = new HashMap<>();
+        map.put("ScoreIds",listId);
+        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.CLICK_SCORE
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("点击获取积分",response);
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("点击获取积分",e.toString());
+                    }
+                });
+
+
+
     }
 
     private void initPersonalUI() {
@@ -171,18 +235,47 @@ public class MyFragment extends Fragment {
             }
         });
 
+
+        getScoreList();
+    }
+
+    private void getScoreList() {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("PageNo","1");
+        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_SCORE_LIST
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("获取积分列表",response);
+                        Gson gson = new Gson();
+                        GetScoreList mGetScoreList = gson.fromJson(response, GetScoreList.class);
+                        if(mGetScoreList.getHttpCode()==200){
+
+                        }else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("获取积分列表",e.toString());
+                    }
+                });
+
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        LogUtil.i("嘻嘻");
         //由于个人信息会随时改变这里会从缓存中重新读取个人信息
         PersonalInfo personalInfo = CacheUtils.getPersonalInfo(getActivity());
 
         tvName.setText(personalInfo.getName());
-        LogUtil.i("zangyi222",personalInfo.getName());
         tvHeight.setText(personalInfo.getHeight() + "cm");
         tvWeight.setText(personalInfo.getWeight() + "kg");
         if (personalInfo.isMan()) {
@@ -210,6 +303,44 @@ public class MyFragment extends Fragment {
         String type = personalInfo.getConstitution();
         ivConstitution.setVisibility(View.VISIBLE);
         MyUtils.setImageViewType(ivConstitution, type);
+
+
+        //重新获取叶子
+        if(treeView){
+            getLeafInfo();
+        }
+
+
+    }
+
+    private  LeafInfo leafinfo01;
+    private  LeafInfo leafinfo02;
+    private  LeafInfo leafinfo03;
+    private void getLeafInfo() {
+        Map<String, String> map = new HashMap<>();
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_CLICK_SCORE
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("接口，获取叶子" + response);
+                        Gson gson = new Gson();
+                        GetClickScore mGetClickScore = gson.fromJson(response, GetClickScore.class);
+                        if (mGetClickScore.getHttpCode() == 200) {
+                            leafinfo01=mGetClickScore.getModel1();
+                            leafinfo02=mGetClickScore.getModel2();
+                            leafinfo03=mGetClickScore.getModel3();
+                            mTreeView.invalidateView(mGetClickScore.getModel1(), mGetClickScore.getModel2(), mGetClickScore.getModel3());
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("获取叶子", e.toString());
+                    }
+                });
     }
 
 

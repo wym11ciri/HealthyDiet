@@ -6,7 +6,6 @@
     android:gravity="center"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -20,16 +19,16 @@
             android:layout_weight="1" />
 
         <EditText
-            android:text="15168212330"
             android:id="@+id/etPhone"
-            android:inputType="phone"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="2.5"
             android:background="@drawable/login_ed_bg"
             android:gravity="center_vertical"
             android:hint="手机号"
+            android:inputType="phone"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColor="#BABABA"
             android:textSize="16sp" />
 
@@ -52,7 +51,6 @@
             android:layout_weight="1" />
 
         <EditText
-            android:text="1234567"
             android:id="@+id/etPassword"
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -62,6 +60,7 @@
             android:hint="密码"
             android:inputType="textPassword"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColor="#BABABA"
             android:textSize="16sp" />
 
@@ -121,9 +120,9 @@
             android:textSize="14sp" />
 
         <View
-            android:layout_gravity="center"
             android:layout_width="0.5dp"
             android:layout_height="15dp"
+            android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="#666666" />
@@ -142,9 +141,10 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
     </LinearLayout>
+
     <View
         android:layout_width="0dp"
-        android:layout_height="30dp"/>
+        android:layout_height="30dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

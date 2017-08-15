@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.model.mybean.StepCount;
+import com.huihong.healthydiet.model.mybean.Time;
+import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.widget.WeekSelectTextView;
 
@@ -145,9 +147,16 @@ public class CacheUtils {
 
     //保存步数
     public static void putStepCount(Context mContext, StepCount stepCount) {
-        SPUtils.put(mContext, "stepCount", stepCount.getStepCount());
-        SPUtils.put(mContext, "stepTime", stepCount.getTime());
-        SPUtils.put(mContext, "stepDistance", stepCount.getDistance());
+
+         int mStepCount=stepCount.getStepCount();
+         int mTime=stepCount.getTime();
+         float mDistance=stepCount.getDistance();
+
+        SPUtils.put(mContext, "stepCount", mStepCount);
+        SPUtils.put(mContext, "stepTime", mTime);
+        SPUtils.put(mContext, "stepDistance", mDistance);
+
+        LogUtil.i("保存步数"+"stepCount="+mStepCount+"stepTime="+mTime);
     }
 
     //获得当前行走的步数
@@ -192,5 +201,60 @@ public class CacheUtils {
     //获得闹铃状态
     public static boolean isOpenAlarm(Context mContext) {
         return (boolean) SPUtils.get(mContext, "isOpenAlarm", false);
+    }
+
+    //运动记录缓存
+    public static void setDayRunCache(Context mContext, String dayRunCache) {
+        SPUtils.put(mContext, "dayRunCache", dayRunCache);
+    }
+
+
+    //设置睡眠时间
+    //获得睡眠时间
+    public static void setSleepTime(Context mContext, int hour, int min) {
+        SPUtils.put(mContext, "sleepHour", hour);
+        SPUtils.put(mContext, "sleepMin", min);
+    }
+
+    public static void setGetUpTime(Context mContext, int hour, int min) {
+        SPUtils.put(mContext, "getUpHour", hour);
+        SPUtils.put(mContext, "getUpMin", min);
+    }
+
+    public static void setGetUpTime(Context mContext,Time time) {
+        SPUtils.put(mContext, "getUpHour", time.getHour());
+        SPUtils.put(mContext, "getUpMin", time.getMin());
+        LogUtil.i("闹钟起床"+time.getHour()+":"+time.getMin());
+    }
+    public static void setSleepTime(Context mContext,Time time) {
+        SPUtils.put(mContext, "sleepHour", time.getHour());
+        SPUtils.put(mContext, "sleepMin", time.getMin());
+        LogUtil.i("闹钟睡眠"+time.getHour()+":"+time.getMin());
+    }
+
+    public static Time getGetUpTime(Context mContext) {
+
+        Time time = new Time();
+        int hour = (int) SPUtils.get(mContext, "getUpHour", 0);
+        int min=(int) SPUtils.get(mContext, "getUpMin", 0);
+
+        time.setHour(hour);
+        time.setMin(min);
+
+        LogUtil.i("闹钟获得起床",hour+":"+min);
+
+        return time;
+    }
+
+    public static Time getSleepTime(Context mContext) {
+
+        Time time = new Time();
+        int hour = (int) SPUtils.get(mContext, "sleepHour", 0);
+        int min=(int) SPUtils.get(mContext, "sleepMin", 0);
+
+        time.setHour(hour);
+        time.setMin(min);
+        LogUtil.i("闹钟获得睡眠",hour+":"+min);
+        return time;
     }
 }

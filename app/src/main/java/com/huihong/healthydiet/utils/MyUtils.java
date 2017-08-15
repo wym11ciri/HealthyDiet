@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.model.mybean.Time;
 
 /**
  * Created by zangyi_shuai_ge on 2017/8/10
@@ -77,5 +78,50 @@ public class MyUtils {
         }
         return " ";
     }
+    //计算时间差
+    public static Time getTimeDifference(Time sleepTime, Time getUpTime) {
+        //计算时间差
+        //总时长
+        int allMin=24*60;//分钟
 
+        //计算睡眠
+        int sleepAllMin=sleepTime.getMin()+sleepTime.getHour()*60;
+        int getUpAllMin=getUpTime.getMin()+getUpTime.getHour()*60;
+        //睡眠分钟数目
+        int mAllMin=allMin-sleepAllMin+getUpAllMin;
+        //转换成小时
+        int mHour=mAllMin/60;
+        int mMin=mAllMin%60;
+
+        if(mHour>=24){
+            mHour=mHour-24;
+        }
+
+        Time dTime=new Time();
+        dTime.setHour(mHour);
+        dTime.setMin(mMin);
+
+        return dTime;
+    }
+
+    //计算时间差
+    public static int getTimeDifferenceMin(Time sleepTime, Time getUpTime) {
+        //计算时间差
+        //总时长
+        int allMin=24*60;//分钟
+
+        //计算睡眠
+        int sleepAllMin=sleepTime.getMin()+sleepTime.getHour()*60;
+        int getUpAllMin=getUpTime.getMin()+getUpTime.getHour()*60;
+        //睡眠分钟数目
+        int mAllMin=allMin-sleepAllMin+getUpAllMin;
+        //转换成小时
+        int mHour=mAllMin/60;
+        int mMin=mAllMin%60;
+
+        if(mHour>=24){
+            mHour=mHour-24;
+        }
+        return mHour*60+mMin;
+    }
 }

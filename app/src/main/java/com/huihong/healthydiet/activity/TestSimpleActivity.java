@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
-import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvSimpleAnswerAdapter;
@@ -108,7 +107,7 @@ public class TestSimpleActivity extends BaseTitleActivity {
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_SUBMIT_EXPRESS_QUESTION)
-                .addParams("UserId",  SPUtils.get(TestSimpleActivity.this,"UserId",0)+"")
+                .addParams("UserId", SPUtils.get(TestSimpleActivity.this, "UserId", 0) + "")
                 .addParams("answer", a)
                 .build()
                 .execute(new StringCallback() {
@@ -125,15 +124,17 @@ public class TestSimpleActivity extends BaseTitleActivity {
                         GetSubmitExpressQuestion mGetSubmitExpressQuestion = gson.fromJson(response, GetSubmitExpressQuestion.class);
                         int code = mGetSubmitExpressQuestion.getHttpCode();
                         if (code == 200) {
-                            Intent mIntent = new Intent(TestSimpleActivity.this, MainActivity.class);
+                            Intent mIntent = new Intent(TestSimpleActivity.this, TestSimpleResultActivity.class);
+                            mIntent.putExtra("info01", mGetSubmitExpressQuestion.getMessage());
+                            mIntent.putExtra("info02", mGetSubmitExpressQuestion.getModel1());
                             startActivity(mIntent);
-                            SPUtils.put(TestSimpleActivity.this, "isDoSimpleTest",true);//完成简易版本测试
+                            SPUtils.put(TestSimpleActivity.this, "isDoSimpleTest", true);//完成简易版本测试
                             finish();
-                        }
-                        String message = mGetSubmitExpressQuestion.getMessage();
-                        if (message != null) {
+                        } else {
+                            String message = mGetSubmitExpressQuestion.getMessage();
                             Toast.makeText(TestSimpleActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
+
 
                     }
                 });

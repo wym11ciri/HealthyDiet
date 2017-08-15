@@ -45,6 +45,7 @@ import com.huihong.healthydiet.model.mybean.StepCount;
 import com.huihong.healthydiet.service.StepService;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.common.ValueUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.huihong.healthydiet.widget.MyYAnimation;
 
@@ -97,7 +98,6 @@ public class MotionFragment extends Fragment {
     private int stepCount = 0;
     private AlertDialog runningDialog;
 
-
     //运动未开始  运动暂停  正在运动
     private String runState = "OFF";
 
@@ -147,7 +147,7 @@ public class MotionFragment extends Fragment {
                 tvCircle01Title.setText("正在运动");
                 tvStepCount.setText(mStepCount.getStepCount() + "");
                 tvTime.setText(mStepCount.getTime() + "");
-                tvDistance.setText(mStepCount.getStepCount()*0.4 + "");
+                tvDistance.setText(ValueUtils.getDoubleValueString(mStepCount.getStepCount() * 0.4 ,1));
                 break;
             default:
                 //STOP
@@ -156,7 +156,7 @@ public class MotionFragment extends Fragment {
                 tvCircle01Title.setText("今日运动");
                 tvStepCount.setText(mStepCount.getStepCount() + "");
                 tvTime.setText(mStepCount.getTime() + "");
-                tvDistance.setText(mStepCount.getStepCount() * 0.4 + "");
+                tvDistance.setText(ValueUtils.getDoubleValueString(mStepCount.getStepCount() * 0.4 ,1));
                 break;
         }
 
@@ -213,9 +213,11 @@ public class MotionFragment extends Fragment {
     //向服务器提交数据
     private void submitStepCount() {
 
-        mStepCount = CacheUtils.getStepCount(getActivity());
+//        mStepCount = CacheUtils.getStepCount(getActivity());
+        CacheUtils.putStepCount(getActivity(),mStepCount);
         layoutCircle01.setClickable(false);
         Map<String, String> map = new HashMap<>();
+        LogUtil.i("提交步数" + mStepCount.getStepCount());
         map.put("Steps", mStepCount.getStepCount() + "");
         map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.UPLOAD_SPORT_INFO
@@ -262,7 +264,8 @@ public class MotionFragment extends Fragment {
             stepService.setUpdateStepCallBack(new UpdateStepCallBack() {
                 @Override
                 public void updateStep(int stepCount, int min) {
-                    MotionFragment.this.stepCount = (int) (stepCount * 0.8);
+                    mStepCount.setStepCount(stepCount);
+                    mStepCount.setTime(min);
                     tvStepCount.setText(stepCount + "");
                     DecimalFormat df = new DecimalFormat("######0.0");
                     double a = MotionFragment.this.stepCount * 0.4;
@@ -381,7 +384,6 @@ public class MotionFragment extends Fragment {
                             mListData = mGetSportList.getListData();
                             if (mListData != null && mListData.size() > 0) {
 
-
                                 //设置折线图的横坐标
                                 XAxis xAxis = mChart.getXAxis();
                                 xAxis.setValueFormatter(new IAxisValueFormatter() {
@@ -457,20 +459,7 @@ public class MotionFragment extends Fragment {
                         LogUtil.i("获取运动数据", e.toString());
                     }
                 });
-
-
-////        final List<ChartYear> mChartDayList = new ArrayList<>();
-//        //生成一个假数据集合
-////        for (int i = 1; i < 8; i++) {
-////            ChartYear chartDay = new ChartYear();
-////            chartDay.setYear(2010 + i);
-////            chartDay.setCount((int) (Math.random() * 1000));
-////            mChartDayList.add(chartDay);
-////        }
-//
-
     }
-
 
     //设置图表的放大倍数
     public void setChartSize(int multiple) {

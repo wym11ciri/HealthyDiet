@@ -51,7 +51,7 @@ public class BodyDataActivity extends BaseTitleActivity {
     //用户生日
     private String userBirthTime = "2017-07-28";
     //劳动强度
-    private String labInten = "一般";
+    private String labInten = "Ⅰ";
     //性别
     private boolean isMan = false;
     private ProgressDialog mProgressDialog;
@@ -108,10 +108,10 @@ public class BodyDataActivity extends BaseTitleActivity {
             public void onClick(View v) {
 
                 List<String> datas = new ArrayList<>();
-                datas.add("较差");
-                datas.add("一般");
-                datas.add("良好");
-                datas.add("优秀");
+                datas.add("Ⅰ");
+                datas.add("Ⅱ");
+                datas.add("Ⅲ");
+                datas.add("Ⅳ");
                 DataPickerSingleDialog.Builder builder = new DataPickerSingleDialog.Builder(BodyDataActivity.this);
                 builder.setData(datas);
                 builder.setOnDataSelectedListener(new OnSingleDataSelectedListener() {

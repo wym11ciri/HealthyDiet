@@ -16,14 +16,17 @@ import com.huihong.healthydiet.activity.SleepSettingsActivity;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.mInterface.SwitchListener;
+import com.huihong.healthydiet.model.mybean.Time;
 import com.huihong.healthydiet.utils.MyUtils;
+import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.view.SleepChartView;
 import com.huihong.healthydiet.view.TimeSelectView;
 import com.huihong.healthydiet.widget.SwitchImageView;
 
 import java.util.List;
+
+import static com.huihong.healthydiet.utils.MyUtils.getTimeDifference;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -119,7 +122,7 @@ public class SleepFragment extends Fragment {
                 String text = "";
                 for (int i = 0; i < cacheValueList.size(); i++) {
                     if (cacheValueList.get(i)) {
-                        text = text +MyUtils.getWeek(i) + " ";
+                        text = text + MyUtils.getWeek(i) + " ";
                     }
                 }
                 tvWeek.setText(text);
@@ -127,16 +130,34 @@ public class SleepFragment extends Fragment {
         }
     }
 
-    private boolean isStartAfter=false;
-    private  float lastStartmAngle=250;
+
+    //睡眠时间设置
+    private boolean isSleepAfter = false;
+    private float lastSleepAngle = 250;
+    private Time sleepTime;
+    //
+    private boolean isGetUpAfter = false;
+    private float lastGetUpAngle = 250;
+    private Time getUpTime;
+
+
     //初始化时间选择器及其附属控件
     private void initTimeSelectView() {
-        startHour = (int) SPUtils.get(getActivity(), "startHour", 23);
-        startMin = (int) SPUtils.get(getActivity(), "startMin", 0);
-        endHour = (int) SPUtils.get(getActivity(), "endHour", 8);
-        endMin = (int) SPUtils.get(getActivity(), "endMin", 0);
-        _DH = (int) SPUtils.get(getActivity(), "_DH", 9);
-        _DM = (int) SPUtils.get(getActivity(), "_DM", 0);
+
+        sleepTime = CacheUtils.getSleepTime(getActivity());
+        getUpTime = CacheUtils.getGetUpTime(getActivity());
+
+        if(sleepTime.getHour()>=12){
+            isSleepAfter=true;
+        }else {
+            isSleepAfter=false;
+        }
+
+        if(getUpTime.getHour()>=12){
+            isGetUpAfter=true;
+        }else {
+            isGetUpAfter=false;
+        }
 
 
         mTimeSelectView = (TimeSelectView) mView.findViewById(R.id.mTimeSelectView);//时间选择器
@@ -146,147 +167,103 @@ public class SleepFragment extends Fragment {
         tvDHour = (TextView) mView.findViewById(R.id.tvDHour);
         tvDMin = (TextView) mView.findViewById(R.id.tvDMin);
 
-        if (startMin < 10) {
-            tvTimeStart.setText(startHour + ":0" + startMin);
-        } else {
-            tvTimeStart.setText(startHour + ":" + startMin);
-        }
+        tvTimeStart.setText(DateFormattedUtils.formattedDate(sleepTime.getHour()) + ":" + DateFormattedUtils.formattedDate(sleepTime.getMin()));
+        tvTimeEnd.setText(DateFormattedUtils.formattedDate(getUpTime.getHour()) + ":" + DateFormattedUtils.formattedDate(getUpTime.getMin()));
 
-        if (endHour < 10) {
-            if (endMin < 10) {
-                tvTimeEnd.setText("0" + endHour + ":0" + endMin);
-            } else {
-                tvTimeEnd.setText("0" + endHour + ":" + endMin);
-            }
-        } else {
-            if (endMin < 10) {
-                tvTimeEnd.setText(endHour + ":0" + endMin);
-            } else {
-                tvTimeEnd.setText(endHour + ":" + endMin);
-            }
-        }
-        tvDHour.setText("" + _DH);
-        tvDMin.setText("" + _DM);
+        //计算时间差
+        Time dTime=getTimeDifference(sleepTime,getUpTime);
+        tvDHour.setText("" + dTime.getHour());
+        tvDMin.setText("" + dTime.getMin());
 
         mTimeSelectView.setCircleListener(new CircleListener() {
             @Override
-            public void move(boolean isSetStart, float mAngle, boolean isEnd) {
+            public void move(boolean isSetSleep, float mAngle, boolean isEnd) {
 
-
-
-
-
-
-
-                //
-                if (mAngle < 0) {
-                    mAngle = mAngle + 360;
-                }
-
+                LogUtil.i("角度" + mAngle);
+                //不是停止
                 if (!isEnd) {
+                    //不允许滑动
                     mNestedScrollView.requestDisallowInterceptTouchEvent(true);
-
-                    if (isSetStart) {
-                        //这里拿到了角度我们需要去判断当前是24小时中的 0-12 小时还是13-24
-                        if(isStartAfter){
-                            LogUtil.i("测试","下午");
-                        }else {
-                            LogUtil.i("测试","上午");
-                        }
-
-                        //需要去判断临界值
-                        //上次角度上350度到360度
-                        //这次角度是0度到10度的
-                        //那么触发临界
-
-                        if(lastStartmAngle>350&&lastStartmAngle<=360){
-                            if(mAngle<10&&mAngle>=0){
+                    if (isSetSleep) {
+                        //去判断角度触发临界值
+                        //如果原来是359度 后来是1度 那么就要切换上午下午了
+                        if (lastSleepAngle > 350 && lastSleepAngle <= 360) {
+                            if (mAngle < 10 && mAngle >= 0) {
                                 //触发临界
-                                isStartAfter=!isStartAfter;
+                                LogUtil.i("触发临界值1" + lastSleepAngle);
+                                isSleepAfter = !isSleepAfter;
                             }
                         }
-                        lastStartmAngle=mAngle;
-                        if(isStartAfter){
-                            LogUtil.i("测试","下午");
-                        }else {
-                            LogUtil.i("测试","上午");
+                        //如果原来是1度 现在是359度那么也要切换
+                        if (lastSleepAngle >= 0 && lastSleepAngle <= 10) {
+                            if (mAngle <= 360 && mAngle > 350) {
+                                //触发临界
+                                LogUtil.i("触发临界值2" + lastSleepAngle);
+                                isSleepAfter = !isSleepAfter;
+                            }
                         }
-
-
-
-                        //就寝时间需要加上12小时
-                        int a = (int) mAngle / 30;//获得小时
-                        int hour = a + 3;
-                        if (hour > 12) {
-                            hour = hour - 12;
-                        }
-                        hour = hour + 12;
+                        lastSleepAngle = mAngle;
+                        //获取12小时制的 hour
+                        int hour = (int) (mAngle / 30);
+                        //获取分钟
                         int b = (int) mAngle % 30;//获得分
                         int min = (int) (60 * (b / 30.0001));
-
-                        startHour = hour;
-                        startMin = min;
-                        mSleepChartView.setLimitLineH(hour, min, true);
-
-                        if (min < 10) {
-                            tvTimeStart.setText(hour + ":0" + min);
-                        } else {
-                            tvTimeStart.setText(hour + ":" + min);
+                        if (isSleepAfter) {
+                            hour = hour + 12;
                         }
+                        sleepTime.setHour(hour);
+                        sleepTime.setMin(min);
+                        //设置UI
+                        tvTimeStart.setText(DateFormattedUtils.formattedDate(hour) + ":" + DateFormattedUtils.formattedDate(min));
                     } else {
-                        //起床时间需要加上12小时
-                        int a = (int) mAngle / 30;//获得小时
-                        int hour = a + 3;
-                        if (hour > 12) {
-                            hour = hour - 12;
+                        //去判断角度触发临界值
+                        //如果原来是359度 后来是1度 那么就要切换上午下午了
+                        if (lastGetUpAngle > 350 && lastGetUpAngle <= 360) {
+                            if (mAngle < 10 && mAngle >= 0) {
+                                //触发临界
+                                LogUtil.i("触发临界值1" + lastGetUpAngle);
+                                isGetUpAfter = !isGetUpAfter;
+                            }
                         }
-                        String hour2 = hour + "";
-                        if (hour < 10) {
-                            hour2 = "0" + hour;
+                        //如果原来是1度 现在是359度那么也要切换
+                        if (lastGetUpAngle >= 0 && lastGetUpAngle <= 10) {
+                            if (mAngle <= 360 && mAngle > 350) {
+                                //触发临界
+                                LogUtil.i("触发临界值2" + lastGetUpAngle);
+                                isGetUpAfter = !isGetUpAfter;
+                            }
                         }
+                        lastGetUpAngle = mAngle;
+                        //获取12小时制的 hour
+                        int hour = (int) (mAngle / 30);
+                        //获取分钟
                         int b = (int) mAngle % 30;//获得分
                         int min = (int) (60 * (b / 30.0001));
-
-                        endHour = hour;
-                        endMin = min;
-
-                        mSleepChartView.setLimitLineH(hour, min, false);
-                        if (min < 10) {
-                            tvTimeEnd.setText(hour2 + ":0" + min);
-                        } else {
-                            tvTimeEnd.setText(hour2 + ":" + min);
+                        if (isGetUpAfter) {
+                            hour = hour + 12;
                         }
+                        getUpTime.setHour(hour);
+                        getUpTime.setMin(min);
+                        //设置UI
+                        tvTimeEnd.setText(DateFormattedUtils.formattedDate(hour) + ":" + DateFormattedUtils.formattedDate(min));
                     }
-                    //计算时间差
+                    //设置时间差
+                    Time dTime=getTimeDifference(sleepTime,getUpTime);
+                    tvDHour.setText("" + dTime.getHour());
+                    tvDMin.setText("" + dTime.getMin());
 
-                    int startHour1 = 24 - startHour - 1;//剩余多少小时
-                    int startMin1 = 60 - startMin;
+                    mSleepChartView.setLimitLine(sleepTime,getUpTime);
 
-                    _DH = startHour1 + endHour;
-                    _DM = startMin1 + endMin;
-                    if (_DM >= 60) {
-                        _DM = _DM - 60;
-                        _DH++;
-                    }
-                    tvDHour.setText("" + _DH);
-                    tvDMin.setText("" + _DM);
 
                 } else {
                     mNestedScrollView.requestDisallowInterceptTouchEvent(false);
-                    //把时间保存起来
-                    //就寝时间
-                    SPUtils.put(getActivity(), "startHour", startHour);
-                    SPUtils.put(getActivity(), "startMin", startMin);
-                    //起床时间
-                    SPUtils.put(getActivity(), "endHour", endHour);
-                    SPUtils.put(getActivity(), "endMin", endMin);
-                    //时间差
-                    SPUtils.put(getActivity(), "_DH", _DH);
-                    SPUtils.put(getActivity(), "_DM", _DM);
-
-                    LogUtil.i("就寝时间：" + startHour + ":" + startMin + "睡眠时间" + endHour + ":" + endMin + "时间差：" + _DH + "小时" + _DM + "分钟");
+                    //保存时间
+                    CacheUtils.setSleepTime(getActivity(), sleepTime);
+                    CacheUtils.setGetUpTime(getActivity(), getUpTime);
                 }
             }
         });
     }
+
+
 }

@@ -64,153 +64,78 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
         mWebView = (WebView) findViewById(R.id.mWebView);
 
         ArticleInfo mInfo = (ArticleInfo) getIntent().getSerializableExtra("info");
-//        SearchVagueRestaurant.ListData2Bean mInfo2= (SearchVagueRestaurant.ListData2Bean) getIntent().getSerializableExtra("info2");
 
         pos = getIntent().getIntExtra("pos", -1);
 
 
-        if(mInfo!=null){
+        if (mInfo != null) {
             loveNum = mInfo.getLoveCount();
             isLove = mInfo.isPointPraise();
             id = mInfo.getArticleId();
 
-        if (mInfo.isPointPraise()) {
-            ivThumbsUp.setImageResource(R.mipmap.thumbs_up);
-        } else {
-            ivThumbsUp.setImageResource(R.mipmap.thumbs_up_normal);
-        }
+            if (mInfo.isPointPraise()) {
+                ivThumbsUp.setImageResource(R.mipmap.thumbs_up);
+            } else {
+                ivThumbsUp.setImageResource(R.mipmap.thumbs_up_normal);
+            }
 
 
-        WebSettings webSettings = mWebView.getSettings();
-        //设置WebView属性，能够执行Javascript脚本
+            WebSettings webSettings = mWebView.getSettings();
+            //设置WebView属性，能够执行Javascript脚本
 //            webSettings.setJavaScriptEnabled(true);
-        //设置可以访问文件
+            //设置可以访问文件
 //            webSettings.setAllowFileAccess(true);
-        //设置支持缩放
-        webSettings.setBuiltInZoomControls(false);
-        //加载需要显示的网页
-        mWebView.loadUrl(mInfo.getUrl());
-        //设置Web视图
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String request) {
-                view.loadUrl(request);
-                return true;
-            }
-        });
-
-        TextView tvArticleTitle = (TextView) findViewById(R.id.tvArticleTitle);
-        tvArticleTitle.setText(mInfo.getTitle());
-
-
-        tvClickCount = (TextView) findViewById(R.id.tvClickCount);
-        tvClickCount.setText((mInfo.getCilckCount() + 1) + "");
-
-        tvLoveCount = (TextView) findViewById(R.id.tvLoveCount);
-        tvLoveCount.setText(mInfo.getLoveCount() + "");
-
-        TextView tvTime = (TextView) findViewById(R.id.tvTime);
-        tvTime.setText(mInfo.getATime() + "");
-
-        HorizontalListView lvTag = (HorizontalListView) findViewById(R.id.lvTag);
-        lvTag.setAdapter(new LvTagAdapterForArticleList(ArticleDetailsActivity.this, mInfo.getTags()));
-
-
-        layoutThumbsUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLove) {
-                    thumbsUp("Delete");
-                } else {
-                    thumbsUp("Insert");
+            //设置支持缩放
+            webSettings.setBuiltInZoomControls(false);
+            //加载需要显示的网页
+            mWebView.loadUrl(mInfo.getUrl());
+            //设置Web视图
+            mWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String request) {
+                    view.loadUrl(request);
+                    return true;
                 }
-            }
-        });
+            });
+
+            TextView tvArticleTitle = (TextView) findViewById(R.id.tvArticleTitle);
+            tvArticleTitle.setText(mInfo.getTitle());
 
 
-//        see();
-        getNewArticleInfo();
+            tvClickCount = (TextView) findViewById(R.id.tvClickCount);
+            tvClickCount.setText((mInfo.getCilckCount() + 1) + "");
 
-        setLeftOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishMyActivity();
-            }
-        });
+            tvLoveCount = (TextView) findViewById(R.id.tvLoveCount);
+            tvLoveCount.setText(mInfo.getLoveCount() + "");
 
-    }
-//        if(mInfo2!=null){
-//            loveNum = mInfo2.getLoveCount();
-//            isLove = mInfo2.isPointPraise();
-//            id = mInfo2.getArticleId();
-//
-//            if (mInfo2.isPointPraise()) {
-//                ivThumbsUp.setImageResource(R.mipmap.thumbs_up);
-//            } else {
-//                ivThumbsUp.setImageResource(R.mipmap.thumbs_up_normal);
-//            }
-//
-//
-//            WebSettings webSettings = mWebView.getSettings();
-//            //设置WebView属性，能够执行Javascript脚本
-////            webSettings.setJavaScriptEnabled(true);
-//            //设置可以访问文件
-////            webSettings.setAllowFileAccess(true);
-//            //设置支持缩放
-//            webSettings.setBuiltInZoomControls(false);
-//            //加载需要显示的网页
-//            mWebView.loadUrl(mInfo2.getUrl());
-//            //设置Web视图
-//            mWebView.setWebViewClient(new WebViewClient() {
-//                @Override
-//                public boolean shouldOverrideUrlLoading(WebView view, String request) {
-//                    view.loadUrl(request);
-//                    return true;
-//                }
-//            });
-//
-//            TextView tvArticleTitle = (TextView) findViewById(R.id.tvArticleTitle);
-//            tvArticleTitle.setText(mInfo2.getTitle());
-//
-//
-//            tvClickCount = (TextView) findViewById(R.id.tvClickCount);
-//            tvClickCount.setText((mInfo2.getCilckCount() + 1) + "");
-//
-//            tvLoveCount = (TextView) findViewById(R.id.tvLoveCount);
-//            tvLoveCount.setText(mInfo2.getLoveCount() + "");
-//
-//            TextView tvTime = (TextView) findViewById(R.id.tvTime);
-//            tvTime.setText(mInfo2.getATime() + "");
-//
-//            HorizontalListView lvTag = (HorizontalListView) findViewById(R.id.lvTag);
-//            lvTag.setAdapter(new LvTagAdapterForArticleList(ArticleDetailsActivity.this, mInfo2.getTags()));
-//
-//
-//            layoutThumbsUp.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (isLove) {
-//                        thumbsUp("Delete");
-//                    } else {
-//                        thumbsUp("Insert");
-//                    }
-//                }
-//            });
-//
-//
-////        see();
-//            getNewArticleInfo();
-//
-//            setLeftOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    finishMyActivity();
-//                }
-//            });
-//
-//        }
+            TextView tvTime = (TextView) findViewById(R.id.tvTime);
+            String time = mInfo.getATime().replace("T", " ");
+            tvTime.setText(time);
+
+            HorizontalListView lvTag = (HorizontalListView) findViewById(R.id.lvTag);
+            lvTag.setAdapter(new LvTagAdapterForArticleList(ArticleDetailsActivity.this, mInfo.getTags()));
 
 
+            layoutThumbsUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isLove) {
+                        thumbsUp("Delete");
+                    } else {
+                        thumbsUp("Insert");
+                    }
+                }
+            });
+            getNewArticleInfo();
+
+            setLeftOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finishMyActivity();
+                }
+            });
+
+        }
     }
 
     private void getNewArticleInfo() {
@@ -224,7 +149,7 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
                     public void onResponse(String response, int id) {
                         LogUtil.i("文章详情", response);
                         Gson gson = new Gson();
-                      GetArticleItemInfo mGetArticleItemInfo = gson.fromJson(response, GetArticleItemInfo.class);
+                        GetArticleItemInfo mGetArticleItemInfo = gson.fromJson(response, GetArticleItemInfo.class);
                         mListDataBean = mGetArticleItemInfo.getListData().get(0);
                         isLove = mListDataBean.isPointPraise();
                         if (isLove) {
@@ -329,11 +254,11 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putSerializable("info", mListDataBean);
-        LogUtil.i("嘿嘿",pos+"");
-        bundle.putInt("pos",pos);
+        LogUtil.i("嘿嘿", pos + "");
+        bundle.putInt("pos", pos);
         //通过Intent对象返回结果，调用setResult方法
         intent.putExtras(bundle);
-        setResult(2,intent);
+        setResult(2, intent);
         finish();//结束当前的activity的生命周期
         overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
     }

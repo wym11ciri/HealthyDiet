@@ -18,16 +18,21 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
+import com.huihong.healthydiet.model.mybean.Time;
 import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.huihong.healthydiet.utils.common.SPUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.Call;
 
 
 /**
@@ -65,6 +70,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                     if (CacheUtils.isOpenAlarm(AlarmClockService.this)) {
                         isAlarmClock();
                     }
+//                    tryToGetSleepIntegral();
                 }
             }
         };
@@ -76,16 +82,15 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         String nowTime = new SimpleDateFormat("HH:mm").format(new Date()) + "";
 
         //去缓存中拿时间
+        Time mSleepTime=CacheUtils.getSleepTime(this);
+        Time mGetUpTime=CacheUtils.getGetUpTime(this);
 
-        int startHour = (int) SPUtils.get(this, "startHour", 23);
-        int startMin = (int) SPUtils.get(this, "startMin", 0);
-        int endHour = (int) SPUtils.get(this, "endHour", 8);
-        int endMin = (int) SPUtils.get(this, "endMin", 0);
+
 
         //格式化时间
-        String sleepTime = DateFormattedUtils.formattedDate(startHour) + DateFormattedUtils.formattedDate(startMin);
-        String getUpTime = DateFormattedUtils.formattedDate(endHour) + DateFormattedUtils.formattedDate(endMin);
-
+        String sleepTime = DateFormattedUtils.formattedDate(mSleepTime.getHour()) +":"+ DateFormattedUtils.formattedDate(mSleepTime.getMin());
+        String getUpTime = DateFormattedUtils.formattedDate(mGetUpTime.getHour()) +":"+ DateFormattedUtils.formattedDate(mGetUpTime.getMin());
+        LogUtil.i("闹铃 睡觉"+sleepTime+"起床"+getUpTime);
 
         if (getUpTime.equals(nowTime)&&isSetWeek()) {
             //时间是到了需要判断星期
@@ -101,10 +106,6 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                     //话说只有点了起床按钮才能保存到数据库中去
                     //这时候我点了
                     //拿到昨天设置的睡眠时间 并吧日期存储到昨天去
-
-
-
-
 
                     if (player.isPlaying()) {
                         player.stop();
@@ -123,6 +124,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         } else if (sleepTime.equals(nowTime)&&isSetWeek()) {
             //当前为睡觉闹铃 只播放提示声音
 //            player.start();
+            tryToGetSleepIntegral();
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
             rt.play();
@@ -147,6 +149,28 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
         }
+    }
+
+    private void tryToGetSleepIntegral() {
+        OkHttpUtils
+                .post()
+                .url(AppUrl.ADD_SCORE_RECORD)
+                .addParams("UserId", CacheUtils.getUserId(this))
+                .addParams("ScoreType", "Sleep")
+                .addParams("token",CacheUtils.getToken(this))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("获得闹铃积分" + e);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("获得闹铃积分" + response);
+
+                    }
+                });
     }
 
     private boolean isSetWeek() {

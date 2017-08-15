@@ -58,8 +58,6 @@ public class RecommendRecipeListFragment extends Fragment {
 
     private void initUI() {
         initRecyclerView();
-
-
         RecommendActivity.mRecommendActivity.setRightScreenTypeListener(new ScreenTypeListener() {
             @Override
             public void screenType(boolean isRight, String type, int typeId, boolean isSwitch) {
@@ -68,12 +66,13 @@ public class RecommendRecipeListFragment extends Fragment {
                         num = 1;
                         recommendList.clear();
                         mLRecyclerViewAdapter.notifyDataSetChanged();
+                        GroupBy = type;
+                        TypeValue = typeId + "";
+
+                        getInfo(num);
                     }
 
-                    GroupBy = type;
-                    TypeValue = typeId + "";
 
-                    getInfo(num);
                 }
             }
         });

@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity;
 
+import android.app.ProgressDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -23,6 +24,8 @@ import java.util.List;
 
 import okhttp3.Call;
 
+import static com.zhy.http.okhttp.OkHttpUtils.post;
+
 /**
  * Created by zangyi_shuai_ge on 2017/7/25
  */
@@ -37,6 +40,8 @@ public class TestMajorActivity extends BaseTitleActivity {
 
     private int num = 0;
 
+    private ProgressDialog progressDialog;
+
     @Override
     public int setLayoutId() {
         return R.layout.activity_test_major;
@@ -44,6 +49,7 @@ public class TestMajorActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
+        progressDialog=new ProgressDialog(TestMajorActivity.this);
         MajorAnswerList = new ArrayList<>();
         setTitle("体质测试");
         tvAnswerTitle = (TextView) findViewById(R.id.tvAnswerTitle);
@@ -98,8 +104,7 @@ public class TestMajorActivity extends BaseTitleActivity {
         }
 
 
-        OkHttpUtils
-                .post()
+        post()
                 .url(AppUrl.GET_SUBMIT_QUESTION)
                 .addParams("UserId",  SPUtils.get(TestMajorActivity.this,"UserId",0)+"")
                 .addParams("answer",a)
@@ -123,6 +128,9 @@ public class TestMajorActivity extends BaseTitleActivity {
 
 
     private void getInfo() {
+        progressDialog.setMessage("正在获取问卷中...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         OkHttpUtils
                 .post()
                 .url(AppUrl.GET_QUESTION_PROFESSION_LIST)
@@ -133,10 +141,13 @@ public class TestMajorActivity extends BaseTitleActivity {
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("error" + e);
                         Toast.makeText(TestMajorActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        finish();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        progressDialog.dismiss();
                         LogUtil.i("接口，专业版测试:", response);
                         Gson gson = new Gson();
                         GetQuestionProfessionList mGetQuestionProfessionList = gson.fromJson(response, GetQuestionProfessionList.class);
@@ -151,6 +162,7 @@ public class TestMajorActivity extends BaseTitleActivity {
                         } else {
                             String message = mGetQuestionProfessionList.getMessage();
                             Toast.makeText(TestMajorActivity.this, message, Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
                     }

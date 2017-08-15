@@ -14,11 +14,11 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.CircleListener;
+import com.huihong.healthydiet.model.mybean.Time;
 import com.huihong.healthydiet.model.mybean.TouchCircle;
 import com.huihong.healthydiet.utils.common.DensityUtils;
-import com.huihong.healthydiet.utils.common.LogUtil;
-import com.huihong.healthydiet.utils.common.SPUtils;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -45,9 +45,16 @@ public class TimeSelectView extends View {
     private int[] circleColors;
     //设置启始 结束时间初始值
     private int startHour = 23;
-    private int endHour = 8;
     private int startMin = 0;
+
+    private int endHour = 8;
     private int endMin = 0;
+
+    //
+    private Time sleepTime;
+    private  Time getUpTime;
+
+
     //圆环的滑动监听
     private CircleListener circleListener;
 
@@ -94,10 +101,22 @@ public class TimeSelectView extends View {
                 getResources().getColor(R.color.circle_color_01),
         };
 
-        startHour = (int) SPUtils.get(context, "startHour", 23);
-        startMin = (int) SPUtils.get(context, "startMin", 0);
-        endHour = (int) SPUtils.get(context, "endHour", 8);
-        endMin = (int) SPUtils.get(context, "endMin", 0);
+        sleepTime= CacheUtils.getSleepTime(context);
+        getUpTime=CacheUtils.getGetUpTime(context);
+        //所有时间都转换成12小时制度来计算角度
+
+        startHour=sleepTime.getHour();
+        startMin=sleepTime.getMin();
+        if(startHour>=12){
+            startHour=startHour-12;
+        }
+
+        endHour=getUpTime.getHour();
+        endMin=getUpTime.getMin();
+        if(endHour>=12){
+            endHour=endHour-12;
+        }
+
     }
 
     LinearGradient lg;
@@ -111,8 +130,8 @@ public class TimeSelectView extends View {
         lg = new LinearGradient(0, 0, 100, 100, circleColors, null, Shader.TileMode.MIRROR);
         circlePaint.setShader(lg);
         //计算初始角度
-        float startAngel = (float) ((startHour - 12) * 360.0000001 / 12.00001 + startMin * 15.0000001 / 60.00001) - 90;
-        float endAngel = (float) (endHour * 360.0000001 / 12.00001 + endMin * 15.000001 / 60.00001) - 90;
+        float startAngel = (float) (startHour * 360.0000001 / 12.0000 + startMin * 15.000000 / 60.0000) - 90;
+        float endAngel = (float) (endHour * 360.0000001 / 12.0000 + endMin * 15.00000 / 60.0000) - 90;
         //构造2个点击事件
         startCircle = new TouchCircle(startAngel, ringWidth / 2, ringRadius);
         endCircle = new TouchCircle(endAngel, ringWidth / 2, ringRadius);
@@ -129,6 +148,7 @@ public class TimeSelectView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        restPaint();
 
         canvas.translate(viewWidth / 2, viewWidth / 2);//将canvas 原点平移到画布中心
         canvas.drawCircle(0, 0, ringRadius, ringPaint);//绘制外部灰色圆环背景
@@ -160,6 +180,9 @@ public class TimeSelectView extends View {
         canvas.drawBitmap(startBitmap, (float) startCircle.getX() - ringWidth / 2, (float) startCircle.getY() - ringWidth / 2, null);
         canvas.drawBitmap(endBitmap, (float) endCircle.getX() - ringWidth / 2, (float) endCircle.getY() - ringWidth / 2, null);
 
+    }
+
+    private void restPaint() {
     }
 
 
@@ -202,7 +225,7 @@ public class TimeSelectView extends View {
                         endCircle.setAngle(mAngle);
                     }
                     //把0度的位置移到12点的地方
-//                    mAngle=mAngle+90;
+                    mAngle=mAngle+90;
 
                     if(mAngle<0){
                         mAngle=mAngle+360;
@@ -216,8 +239,6 @@ public class TimeSelectView extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP://松开
-
-                LogUtil.i("zzzzzzzzzzzzzzzzzzzzzzz");
 
                 if (shouldReDraw) {
                     //松开的时候把数据传递回来

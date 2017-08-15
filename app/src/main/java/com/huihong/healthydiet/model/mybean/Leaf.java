@@ -55,7 +55,7 @@ public class Leaf {
 
     public void setLeafSize(int leafSize) {
         this.leafSize = leafSize;
-        this.integralWidth= leafSize+5;
+        this.integralWidth= leafSize+10;
         this.eventWidth= leafSize+5;
     }
 
@@ -65,6 +65,8 @@ public class Leaf {
 
     public void setIntegral(String integral) {
         this.integral = integral;
+
+        this.integralWidth= leafSize+7*integral.length();
     }
 
     public String getEvent() {
@@ -82,8 +84,24 @@ public class Leaf {
     //事件
     private String event;
 
+    private  String ListId;
+    private  boolean isShow=false;
 
+    public String getListId() {
+        return ListId;
+    }
 
+    public void setListId(String listId) {
+        ListId = listId;
+    }
+
+    public boolean isShow() {
+        return isShow;
+    }
+
+    public void setShow(boolean show) {
+        isShow = show;
+    }
 
     //获得绘制积分的开始坐标X
     public float getDrawIntegralX() {

@@ -9,10 +9,13 @@ import android.view.View;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.cache.litepal.SleepCache;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
+import com.huihong.healthydiet.model.mybean.Time;
 import com.huihong.healthydiet.utils.DateUtil;
+import com.huihong.healthydiet.utils.MyUtils;
+import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.DensityUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.huihong.healthydiet.utils.common.SPUtils;
 
 import org.litepal.crud.DataSupport;
 
@@ -30,7 +33,12 @@ public class SleepChartView extends View {
     private Paint paintSleep;//睡眠记录画笔
     private Paint paintText;//绘制字的画笔
 
-    private float screenW, screenH;//画布大小
+    private float screenH;
+
+    private float screenW;//绘制图表区域的宽度
+
+    private float screenH_2;
+
     private float unitHeight;
     private float screenW_14;//把宽度14等分
 
@@ -39,7 +47,7 @@ public class SleepChartView extends View {
 
     private List<SleepCache> mSleepList;
 
-    private int textWidth;
+
     private int textSize;
 
 
@@ -57,6 +65,12 @@ public class SleepChartView extends View {
     private int paddingBottom;
 
 
+    private Time nowGetUpTime;
+    private Time nowSleepTime;
+
+
+    private int textWidth;//字的宽度
+
     public SleepChartView(Context context) {
         this(context, null);
     }
@@ -69,8 +83,8 @@ public class SleepChartView extends View {
         super(context, attrs, defStyleAttr);
         mContext = context;
         paintLimit = new Paint();
-        paintLimit.setColor(getResources().getColor(R.color.color_black));
-        paintLimit.setStrokeWidth(3);
+        paintLimit.setColor(getResources().getColor(R.color.sleep_chart_limit_line));
+        paintLimit.setStrokeWidth(DensityUtils.dp2px(mContext, 1));
         paintLimit.setAntiAlias(true);//设置抗锯齿
 
         paintNormal = new Paint();
@@ -80,7 +94,7 @@ public class SleepChartView extends View {
         paintSleep = new Paint();
         paintSleep.setColor(getResources().getColor(R.color.sleep_chart_sleep_line));
         paintSleep.setAntiAlias(true);//设置抗锯齿
-        paintSleep.setStrokeWidth(8);
+        paintSleep.setStrokeWidth(DensityUtils.dp2px(mContext, 3));
         paintSleep.setStrokeCap(Paint.Cap.ROUND);
 
         paintText = new Paint();
@@ -88,66 +102,75 @@ public class SleepChartView extends View {
         paintText.setAntiAlias(true);//设置抗锯齿
         paintText.setTextSize(DensityUtils.sp2px(mContext, 12));
         textWidth = DensityUtils.dp2px(mContext, 40);
-
+        textSize = DensityUtils.sp2px(mContext, 12);
+        paddingTop = DensityUtils.sp2px(mContext, 12) / 2;
+        paddingBottom = DensityUtils.sp2px(mContext, 12) / 2;
         mSleepList = new ArrayList<>();
+
+        nowGetUpTime = new Time();
+        nowSleepTime = new Time();
+
         initData();
     }
+
     //初始化数据
     private void initData() {
         //查询当天是周几
-       int nowWeek= DateUtil.getNowWeek();
-        LogUtil.i("当前星期"+nowWeek);
+        int nowWeek = DateUtil.getNowWeek();
+//        nowWeek = 7;
+        LogUtil.i("当前星期" + nowWeek);
         //去数据库查询前几天的数据
         //nowWeek 1时候为周天 需要去查询前6天的
-        LogUtil.i("前1天"+DateUtil.getPastDate(1));
-        LogUtil.i("前2天"+DateUtil.getPastDate(2));
-        LogUtil.i("前3天"+DateUtil.getPastDate(3));
-        LogUtil.i("前4天"+DateUtil.getPastDate(4));
-        if(nowWeek==1){
+        LogUtil.i("前1天" + DateUtil.getPastDate(1));
+        LogUtil.i("前2天" + DateUtil.getPastDate(2));
+        LogUtil.i("前3天" + DateUtil.getPastDate(3));
+        LogUtil.i("前4天" + DateUtil.getPastDate(4));
+        if (nowWeek == 1) {
             //当前为周天 获取前6天的数据 i=1 2 3 4 5 6
-            for (int i = 1; i <7 ; i++) {
-                List<Integer> mDateList=DateUtil.getPastDate(i);
+            for (int i = 1; i < 7; i++) {
+                List<Integer> mDateList = DateUtil.getPastDate(i);
                 //去数据库查询
                 List<SleepCache> mSleepCacheList = DataSupport
                         .where("year = ? and month = ? and day = ?", mDateList.get(0) + "", mDateList.get(1) + "", mDateList.get(2) + "")
                         .find(SleepCache.class);
 
-                if(mSleepCacheList.size()>0){
+                if (mSleepCacheList.size() > 0) {
                     //当前有记录
                     //去绘制
-                    SleepCache mSleepCache=mSleepCacheList.get(0);
+                    SleepCache mSleepCache = mSleepCacheList.get(0);
                     mSleepCache.setDraw(true);
                     mSleepList.add(mSleepCache);
-                }else {
+                } else {
                     //当前没有记录
                     //不去绘制
-                    SleepCache mSleepCache=new SleepCache();
+                    SleepCache mSleepCache = new SleepCache();
                     mSleepCache.setDraw(false);
                     mSleepList.add(mSleepCache);
                 }
             }
-        }else {
+        } else {
             //例如 nowWeek=2 是周一 需要去查询前0天的数据
-            for (int i = 1; i <nowWeek-1 ; i++) {
-                List<Integer> mDateList=DateUtil.getPastDate(i);
+            for (int i = 1; i < nowWeek - 1; i++) {
+                List<Integer> mDateList = DateUtil.getPastDate(i);
                 //去数据库查询
                 List<SleepCache> mSleepCacheList = DataSupport
                         .where("year = ? and month = ? and day = ?", mDateList.get(0) + "", mDateList.get(1) + "", mDateList.get(2) + "")
                         .find(SleepCache.class);
 
-                if(mSleepCacheList.size()>0){
-                    LogUtil.i("嘻嘻","有数据"+mSleepCacheList.size());
+                if (mSleepCacheList.size() > 0) {
+                    LogUtil.i("嘻嘻", "有数据" + mSleepCacheList.size());
                     //当前有记录
                     //去绘制
-                    SleepCache mSleepCache=mSleepCacheList.get(0);
+                    SleepCache mSleepCache = mSleepCacheList.get(0);
                     mSleepCache.setDraw(true);
                     mSleepList.add(mSleepCache);
-                    LogUtil.i("嘻嘻",mSleepCache.getGetUpHour()+"==="+mSleepCache.getGetUpMin()+"");
-                }else {
-                    LogUtil.i("嘻嘻","没有数据");
+                    LogUtil.i("睡眠记录 起床" + mSleepCache.getGetUpHour() + ":" + mSleepCache.getGetUpMin());
+                    LogUtil.i("睡眠记录 睡觉" + mSleepCache.getSleepHour() + ":" + mSleepCache.getSleepHour());
+                } else {
+                    LogUtil.i("嘻嘻", "没有数据");
                     //当前没有记录
                     //不去绘制
-                    SleepCache mSleepCache=new SleepCache();
+                    SleepCache mSleepCache = new SleepCache();
                     mSleepCache.setDraw(false);
                     mSleepList.add(mSleepCache);
                 }
@@ -160,22 +183,27 @@ public class SleepChartView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        textSize = DensityUtils.sp2px(mContext, 12);
-        paddingTop = DensityUtils.sp2px(mContext, 12);
-        paddingBottom = DensityUtils.sp2px(mContext, 12) / 2;
+
 
         screenW = w - (textWidth);
+
         screenH = h - (paddingTop + paddingBottom);
+        screenH_2 = screenH / 2;
         screenW_14 = screenW / 14;
         unitHeight = screenH / 6;//高度分6份每个刻度当4小时有7根线
 
-        SleepLimitHour = (int) SPUtils.get(mContext, "startHour", 23);
-        SleepLimitMin = (int) SPUtils.get(mContext, "startMin", 0);
-        getUpLimitHour = (int) SPUtils.get(mContext, "endHour", 8);
-        getUpLimitMin = (int) SPUtils.get(mContext, "endMin", 0);
 
-        setLimitLineH(SleepLimitHour, SleepLimitMin, true);
-        setLimitLineH(getUpLimitHour, getUpLimitMin, false);
+//        SleepLimitHour = (int) SPUtils.get(mContext, "startHour", 23);
+//        SleepLimitMin = (int) SPUtils.get(mContext, "startMin", 0);
+//        getUpLimitHour = (int) SPUtils.get(mContext, "endHour", 8);
+//        getUpLimitMin = (int) SPUtils.get(mContext, "endMin", 0);
+//
+//        setLimitLineH(SleepLimitHour, SleepLimitMin, true);
+//        setLimitLineH(getUpLimitHour, getUpLimitMin, false);
+
+
+
+        setLimitLine(CacheUtils.getSleepTime(mContext),CacheUtils.getGetUpTime(mContext));
 
         LogUtil.i("调试", "SleepChartView onSizeChanged");
 
@@ -184,49 +212,63 @@ public class SleepChartView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+
+        //绘制限制线
+        //最下面那根限制线不动
+        canvas.drawLine(textWidth, screenH+paddingBottom, screenW + textWidth, screenH+paddingBottom, paintLimit);
+        canvas.drawText(DateFormattedUtils.formattedDate(nowSleepTime.getHour()) + ":" + DateFormattedUtils.formattedDate(nowSleepTime.getMin()),
+                0, (float) (screenH+paddingTop+textSize / 2.3000), paintText);
+
+        //上面那个限制线
+        canvas.drawLine(textWidth, screenH - lineH+paddingBottom, screenW + textWidth, screenH - lineH+paddingBottom, paintLimit);
+        canvas.drawText(DateFormattedUtils.formattedDate(nowGetUpTime.getHour()) + ":" + DateFormattedUtils.formattedDate(nowGetUpTime.getMin()),
+                0, (float) (screenH - lineH + textSize / 2.3000+paddingTop), paintText);
+
+        //时间
+        //睡眠线固定
+
+//        canvas.drawText(DateFormattedUtils.formattedDate(nowGetUpTime.getHour()) + ":" + DateFormattedUtils.formattedDate(nowGetUpTime.getMin()), 0, (float) (screenH - lineH + textSize / 2.3000), paintText);
+
+
         //绘制刻度线
         for (int i = 0; i < 7; i++) {
             //给刻度线加上限制
-            float height = unitHeight * i;
-            if (height >= getUpLimitH && height <= sleepLimitH) {
+            float height = unitHeight * i + paddingTop;
+            if (height <=  screenH+paddingBottom && height >= screenH - lineH+paddingBottom) {
+                //刻度线
                 canvas.drawLine(textWidth, unitHeight * i + paddingTop, screenW + textWidth, unitHeight * i + paddingTop, paintNormal);
             }
         }
-        //画2根限制线
-        canvas.drawLine(textWidth, sleepLimitH + paddingTop, screenW + textWidth, sleepLimitH + paddingTop, paintLimit);
-        canvas.drawLine(textWidth, getUpLimitH + paddingTop, screenW + textWidth, getUpLimitH + paddingTop, paintLimit);
-        //绘制右侧2个时间
-        if (SleepLimitMin < 10) {
-            canvas.drawText(SleepLimitHour + ":0" + SleepLimitMin, 0, sleepLimitH + paddingTop + paddingTop / 3, paintText);
-        } else {
-            canvas.drawText(SleepLimitHour + ":" + SleepLimitMin, 0, sleepLimitH + paddingTop + paddingTop / 3, paintText);
-        }
-
-        if (getUpLimitMin < 10) {
-            if (getUpLimitHour < 10) {
-                canvas.drawText( "0" +getUpLimitHour + ":0" + getUpLimitMin, 0, getUpLimitH + paddingTop + paddingTop / 3, paintText);
-            } else {
-                canvas.drawText(getUpLimitHour + ":0" + getUpLimitMin, 0, getUpLimitH + paddingTop + paddingTop / 3, paintText);
-            }
-        } else {
-            if (getUpLimitHour < 10) {
-                canvas.drawText("0" + getUpLimitHour + ":" + getUpLimitMin, 0, getUpLimitH + paddingTop + paddingTop / 3, paintText);
-            } else {
-                canvas.drawText(getUpLimitHour + ":" + getUpLimitMin, 0, getUpLimitH + paddingTop + paddingTop / 3, paintText);
-            }
-        }
-
-
         //绘制历史睡眠线
         for (int i = 0; i < mSleepList.size(); i++) {
-            if(mSleepList.get(i).isDraw()){
-                canvas.drawLine(textWidth + screenW_14 * (2 * i + 1),  getSleepH(mSleepList.get(i),false)+ paddingTop, textWidth + screenW_14 * (2 * i + 1),  getSleepH(mSleepList.get(i),true) + paddingTop, paintSleep);
+            if (mSleepList.get(i).isDraw()) {
+                Time mSleepTime01 = new Time();
+                mSleepTime01.setHour(mSleepList.get(i).getSleepHour());
+                mSleepTime01.setMin(mSleepList.get(i).getSleepMin());
+
+                Time mGetUpTime01 = new Time();
+                mGetUpTime01.setHour(mSleepList.get(i).getGetUpHour());
+                mGetUpTime01.setMin(mSleepList.get(i).getGetUpMin());
+
+                canvas.drawLine(textWidth + screenW_14 * (2 * i + 1), screenH +paddingTop- getLineHeight(mSleepTime01, mGetUpTime01),
+                        textWidth + screenW_14 * (2 * i + 1), screenH +paddingTop , paintSleep);
+//                canvas.drawLine(textWidth + screenW_14 * (2 * i + 1), getSleepLineY(mSleepTime01) - getLineHeight(mSleepTime01, mGetUpTime01), textWidth + screenW_14 * (2 * i + 1), getSleepLineY(mSleepTime01) , paintSleep);
             }
-//            canvas.drawLine(textWidth + screenW_14 * i, getUpLimitH + paddingTop, textWidth + screenW_14 * i, sleepLimitH + paddingTop, paintSleep);
         }
 
-        //画当前睡眠线
-        canvas.drawLine(textWidth + screenW_14 * (2 * (mSleepList.size()) + 1),  getUpLimitH+ paddingTop, textWidth + screenW_14 * (2 * (mSleepList.size()) + 1),  sleepLimitH + paddingTop, paintSleep);
+
+//        //画2根限制线
+//        canvas.drawLine(textWidth, sleepLimitH + paddingTop, screenW + textWidth, sleepLimitH + paddingTop, paintLimit);
+//        canvas.drawLine(textWidth, getUpLimitH + paddingTop, screenW + textWidth, getUpLimitH + paddingTop, paintLimit);
+//
+
+//
+//
+
+//
+//        //画当前睡眠线
+//        canvas.drawLine(textWidth + screenW_14 * (2 * (mSleepList.size()) + 1), getUpLimitH + paddingTop, textWidth + screenW_14 * (2 * (mSleepList.size()) + 1), sleepLimitH + paddingTop, paintSleep);
 
     }
 
@@ -256,12 +298,44 @@ public class SleepChartView extends View {
         invalidate();
     }
 
+
+    float lineH = 0;
+
+    //设置限制线
+    public void setLimitLine(Time sleepTime, Time getUpTime) {
+
+        //通过时间差来计算睡眠时长
+        int dAllMin = MyUtils.getTimeDifferenceMin(sleepTime, getUpTime);
+        nowGetUpTime = getUpTime;
+        nowSleepTime = sleepTime;
+
+        lineH = (float) ((dAllMin / (24 * 60.00000)) * screenH);
+
+        invalidate();
+    }
+
+    //获得限制线的Y坐标
+    public float getSleepLineY(Time mSleepTime) {
+
+        int allMin = mSleepTime.getHour() * 60 + mSleepTime.getMin();
+        float a = (float) (screenH_2 + screenH_2 * (allMin / (60 * 24.00001))) + paddingTop;
+        LogUtil.i("限制线高度" + a + "==" + mSleepTime.getHour() + "==" + mSleepTime.getMin());
+        return a;
+    }
+
+
+    //获得限制线的Y坐标
+    public float getLineHeight(Time sleepTime, Time getUpTime) {
+        int dAllMin = MyUtils.getTimeDifferenceMin(sleepTime, getUpTime);
+        return (float) (screenH-(dAllMin / (24 * 60.00000)) * screenH);
+    }
+
     public float getSleepH(SleepCache mSleep, boolean isGetSleep) {
 
 
         if (isGetSleep) {
-            int hour=mSleep.getSleepHour();
-            int min=mSleep.getSleepMin();
+            int hour = mSleep.getSleepHour();
+            int min = mSleep.getSleepMin();
             //设置睡眠高度
 //            sleepLimitH = screenH * (mAngle / 360);
             int allMin = (hour - 13) * 60 + min;
@@ -270,14 +344,14 @@ public class SleepChartView extends View {
 
         } else {
 
-            int hour=mSleep.getGetUpHour();
-            int min=mSleep.getGetUpMin();
+            int hour = mSleep.getGetUpHour();
+            int min = mSleep.getGetUpMin();
 
             //起床时间为早上1点到12.59
             //计算获取时间
             int allMin = (hour - 1) * 60 + min;
             double percentage = 1 - (allMin / (12.001 * 60.0001));
-            return   (float) (percentage * (screenH / 2));
+            return (float) (percentage * (screenH / 2));
 
         }
     }

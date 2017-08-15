@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -74,12 +75,17 @@ public class SettingsActivity extends TakePhotoActivity {
 
     private EditText etName;//名称
 
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+        progressDialog=new ProgressDialog(SettingsActivity.this);
+        progressDialog.setCancelable(false);
+
         personalInfo = CacheUtils.getPersonalInfo(SettingsActivity.this);
         takePhoto = getTakePhoto();
         initTopBar();
@@ -87,11 +93,11 @@ public class SettingsActivity extends TakePhotoActivity {
     }
 
     String name;
-
+    LinearLayout layoutRight;
     //初始化头部
     private void initTopBar() {
 
-        LinearLayout layoutRight = (LinearLayout) findViewById(R.id.layoutTopRight);
+         layoutRight = (LinearLayout) findViewById(R.id.layoutTopRight);
         LinearLayout layoutLeft = (LinearLayout) findViewById(R.id.layoutLeft);
 
         layoutLeft.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +134,9 @@ public class SettingsActivity extends TakePhotoActivity {
     }
 
     private void save() {
+        layoutRight.setClickable(false);
+        progressDialog.setMessage("正在保存中...");
+        progressDialog.show();
         if (isChangeHead) {
             OkHttpUtils
                     .postFile()
@@ -137,6 +146,7 @@ public class SettingsActivity extends TakePhotoActivity {
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
+                            layoutRight.setClickable(true);
                             LogUtil.i("上传" + e.toString());
                             Toast.makeText(SettingsActivity.this, "图片上传失败", Toast.LENGTH_SHORT).show();
                         }
@@ -152,6 +162,7 @@ public class SettingsActivity extends TakePhotoActivity {
                                 imageHead = mUploadImage.getModel1();
                                 saveData("", true);
                             } else {
+                                layoutRight.setClickable(true);
                                 String message = mUploadImage.getMessage();
                                 Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_SHORT).show();
                             }
@@ -300,11 +311,13 @@ public class SettingsActivity extends TakePhotoActivity {
                 , new HttpUtilsListener() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        layoutRight.setClickable(true);
                         LogUtil.i("error" + e);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        layoutRight.setClickable(true);
                         LogUtil.i("接口，个人信息保存:", response);
                         Gson gson = new Gson();
                         SetUserBodyInfo mSetUserBodyInfo = gson.fromJson(response, SetUserBodyInfo.class);

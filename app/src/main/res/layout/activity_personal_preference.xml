@@ -69,6 +69,36 @@
                 android:textColor="@color/like_color_normal" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:background="#C9C9C9" />
+
+        <LinearLayout
+            android:id="@+id/layoutRestaurantLike"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivRestaurantLike"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/collection_2" />
+
+            <TextView
+                android:id="@+id/tvRestaurantLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="餐厅收藏"
+                android:textColor="@color/like_color_normal" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <com.huihong.healthydiet.widget.MyViewPager

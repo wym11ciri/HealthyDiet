@@ -6,8 +6,8 @@ package com.huihong.healthydiet;
 
 public class AppUrl {
     private static final String TEST_URL = "http://192.168.10.102:8051/API/Restaurant/GetRestaurantInfoById";
-//        private static final String BASE_URL = "http://192.168.10.100:8051/";
-    private static final String BASE_URL = "http://106.14.218.31:8020/";
+        private static final String BASE_URL = "http://192.168.10.100:8051/";
+//    private static final String BASE_URL = "http://106.14.218.31:8020/";
     public static final String GET_RESTAURANT_LIST_INFO = BASE_URL + "API/Restaurant/GetRestaurantListInfo";//获取餐厅列表
     public static final String DATA_DICTIONARY = BASE_URL + "API/DataDictionary/Cate";//获取餐厅类型
     public static final String GET_RESTAURANT_INFO_BY_ID = BASE_URL + "API/Restaurant/GetRestaurantInfoById";//获取餐厅详情 上面那部分
@@ -54,5 +54,22 @@ public class AppUrl {
 
     //修改密码
     public static final String MODIFY_USER_PASSWORD = BASE_URL + "API/User/ModifyUserPassword";//修改密码
+
+
+    //用户收藏餐厅
+    public static final String USER_PREFERENCE_REST = BASE_URL + "API/Restaurant/UserPreferenceRest";
+
+    //添加积分
+    public static final String ADD_SCORE_RECORD = BASE_URL + "Api/Score/AddScoreRecord";
+
+    //未获取积分的列表
+    public static final String GET_CLICK_SCORE = BASE_URL + "API/Score/GetClickScore";
+
+
+    public static final String CLICK_SCORE = BASE_URL + "API/Score/ClickScore";//积分点击
+
+    public static final String GET_SCORE_LIST = BASE_URL + "API/Score/GetScoreList";//积分列表
+
+
 
 }
