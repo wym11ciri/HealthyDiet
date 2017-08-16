@@ -186,7 +186,7 @@ public class RestPasswordActivity extends BaseTitleActivity {
             @Override
             public void onFinish() {
                 //倒计时结束时操作
-                tvGetCode.setEnabled(true);
+                tvGetCode.setClickable(true);
                 tvGetCode.setText("获取验证码");
 
             }
@@ -199,7 +199,7 @@ public class RestPasswordActivity extends BaseTitleActivity {
     }
 
     public void getCode(String phone) {
-        tvGetCode.setEnabled(false);
+        tvGetCode.setClickable(false);
         OkHttpUtils
                 .post()
                 .url(AppUrl.SEND_MAIL)
@@ -208,7 +208,7 @@ public class RestPasswordActivity extends BaseTitleActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        tvGetCode.setEnabled(true);
+                        tvGetCode.setClickable(true);
                         Toast.makeText(RestPasswordActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
@@ -223,7 +223,7 @@ public class RestPasswordActivity extends BaseTitleActivity {
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RestPasswordActivity.this, Message, Toast.LENGTH_SHORT).show();
                         } else {
-                            tvGetCode.setEnabled(true);
+                            tvGetCode.setClickable(true);
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RestPasswordActivity.this, Message, Toast.LENGTH_SHORT).show();
                         }

@@ -33,7 +33,7 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.ArticleDetailsActivity;
 import com.huihong.healthydiet.activity.DietRecordActivity;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
-import com.huihong.healthydiet.activity.RecommendActivity;
+import com.huihong.healthydiet.activity.RecommendListActivity;
 import com.huihong.healthydiet.activity.SearchResultActivity;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
@@ -60,6 +60,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import okhttp3.Call;
 
 /**
@@ -68,6 +72,9 @@ import okhttp3.Call;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
+    @BindView(R.id.ivAlarm)
+    ImageView ivAlarm;
+    Unbinder unbinder;
     private View mView;
 
     //附近餐厅
@@ -120,7 +127,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_home, null);
-
+            unbinder = ButterKnife.bind(this, mView);
             initUI();
 //            getHomePageInfo();
             MainActivity.mainActivity.setLocationListener(new LocationListener() {
@@ -136,9 +143,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         }
 
+
         return mView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        banner.startAutoPlay();
+
+    }
 
     @Override
     public void onResume() {
@@ -152,6 +166,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         super.onStop();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
     TextView tvAddress;
 //    XBanner mBannerNet;
 
@@ -164,6 +185,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         progressDialog.setCancelable(true);
         tvRecord = (TextView) mView.findViewById(R.id.tvRecord);
         tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
+
+        ivAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.mainActivity.mViewPager.setCurrentItem(3);
+            }
+        });
+
 
         tvAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,13 +265,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 return false;
             }
         });
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        banner.startAutoPlay();
 
     }
 
@@ -404,7 +426,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void jumpActivity2(String tag) {
-        Intent mIntent = new Intent(getActivity(), RecommendActivity.class);
+        Intent mIntent = new Intent(getActivity(), RecommendListActivity.class);
         mIntent.putExtra("tag", tag);
         startActivity(mIntent);
     }
@@ -537,5 +559,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             ivCircle02.setVisibility(View.VISIBLE);
             ivCircle03.setVisibility(View.VISIBLE);
         }
+    }
+
+    @OnClick(R.id.ivAlarm)
+    public void onViewClicked() {
     }
 }

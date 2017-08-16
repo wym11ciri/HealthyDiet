@@ -1,6 +1,7 @@
 package com.huihong.healthydiet.model.gsonbean;
 
 import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
+import com.huihong.healthydiet.model.httpmodel.ScreenType;
 
 import java.util.List;
 
@@ -16,39 +17,14 @@ public class DataDictionary extends HttpBaseInfo{
      * ListData : [{"id":2,"typeValue":"江浙菜"},{"id":3,"typeValue":"咖啡厅"},{"id":5,"typeValue":"西餐"}]
      */
 
-    private List<ListDataBean> ListData;
+    private List<ScreenType> ListData;
 
-    public List<ListDataBean> getListData() {
+    public List<ScreenType> getListData() {
         return ListData;
     }
 
-    public void setListData(List<ListDataBean> ListData) {
+    public void setListData(List<ScreenType> ListData) {
         this.ListData = ListData;
     }
 
-    public static class ListDataBean {
-        /**
-         * id : 2
-         * typeValue : 江浙菜
-         */
-
-        private int id;
-        private String typeValue;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getTypeValue() {
-            return typeValue;
-        }
-
-        public void setTypeValue(String typeValue) {
-            this.typeValue = typeValue;
-        }
-    }
 }

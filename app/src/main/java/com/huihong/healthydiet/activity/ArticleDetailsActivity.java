@@ -254,9 +254,7 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putSerializable("info", mListDataBean);
-        LogUtil.i("嘿嘿", pos + "");
         bundle.putInt("pos", pos);
-        //通过Intent对象返回结果，调用setResult方法
         intent.putExtras(bundle);
         setResult(2, intent);
         finish();//结束当前的activity的生命周期

@@ -81,6 +81,7 @@ public class SettingsActivity extends TakePhotoActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(this);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         progressDialog=new ProgressDialog(SettingsActivity.this);
@@ -131,6 +132,12 @@ public class SettingsActivity extends TakePhotoActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        ActivityCollector.removeActivity(this);
+        super.onDestroy();
     }
 
     private void save() {
@@ -192,8 +199,6 @@ public class SettingsActivity extends TakePhotoActivity {
             public void onClick(View v) {
                 SPUtils.put(SettingsActivity.this, "isDoSimpleTest", false);
                 SPUtils.put(SettingsActivity.this, "isLogin", false);
-
-
                 ActivityCollector.finishAll();//销毁所有界面
                 Intent mIntent = new Intent(SettingsActivity.this, LoginActivity.class);
                 SettingsActivity.this.startActivity(mIntent);

@@ -70,6 +70,13 @@ public class AppUrl {
 
     public static final String GET_SCORE_LIST = BASE_URL + "API/Score/GetScoreList";//积分列表
 
+    public static final String USER_SCORE_INFO = BASE_URL + "api/User/UserScoreInfo";//获取用户积分
+
+    public static final String VERIFICATION_CODE = BASE_URL + "api/User/VerificationCode";
+    public static final String MODIFY_USER_PHONE = BASE_URL + "api/User/ModifyUserPhone";
+
+
+
 
 
 }

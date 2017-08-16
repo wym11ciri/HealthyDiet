@@ -268,7 +268,8 @@ public class MotionFragment extends Fragment {
                     mStepCount.setTime(min);
                     tvStepCount.setText(stepCount + "");
                     DecimalFormat df = new DecimalFormat("######0.0");
-                    double a = MotionFragment.this.stepCount * 0.4;
+                    MotionFragment.this.stepCount=stepCount;
+                    double a = MotionFragment.this.stepCount * 0.4000;
                     tvDistance.setText(df.format(a) + "");
                     tvTime.setText(min + "");
                 }

@@ -47,6 +47,7 @@ public class RestaurantLikeFragment extends Fragment {
     private List<RestaurantInfo> recommendList;
 
     private LinearLayout layoutNoData;
+    private int num=1;
 
     @Nullable
     @Override
@@ -66,7 +67,10 @@ public class RestaurantLikeFragment extends Fragment {
             mLRecyclerView.setOnRefreshListener(new OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getInfo();
+                    num=1;
+                    recommendList.clear();
+                    mLRecyclerViewAdapter.notifyDataSetChanged();
+                    getInfo(num);
                 }
             });
             mLRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -84,12 +88,12 @@ public class RestaurantLikeFragment extends Fragment {
         return mView;
     }
 
-    private void getInfo() {
+    private void getInfo(int pageNum) {
         Map<String, String> map = new HashMap<>();
         map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         map.put("CoordY", MyApplication.Latitude+"");
         map.put("CoordX", MyApplication.Longitude+"");
-
+        map.put("pageNum", pageNum+"");
         HttpUtils.sendHttpAddToken(getActivity()
                 , AppUrl.USER_PREFERENCE_REST
                 , map
@@ -102,6 +106,7 @@ public class RestaurantLikeFragment extends Fragment {
                         UserPreferenceRest mUserPreferenceRest = gson.fromJson(response, UserPreferenceRest.class);
                         int code = mUserPreferenceRest.getHttpCode();
                         if (code == 200) {
+                            num++;
                             layoutNoData.setVisibility(View.GONE);
                             recommendList.clear();
                             List<RestaurantInfo> mListData = mUserPreferenceRest.getListData();

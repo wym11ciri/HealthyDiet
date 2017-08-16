@@ -192,7 +192,7 @@ public class RegisterActivity extends BaseTitleActivity {
             @Override
             public void onFinish() {
                 //倒计时结束时操作
-                tvGetCode.setEnabled(true);
+                tvGetCode.setClickable(true);
                 tvGetCode.setText("获取验证码");
 
             }
@@ -228,7 +228,6 @@ public class RegisterActivity extends BaseTitleActivity {
                         int code = mSendMail.getHttpCode();
                         if (code == 200) {
                             codeTimer.start();
-
                             String Message = mSendMail.getMessage();
                             Toast.makeText(RegisterActivity.this, Message, Toast.LENGTH_SHORT).show();
                         } else {

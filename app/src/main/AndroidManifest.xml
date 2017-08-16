@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.RecommendActivity" />
+        <activity android:name=".activity.RecommendListActivity" />
         <activity android:name=".activity.RestaurantDetailsActivity" />
         <activity android:name=".activity.RecipesDetailsActivity" />
         <activity android:name=".activity.PayActivity" />

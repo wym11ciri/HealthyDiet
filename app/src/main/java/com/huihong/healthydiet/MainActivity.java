@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -47,11 +48,68 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     private ImageView ivTab01, ivTab02, ivTab03, ivTab04, ivTab05;
     private List<Fragment> mList;
     private FragmentPagerAdapter mPagerAdapter;
-    private MyViewPager mViewPager;
+    public MyViewPager mViewPager;
     public LocationService locationService;
 
 
     private LocationListener locationListener;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        StatusBarUtil.setTranslucentForImageViewInFragment(MainActivity.this, null);
+        setContentView(R.layout.activity_main);
+//        StatusBarUtil.setTransparent(this);//设置状态栏沉浸
+        mainActivity = this;
+        getPermission();
+
+        locationService = ((MyApplication) getApplication()).locationService;
+        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
+        locationService.registerListener(mListener);
+        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
+        locationService.start();// 定位SDK
+
+        initUI();
+        setupService();
+
+//
+        boolean isFirstzz = (boolean) SPUtils.get(MainActivity.this, "isFirstzz", true);
+
+        if (isFirstzz) {
+            for (int i = 1; i < 30; i++) {
+                SleepCache mSleepCache = new SleepCache();
+                mSleepCache.setYear(2017);
+                mSleepCache.setMonth(8);
+                mSleepCache.setDay(i);
+                mSleepCache.setGetUpHour(2 + (i % 12));
+                mSleepCache.setGetUpMin(20);
+                mSleepCache.setSleepHour(12 + (i % 12));
+                mSleepCache.setSleepMin(20);
+                mSleepCache.save();
+            }
+            SPUtils.put(MainActivity.this, "isFirstzz", false);
+        }
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LogUtil.i("onStart");
+
+    }
+
+    /***
+     * Stop location service
+     */
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        locationService.unregisterListener(mListener); //注销掉监听
+        locationService.stop(); //停止定位服务
+        super.onStop();
+    }
 
     public void setLocationListener(LocationListener locationListener) {
         this.locationListener = locationListener;
@@ -92,45 +150,6 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         this.itemOnClickListener05 = itemOnClickListener05;
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        StatusBarUtil.setTranslucentForImageViewInFragment(MainActivity.this, null);
-        setContentView(R.layout.activity_main);
-//        StatusBarUtil.setTransparent(this);//设置状态栏沉浸
-        mainActivity = this;
-        getPermission();
-
-        locationService = ((MyApplication) getApplication()).locationService;
-        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
-        locationService.registerListener(mListener);
-        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
-        locationService.start();// 定位SDK
-
-        initUI();
-        setupService();
-
-//
-        boolean isFirstzz = (boolean) SPUtils.get(MainActivity.this, "isFirstzz", true);
-
-        if (isFirstzz) {
-            for (int i = 1; i < 30; i++) {
-                SleepCache mSleepCache = new SleepCache();
-                mSleepCache.setYear(2017);
-                mSleepCache.setMonth(8);
-                mSleepCache.setDay(i);
-                mSleepCache.setGetUpHour(2 + (i % 12));
-                mSleepCache.setGetUpMin(20);
-                mSleepCache.setSleepHour(12 + (i % 12));
-                mSleepCache.setSleepMin(20);
-                mSleepCache.save();
-            }
-            SPUtils.put(MainActivity.this, "isFirstzz", false);
-        }
-
-
-    }
 
     private void getPermission() {
 
@@ -283,6 +302,29 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.setCurrentItem(2);
 
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position==3){
+                    restTab();
+                    ivTab04.setImageResource(R.mipmap.logo_4);
+                    tvTab04.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
 
     @Override
@@ -374,15 +416,6 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     }
 
 
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LogUtil.i("onStart");
-
-    }
-
     /*****
      *
      * 定位结果回调，重写onReceiveLocation方法，可以直接拷贝如下代码到自己工程中修改
@@ -412,17 +445,6 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         public void onConnectHotSpotMessage(String s, int i) {
         }
     };
-
-    /***
-     * Stop location service
-     */
-    @Override
-    protected void onStop() {
-        // TODO Auto-generated method stub
-        locationService.unregisterListener(mListener); //注销掉监听
-        locationService.stop(); //停止定位服务
-        super.onStop();
-    }
 
 
     private long lastTime = 0;

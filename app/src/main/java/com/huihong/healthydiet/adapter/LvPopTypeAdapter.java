@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-import com.huihong.healthydiet.model.mybean.Type;
+import com.huihong.healthydiet.model.httpmodel.ScreenType;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ import java.util.List;
 
 public class LvPopTypeAdapter extends BaseAdapter {
     private Context mContext;
-    private List<Type> mList;
+    private List<ScreenType> mList;
 
-    public LvPopTypeAdapter(Context mContext, List<Type> mList) {
+    public LvPopTypeAdapter(Context mContext, List<ScreenType> mList) {
         this.mContext = mContext;
         this.mList = mList;
     }

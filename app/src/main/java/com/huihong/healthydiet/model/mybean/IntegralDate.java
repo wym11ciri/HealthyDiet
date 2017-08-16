@@ -1,5 +1,7 @@
 package com.huihong.healthydiet.model.mybean;
 
+import com.huihong.healthydiet.utils.DateUtil;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,7 +24,7 @@ public class IntegralDate {
     //积分图标地址
     private String iconAdd;
     //积分数量
-    private int num;
+    private double num;
     //获得积分事件
     private String  event;
     //从接口传递过来的完整事件
@@ -69,7 +71,7 @@ public class IntegralDate {
             int year = mCalendar.get(Calendar.YEAR);
             int month = mCalendar.get(Calendar.MONTH) + 1;
             int day = mCalendar.get(Calendar.DAY_OF_MONTH);
-            return  year+"-"+month+"-"+day;
+            return  month+"-"+day;
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -80,7 +82,25 @@ public class IntegralDate {
 
 
     public String getWeek() {
-        return week;
+        String mTime="";
+
+        try {
+            String[] c=this.date.split("T");
+            String mDate=c[0];
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(mDate);
+            Calendar mCalendar = Calendar.getInstance();
+            mCalendar.setTime(date);
+            int year = mCalendar.get(Calendar.YEAR);
+            int month = mCalendar.get(Calendar.MONTH) + 1;
+            int day = mCalendar.get(Calendar.DAY_OF_MONTH);
+            mTime=year+"-"+month+"-"+day;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return "周"+DateUtil.getWeek(mTime);
     }
 
     public void setWeek(String week) {
@@ -97,11 +117,11 @@ public class IntegralDate {
         this.iconAdd = iconAdd;
     }
 
-    public int getNum() {
+    public double getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(double num) {
         this.num = num;
     }
 

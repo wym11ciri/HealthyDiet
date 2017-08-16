@@ -16,7 +16,6 @@ public class ChangeNameActivity extends BaseTitleActivity {
     @Override
     public void initUI() {
         setTitle("更改名字");
-
     }
 
     @Override

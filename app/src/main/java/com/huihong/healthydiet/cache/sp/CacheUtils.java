@@ -257,4 +257,14 @@ public class CacheUtils {
         LogUtil.i("闹钟获得睡眠",hour+":"+min);
         return time;
     }
+
+    public static void setLevels(Context mContext, int levels) {
+        SPUtils.put(mContext, "levels", levels);
+    }
+    public static   int getLevels(Context mContext) {
+
+        int a= (int) SPUtils.get(mContext,"levels",1);
+        return  a;
+    }
+
 }

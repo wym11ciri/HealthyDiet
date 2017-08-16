@@ -121,6 +121,7 @@
             android:layout_marginTop="4dp">
 
             <ImageView
+                android:id="@+id/ivTree"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
@@ -151,8 +152,10 @@
                 android:src="@mipmap/lv" />
 
             <TextView
+                android:id="@+id/tvCurrentName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLength="4"
                 android:text="生龙活虎"
                 android:textColor="#000000"
                 android:textSize="16sp"
@@ -174,6 +177,7 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tvCurrentScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="652"
@@ -190,6 +194,7 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tvNextScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4"
@@ -206,8 +211,9 @@
 
             <LinearLayout
                 android:id="@+id/layoutIntegralRecord"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:gravity="center_vertical|right"
                 android:orientation="horizontal">
 
@@ -222,11 +228,16 @@
 
         </LinearLayout>
 
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvIntegral"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="123dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvIntegral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
 
     </LinearLayout>
 </ScrollView>

@@ -24,11 +24,15 @@ public class GetScoreList extends HttpBaseInfo{
     public static class ListDataBean {
         /**
          * ScoreId : 3
+         * ScoreType : sleep
+         * ScoreNum : 0.5
          * Time : 2017-08-15T00:00:00
          * Content : 在23点之前睡觉
          */
 
         private int ScoreId;
+        private String ScoreType;
+        private double ScoreNum;
         private String Time;
         private String Content;
 
@@ -38,6 +42,22 @@ public class GetScoreList extends HttpBaseInfo{
 
         public void setScoreId(int ScoreId) {
             this.ScoreId = ScoreId;
+        }
+
+        public String getScoreType() {
+            return ScoreType;
+        }
+
+        public void setScoreType(String ScoreType) {
+            this.ScoreType = ScoreType;
+        }
+
+        public double getScoreNum() {
+            return ScoreNum;
+        }
+
+        public void setScoreNum(double ScoreNum) {
+            this.ScoreNum = ScoreNum;
         }
 
         public String getTime() {

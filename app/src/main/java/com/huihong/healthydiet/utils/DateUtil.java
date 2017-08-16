@@ -80,6 +80,44 @@ public class DateUtil {
         return week_index;
     }
 
+    //  String pTime = "2012-03-12";
+    public static  String getWeek(String pTime) {
+
+
+        String Week = "";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(format.parse(pTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int mWeek = c.get(Calendar.DAY_OF_WEEK);
+        if (mWeek == 1) {
+            Week += "天";
+        }
+        if (mWeek == 2) {
+            Week += "一";
+        }
+        if (mWeek == 3) {
+            Week += "二";
+        }
+        if (mWeek == 4) {
+            Week += "三";
+        }
+        if (mWeek == 5) {
+            Week += "四";
+        }
+        if (mWeek == 6) {
+            Week += "五";
+        }
+        if (mWeek == 7) {
+            Week += "六";
+        }
+        return Week;
+    }
+
+
     public static String StringData() {
         final Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
@@ -106,14 +144,13 @@ public class DateUtil {
     }
 
     /**
-     *查询手机当前日期是周几
+     * 查询手机当前日期是周几
      */
-    public static int  getNowWeek() {
+    public static int getNowWeek() {
         final Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        return  c.get(Calendar.DAY_OF_WEEK);
+        return c.get(Calendar.DAY_OF_WEEK);
     }
-
 
 
     /**
@@ -135,6 +172,7 @@ public class DateUtil {
         }
         return date;
     }
+
     /**
      * 获取过去第几天的日期
      *
@@ -149,6 +187,7 @@ public class DateUtil {
         String result = format.format(today);
         return result;
     }
+
     /**
      * 获取过去第几天的日期
      *
@@ -156,7 +195,7 @@ public class DateUtil {
      * @return
      */
     public static List<Integer> getPastDate(int past) {
-        List<Integer> dateList=new ArrayList<>();
+        List<Integer> dateList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
         dateList.add(calendar.get(Calendar.YEAR));
@@ -167,6 +206,7 @@ public class DateUtil {
 
     /**
      * 获取未来 第 past 天的日期
+     *
      * @param past
      * @return
      */

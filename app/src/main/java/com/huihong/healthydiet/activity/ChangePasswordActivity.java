@@ -37,7 +37,6 @@ import okhttp3.Call;
 
 public class ChangePasswordActivity extends BaseTitleActivity2 {
 
-
     @BindView(R.id.etOldPassWord)
     EditText etOldPassWord;
     @BindView(R.id.ivEye)
@@ -55,7 +54,6 @@ public class ChangePasswordActivity extends BaseTitleActivity2 {
     public int setLayoutId() {
         return R.layout.activity_change_password;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +135,8 @@ public class ChangePasswordActivity extends BaseTitleActivity2 {
                             Intent mIntent = new Intent(ChangePasswordActivity.this, LoginActivity.class);
                             startActivity(mIntent);
 
+                        }else {
+                            tvChangeWord.setClickable(true);
                         }
                         String message = mHttpBaseInfo.getMessage();
                         Toast.makeText(ChangePasswordActivity.this, message, Toast.LENGTH_SHORT).show();

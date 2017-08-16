@@ -57,7 +57,7 @@ public class SearchResultLeftFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_recommend_nearby_list, null);
+            mView = inflater.inflate(R.layout.search_list, null);
             initUI();
         }
 

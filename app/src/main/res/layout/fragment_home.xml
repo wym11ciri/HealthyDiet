@@ -123,6 +123,7 @@
                     android:layout_weight="0.5" />
 
                 <ImageView
+                    android:id="@+id/ivAlarm"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginRight="10dp"

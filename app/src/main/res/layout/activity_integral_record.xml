@@ -4,11 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/top_bar_style" />
+    <include layout="@layout/title_bar_style" />
 
-    <com.github.jdsjlzx.recyclerview.LRecyclerView
-        android:id="@+id/rvIntegralRecord"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.github.jdsjlzx.recyclerview.LRecyclerView
+            android:id="@+id/rvIntegralRecord"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/ivTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/no_more_data" />
+
+
+    </RelativeLayout>
+
 
 </LinearLayout>

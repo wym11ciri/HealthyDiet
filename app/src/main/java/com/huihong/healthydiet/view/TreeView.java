@@ -346,4 +346,65 @@ public class TreeView extends View {
         }
     }
 
+
+    public void setLevels(int levels) {
+
+
+        mCoordinateList.clear();
+
+        switch (levels) {
+            case 1:
+                setCoordinate(0.3444, 0.11);
+                setCoordinate(0.2248, 0.4);
+                setCoordinate(0.571, 0.274);
+                break;
+            case 2:
+                setCoordinate(0.3987, 0.14388);
+                setCoordinate(0.14767, 0.3597);
+                setCoordinate(0.6835, 0.7458);
+                break;
+            case 3:
+                setCoordinate(0.38526, 0.12857);
+                setCoordinate(0.11789, 0.29523);
+                setCoordinate(0.7052, 0.7);
+                break;
+            case 4:
+                setCoordinate(0.15, 0.10);
+                setCoordinate(0.1, 0.733);
+                setCoordinate(0.71698, 0.79425);
+                break;
+            case 5:
+                setCoordinate(0.077568, 0.6610);
+                setCoordinate(0.18238, 0.85336);
+                setCoordinate(0.7134, 0.7);
+                break;
+//            case 6:
+//                setCoordinate(0.077568, 0.6610);
+//                setCoordinate(0.18238, 0.85336);
+//                setCoordinate(0.7134, 0.7);
+//                break;
+//            case 7:
+//                setCoordinate(0.077568, 0.6610);
+//                setCoordinate(0.18238, 0.85336);
+//                setCoordinate(0.7134, 0.7);
+//                break;
+            default:
+                setCoordinate(0.077568, 0.6610);
+                setCoordinate(0.18238, 0.85336);
+                setCoordinate(0.7134, 0.7);
+                break;
+        }
+
+        leaf01.setStartX((int) (mCoordinateList.get(0).getX() * viewW));
+        leaf01.setStartY((int) (mCoordinateList.get(0).getY() * viewH));
+
+        leaf02.setStartX((int) (mCoordinateList.get(1).getX() * viewW));
+        leaf02.setStartY((int) (mCoordinateList.get(1).getY() * viewH));
+
+        leaf03.setStartX((int) (mCoordinateList.get(2).getX() * viewW));
+        leaf03.setStartY((int) (mCoordinateList.get(2).getY() * viewH));
+
+        invalidate();
+    }
+
 }

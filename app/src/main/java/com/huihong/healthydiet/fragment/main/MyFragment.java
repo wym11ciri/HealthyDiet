@@ -1,5 +1,7 @@
 package com.huihong.healthydiet.fragment.main;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,12 +32,15 @@ import com.huihong.healthydiet.mInterface.OnLeafClickListener;
 import com.huihong.healthydiet.model.gsonbean.GetClickScore;
 import com.huihong.healthydiet.model.gsonbean.GetScoreList;
 import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
+import com.huihong.healthydiet.model.gsonbean.UserScoreInfo;
 import com.huihong.healthydiet.model.httpmodel.LeafInfo;
 import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
+import com.huihong.healthydiet.model.httpmodel.RankInfo;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.common.ValueUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.huihong.healthydiet.view.TreeView;
 import com.joooonho.SelectableRoundedImageView;
@@ -67,21 +72,34 @@ public class MyFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.mTreeView)
     TreeView mTreeView;
+    @BindView(R.id.tvCurrentName)
+    TextView tvCurrentName;
+    @BindView(R.id.tvCurrentScore)
+    TextView tvCurrentScore;
+    @BindView(R.id.tvNextScore)
+    TextView tvNextScore;
+    @BindView(R.id.rvIntegral)
+    RecyclerView rvIntegral;
+    @BindView(R.id.ivTree)
+    ImageView ivTree;
 
     private View mView;
 
-    private  boolean treeView=false;
+    private boolean treeView = false;
+
+    int levels = 1;
 
 
     private LinearLayout layoutSettings;
     private LinearLayout layoutBodyData, layoutMajorTest;
     private LinearLayout layoutLike;
     private SelectableRoundedImageView ivHead;
-    private RecyclerView rvIntegral;//获取积分的列表
     private RvIntegralAdapter rvIntegralAdapter;
     private ImageView ivSetting;
     private LinearLayout layoutIntegralRecord;
 
+
+    private List<GetScoreList.ListDataBean> mListDataBean;
 
     //个人信息
     private TextView tvAge, tvName, tvSex, tvHeight, tvWeight;
@@ -92,7 +110,7 @@ public class MyFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //创建Fragment的时候获取最新的用户信息
-
+        levels = CacheUtils.getLevels(getActivity());
         getPersonalInfo();
     }
 
@@ -105,8 +123,13 @@ public class MyFragment extends Fragment {
         mTreeView.setCustomViewOnSizeChangedListener(new CustomViewOnSizeChangedListener() {
             @Override
             public void OnSizeChanged() {
-                treeView=true;
+                treeView = true;
+                mTreeView.setLevels(levels);
                 getLeafInfo();
+                getScoreList();
+                getIntegral();
+
+
             }
         });
 
@@ -115,17 +138,17 @@ public class MyFragment extends Fragment {
             public void onClick(int pos) {
                 switch (pos) {
                     case 0:
-                        if(leafinfo01!=null){
+                        if (leafinfo01 != null) {
                             getScore(leafinfo01.getListId());
                         }
                         break;
                     case 1:
-                        if(leafinfo02!=null){
+                        if (leafinfo02 != null) {
                             getScore(leafinfo02.getListId());
                         }
                         break;
                     case 2:
-                        if(leafinfo03!=null){
+                        if (leafinfo03 != null) {
                             getScore(leafinfo03.getListId());
                         }
                         break;
@@ -137,29 +160,111 @@ public class MyFragment extends Fragment {
         initUI();
         initPersonalUI();
 
+
         return mView;
+    }
+
+    private void setTreeView(int i) {
+
+        switch (i) {
+            case 1:
+                ivTree.setImageResource(R.mipmap.tree_1);
+                break;
+            case 2:
+                ivTree.setImageResource(R.mipmap.tree_2);
+                break;
+            case 3:
+                ivTree.setImageResource(R.mipmap.tree_3);
+                break;
+            case 4:
+                ivTree.setImageResource(R.mipmap.tree_4);
+                break;
+            case 5:
+                ivTree.setImageResource(R.mipmap.tree_5);
+                break;
+            case 6:
+                ivTree.setImageResource(R.mipmap.tree_6);
+                break;
+            case 7:
+                ivTree.setImageResource(R.mipmap.tree_7);
+                break;
+            case 8:
+                ivTree.setImageResource(R.mipmap.tree_8);
+                break;
+        }
+
+        mTreeView.setLevels(i);
+
+
+    }
+
+    private AlertDialog  dialog;
+
+    private void getIntegral() {
+        Map<String, String> map = new HashMap<>();
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.USER_SCORE_INFO
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("获取积分", response);
+                        Gson gson = new Gson();
+                        UserScoreInfo mUserScoreInfo = gson.fromJson(response, UserScoreInfo.class);
+                        if (mUserScoreInfo.getHttpCode() == 200) {
+                            RankInfo mRankInfo = mUserScoreInfo.getModel1();
+                            tvCurrentName.setText(mRankInfo.getCurrent_Name());
+                            tvCurrentScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getCurrent_Score(), 1));
+                            tvNextScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getNext_Score(), 1));
+                            if (mRankInfo.getCurrent_Lv() > levels) {
+                              AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                                builder.setMessage("恭喜你！升级啦");
+                                builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dialog=builder.create();
+                                dialog.show();
+                            }
+                            levels = mRankInfo.getCurrent_Lv();
+                            CacheUtils.setLevels(getActivity(), levels);
+                            setTreeView(levels);
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("获取积分", e.toString());
+                    }
+                });
+
+
     }
 
     private void getScore(String listId) {
         Map<String, String> map = new HashMap<>();
-        map.put("ScoreIds",listId);
-        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+        map.put("ScoreIds", listId);
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
 
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.CLICK_SCORE
                 , map
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("点击获取积分",response);
+                        LogUtil.i("点击获取积分", response);
+                        getScoreList();
+                        getIntegral();
 
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.i("点击获取积分",e.toString());
+                        LogUtil.i("点击获取积分", e.toString());
                     }
                 });
-
 
 
     }
@@ -215,13 +320,9 @@ public class MyFragment extends Fragment {
         ivHead = (SelectableRoundedImageView) mView.findViewById(R.id.ivHead);
 
 
-        rvIntegral = (RecyclerView) mView.findViewById(R.id.rvIntegral);
-        List<String> zzz = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            zzz.add("");
-        }
+        mListDataBean = new ArrayList<>();
 
-        rvIntegralAdapter = new RvIntegralAdapter(getActivity(), zzz);
+        rvIntegralAdapter = new RvIntegralAdapter(getActivity(), mListDataBean);
         rvIntegral.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rvIntegral.setAdapter(rvIntegralAdapter);
 
@@ -236,33 +337,37 @@ public class MyFragment extends Fragment {
         });
 
 
-        getScoreList();
     }
 
     private void getScoreList() {
 
         Map<String, String> map = new HashMap<>();
-        map.put("PageNo","1");
-        map.put("UserId",  SPUtils.get(getActivity(),"UserId",0)+"");
+        map.put("PageNo", "1");
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
 
         HttpUtils.sendHttpAddToken(getActivity(), AppUrl.GET_SCORE_LIST
                 , map
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("获取积分列表",response);
+                        LogUtil.i("获取积分列表", response);
                         Gson gson = new Gson();
                         GetScoreList mGetScoreList = gson.fromJson(response, GetScoreList.class);
-                        if(mGetScoreList.getHttpCode()==200){
-
-                        }else {
-
+                        if (mGetScoreList.getHttpCode() == 200) {
+                            if (mGetScoreList.getListData().size() >= 3) {
+                                mListDataBean.clear();
+                                mListDataBean.addAll(mGetScoreList.getListData().subList(0, 3));
+                            } else {
+                                mListDataBean.clear();
+                                mListDataBean.addAll(mGetScoreList.getListData());
+                            }
+                            rvIntegralAdapter.notifyDataSetChanged();
                         }
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.i("获取积分列表",e.toString());
+                        LogUtil.i("获取积分列表", e.toString());
                     }
                 });
 
@@ -306,16 +411,17 @@ public class MyFragment extends Fragment {
 
 
         //重新获取叶子
-        if(treeView){
+        if (treeView) {
             getLeafInfo();
         }
 
 
     }
 
-    private  LeafInfo leafinfo01;
-    private  LeafInfo leafinfo02;
-    private  LeafInfo leafinfo03;
+    private LeafInfo leafinfo01;
+    private LeafInfo leafinfo02;
+    private LeafInfo leafinfo03;
+
     private void getLeafInfo() {
         Map<String, String> map = new HashMap<>();
         map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
@@ -328,9 +434,9 @@ public class MyFragment extends Fragment {
                         Gson gson = new Gson();
                         GetClickScore mGetClickScore = gson.fromJson(response, GetClickScore.class);
                         if (mGetClickScore.getHttpCode() == 200) {
-                            leafinfo01=mGetClickScore.getModel1();
-                            leafinfo02=mGetClickScore.getModel2();
-                            leafinfo03=mGetClickScore.getModel3();
+                            leafinfo01 = mGetClickScore.getModel1();
+                            leafinfo02 = mGetClickScore.getModel2();
+                            leafinfo03 = mGetClickScore.getModel3();
                             mTreeView.invalidateView(mGetClickScore.getModel1(), mGetClickScore.getModel2(), mGetClickScore.getModel3());
                         }
 
@@ -393,4 +499,6 @@ public class MyFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
 }

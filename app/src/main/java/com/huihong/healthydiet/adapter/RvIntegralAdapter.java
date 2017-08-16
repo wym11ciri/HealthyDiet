@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.model.gsonbean.GetScoreList;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class RvIntegralAdapter extends RecyclerView.Adapter<RvIntegralViewHolder
 
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<String> mList;
+    private List<GetScoreList.ListDataBean> mList;
 
-    public RvIntegralAdapter(Context pContext, List<String> pList) {
+    public RvIntegralAdapter(Context pContext, List<GetScoreList.ListDataBean> pList) {
         mList = pList;
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
@@ -46,6 +47,18 @@ public class RvIntegralAdapter extends RecyclerView.Adapter<RvIntegralViewHolder
     @Override
     public void onBindViewHolder(final RvIntegralViewHolder holder, int position) {
 
+        holder.tvContent.setText(mList.get(position).getContent());
+        double num = mList.get(position).getScoreNum();
+        if (num < 0) {
+            holder.tvIntegral.setText("" + mList.get(position).getScoreNum());
+
+        } else {
+            holder.tvIntegral.setText("+" + mList.get(position).getScoreNum());
+        }
+        String time = mList.get(position).getTime();
+        time = time.substring(5, 10);
+        holder.tvTime.setText(time);
+
     }
 
     @Override
@@ -56,10 +69,13 @@ public class RvIntegralAdapter extends RecyclerView.Adapter<RvIntegralViewHolder
 
 class RvIntegralViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tvName;
+    TextView tvContent, tvIntegral, tvTime;
+
 
     RvIntegralViewHolder(View itemView) {
         super(itemView);
-        tvName = (TextView) itemView.findViewById(R.id.tvName);
+        tvContent = (TextView) itemView.findViewById(R.id.tvContent);
+        tvIntegral = (TextView) itemView.findViewById(R.id.tvIntegral);
+        tvTime = (TextView) itemView.findViewById(R.id.tvTime);
     }
 }

@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -7,11 +8,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity2;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -68,7 +71,7 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
             @Override
             public void onFinish() {
                 //倒计时结束时操作
-                tvGetCode.setEnabled(true);
+                tvGetCode.setClickable(true);
                 tvGetCode.setText("获取验证码");
 
             }
@@ -97,6 +100,8 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
                     if (mCode.length() < 5) {
                         Toast.makeText(this, "请输入正确的验证码", Toast.LENGTH_SHORT).show();
                     } else {
+
+                        verificationCode(mPhone,mCode);
                         go2Activity2(ChangePhoneActivity01.this, ChangePhoneActivity02.class);
                         finishActivity();
                     }
@@ -105,7 +110,43 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
         }
     }
 
+    private void verificationCode(String mPhone, String mCode) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("VerificaCode",mCode);
+        map.put("Phone",mPhone);
+        map.put("UserId",  SPUtils.get(ChangePhoneActivity01.this,"UserId",0)+"");
+
+        HttpUtils.sendHttpAddToken(ChangePhoneActivity01.this, AppUrl.VERIFICATION_CODE
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("手机验证01",response);
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if(mHttpBaseInfo.getHttpCode()==200){
+                            Intent mIntent=new Intent(ChangePhoneActivity01.this,ChangePhoneActivity02.class);
+                            startActivity(mIntent);
+                            finishActivity();
+                        }else {
+                            Toast.makeText(ChangePhoneActivity01.this, mHttpBaseInfo.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("手机验证01",e.toString());
+                    }
+                });
+
+
+
+
+    }
+
     private void getCode(String phone) {
+        tvGetCode.setClickable(false);
         Map<String, String> map = new HashMap<>();
         map.put("phone", phone);
         map.put("UserId", SPUtils.get(ChangePhoneActivity01.this, "UserId", 0) + "");
@@ -116,13 +157,13 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
                     @Override
                     public void onResponse(String response, int id) {
                         codeTimer.start();
-                        tvGetCode.setClickable(false);
                         LogUtil.i("获取验证码", response);
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("获取验证码", e.toString());
+                        tvGetCode.setClickable(true);
                     }
                 });
     }
