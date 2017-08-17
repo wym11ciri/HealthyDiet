@@ -66,7 +66,7 @@ public class Leaf {
     public void setIntegral(String integral) {
         this.integral = integral;
 
-        this.integralWidth= leafSize+7*integral.length();
+        this.integralWidth= leafSize+(leafSize/3)*(integral.length()-1);
     }
 
     public String getEvent() {
@@ -118,7 +118,7 @@ public class Leaf {
     }
     //获得绘制事件的开始坐标Y
     public float getDrawEventY() {
-        return (int) (move+startY+leafSize*0.8);
+        return (int) (move+startY+leafSize*0.75);
     }
 
     //获得叶子点击事件区域的X

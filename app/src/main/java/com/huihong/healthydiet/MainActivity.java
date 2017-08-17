@@ -18,7 +18,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.huihong.healthydiet.activity.base.BaseActivity;
 import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
-import com.huihong.healthydiet.cache.litepal.SleepCache;
 import com.huihong.healthydiet.fragment.main.ArticleFragment;
 import com.huihong.healthydiet.fragment.main.HomeFragment;
 import com.huihong.healthydiet.fragment.main.MotionFragment;
@@ -28,7 +27,6 @@ import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.service.AlarmClockService;
 import com.huihong.healthydiet.utils.common.LogUtil;
-import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
 import com.huihong.healthydiet.widget.MyViewPager;
 import com.yanzhenjie.alertdialog.AlertDialog;
@@ -73,22 +71,24 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         setupService();
 
 //
-        boolean isFirstzz = (boolean) SPUtils.get(MainActivity.this, "isFirstzz", true);
+//        boolean isFirstzz = (boolean) SPUtils.get(MainActivity.this, "isFirstzz", true);
+//
+//        if (isFirstzz) {
+//            for (int i = 1; i < 30; i++) {
+//                SleepCache mSleepCache = new SleepCache();
+//                mSleepCache.setYear(2017);
+//                mSleepCache.setMonth(8);
+//                mSleepCache.setDay(i);
+//                mSleepCache.setGetUpHour(2 + (i % 12));
+//                mSleepCache.setGetUpMin(20);
+//                mSleepCache.setSleepHour(12 + (i % 12));
+//                mSleepCache.setSleepMin(20);
+//                mSleepCache.save();
+//            }
+//            SPUtils.put(MainActivity.this, "isFirstzz", false);
+//        }
 
-        if (isFirstzz) {
-            for (int i = 1; i < 30; i++) {
-                SleepCache mSleepCache = new SleepCache();
-                mSleepCache.setYear(2017);
-                mSleepCache.setMonth(8);
-                mSleepCache.setDay(i);
-                mSleepCache.setGetUpHour(2 + (i % 12));
-                mSleepCache.setGetUpMin(20);
-                mSleepCache.setSleepHour(12 + (i % 12));
-                mSleepCache.setSleepMin(20);
-                mSleepCache.save();
-            }
-            SPUtils.put(MainActivity.this, "isFirstzz", false);
-        }
+
 
 
     }
@@ -106,9 +106,14 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
         locationService.unregisterListener(mListener); //注销掉监听
         locationService.stop(); //停止定位服务
-        super.onStop();
+        super.onDestroy();
     }
 
     public void setLocationListener(LocationListener locationListener) {
@@ -124,7 +129,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 
     //5个底部导航栏的监听回调
     private ItemOnClickListener itemOnClickListener01;
-    private ItemOnClickListener itemOnClickListener02;
+    private ItemOnClickListener itemOnClickListenerSleep;
     private ItemOnClickListener itemOnClickListener03;
     private ItemOnClickListener itemOnClickListener04;
     private ItemOnClickListener itemOnClickListener05;
@@ -134,8 +139,8 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         this.itemOnClickListener01 = itemOnClickListener01;
     }
 
-    public void setItemOnClickListener02(ItemOnClickListener itemOnClickListener02) {
-        this.itemOnClickListener02 = itemOnClickListener02;
+    public void setItemOnClickListenerSleep(ItemOnClickListener itemOnClickListener02) {
+        this.itemOnClickListenerSleep = itemOnClickListener02;
     }
 
     public void setItemOnClickListener03(ItemOnClickListener itemOnClickListener03) {
@@ -165,6 +170,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 .start();
 
     }
+
     /**
      * Rationale支持，这里自定义对话框。
      */
@@ -212,7 +218,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
             switch (requestCode) {
                 case REQUEST_CODE_PERMISSION: {
-                    Toast.makeText(MainActivity.this,"授权失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
@@ -311,7 +317,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 
             @Override
             public void onPageSelected(int position) {
-                if(position==3){
+                if (position == 3) {
                     restTab();
                     ivTab04.setImageResource(R.mipmap.logo_4);
                     tvTab04.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
@@ -379,9 +385,9 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 ivTab04.setImageResource(R.mipmap.logo_4);
                 mViewPager.setCurrentItem(3, false);
                 tvTab04.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
-//                if (itemOnClickListener04 != null) {
-//                    itemOnClickListener04.onClick();
-//                }
+                if (itemOnClickListenerSleep != null) {
+                    itemOnClickListenerSleep.onClick();
+                }
 
                 break;
             case R.id.layoutTab05:
@@ -453,11 +459,11 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     public void onBackPressed() {
 //        super.onBackPressed();
         if (lastTime > System.currentTimeMillis() - 3000) {
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            startActivity(intent);
-//            finish();
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            intent.addCategory(Intent.CATEGORY_HOME);
+//            startActivity(intent);
+            finish();
         } else {
             Toast.makeText(MainActivity.this, "再按一次退出App", Toast.LENGTH_SHORT).show();
             lastTime = System.currentTimeMillis();

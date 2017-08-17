@@ -20,8 +20,10 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.cache.litepal.SleepCache;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.model.mybean.Time;
+import com.huihong.healthydiet.utils.DateUtil;
 import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -33,6 +35,8 @@ import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
+
+import static com.huihong.healthydiet.cache.sp.CacheUtils.getSleepTime;
 
 
 /**
@@ -82,17 +86,19 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         String nowTime = new SimpleDateFormat("HH:mm").format(new Date()) + "";
 
         //去缓存中拿时间
-        Time mSleepTime=CacheUtils.getSleepTime(this);
-        Time mGetUpTime=CacheUtils.getGetUpTime(this);
-
+        Time mSleepTime = getSleepTime(this);
+        Time mGetUpTime = CacheUtils.getGetUpTime(this);
 
 
         //格式化时间
-        String sleepTime = DateFormattedUtils.formattedDate(mSleepTime.getHour()) +":"+ DateFormattedUtils.formattedDate(mSleepTime.getMin());
-        String getUpTime = DateFormattedUtils.formattedDate(mGetUpTime.getHour()) +":"+ DateFormattedUtils.formattedDate(mGetUpTime.getMin());
-        LogUtil.i("闹铃 睡觉"+sleepTime+"起床"+getUpTime);
+        String sleepTime = DateFormattedUtils.formattedDate(mSleepTime.getHour()) + ":" + DateFormattedUtils.formattedDate(mSleepTime.getMin());
+        String getUpTime = DateFormattedUtils.formattedDate(mGetUpTime.getHour()) + ":" + DateFormattedUtils.formattedDate(mGetUpTime.getMin());
+        String delayType = CacheUtils.getLeadTimeType(this);
+        String delaySleepTime = getDelaySleepTime(delayType, mSleepTime);
+//        getUpTime="17:25";
+        LogUtil.i("闹铃 睡觉" + sleepTime + "起床" + getUpTime);
 
-        if (getUpTime.equals(nowTime)&&isSetWeek()) {
+        if (getUpTime.equals(nowTime) && isSetWeek()) {
             //时间是到了需要判断星期
             //当前为起床闹铃播放闹铃
             player.start();
@@ -106,6 +112,18 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                     //话说只有点了起床按钮才能保存到数据库中去
                     //这时候我点了
                     //拿到昨天设置的睡眠时间 并吧日期存储到昨天去
+                    List<Integer> zz = DateUtil.getPastDate(1);
+                    SleepCache mSleepCache = new SleepCache();
+                    mSleepCache.setYear(zz.get(0));
+                    mSleepCache.setMonth(zz.get(1));
+                    mSleepCache.setDay(zz.get(2));
+
+                    Time ySleepTime = CacheUtils.getSleepTime(AlarmClockService.this);
+                    mSleepCache.setGetUpHour(DateUtil.getHour());
+                    mSleepCache.setGetUpMin(DateUtil.getMin());
+                    mSleepCache.setSleepHour(ySleepTime.getHour());
+                    mSleepCache.setSleepMin(ySleepTime.getMin());
+                    mSleepCache.saveOrUpdate("year = ? and month = ? and day = ?", zz.get(0) + "", zz.get(1) + "", zz.get(2) + "");
 
                     if (player.isPlaying()) {
                         player.stop();
@@ -121,10 +139,9 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
-        } else if (sleepTime.equals(nowTime)&&isSetWeek()) {
+        } else if (delaySleepTime.equals(nowTime) && isSetWeek()) {
             //当前为睡觉闹铃 只播放提示声音
 //            player.start();
-            tryToGetSleepIntegral();
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
             rt.play();
@@ -148,7 +165,33 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
+        } else if (sleepTime.equals(nowTime) && isSetWeek()) {
+            tryToGetSleepIntegral();
         }
+    }
+
+    private String getDelaySleepTime(String delayType, Time mSleepTime) {
+        String time = "";
+        int nowTime = 0;
+        switch (delayType) {
+            case "1":
+                //就寝时
+                return DateFormattedUtils.formattedDate(mSleepTime.getHour()) + ":" + DateFormattedUtils.formattedDate(mSleepTime.getMin());
+
+            case "2":
+                //提前15分钟
+                nowTime = mSleepTime.getHour() * 60 + mSleepTime.getMin() - 15;
+                return DateFormattedUtils.formattedDate(nowTime / 60) + ":" + DateFormattedUtils.formattedDate(nowTime % 60);
+
+            case "3":
+                nowTime = mSleepTime.getHour() * 60 + mSleepTime.getMin() - 30;
+                return DateFormattedUtils.formattedDate(nowTime / 60) + ":" + DateFormattedUtils.formattedDate(nowTime % 60);
+
+            case "4":
+                nowTime = mSleepTime.getHour() * 60 + mSleepTime.getMin() - 60;
+                return DateFormattedUtils.formattedDate(nowTime / 60) + ":" + DateFormattedUtils.formattedDate(nowTime % 60);
+        }
+        return "";
     }
 
     private void tryToGetSleepIntegral() {
@@ -157,7 +200,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                 .url(AppUrl.ADD_SCORE_RECORD)
                 .addParams("UserId", CacheUtils.getUserId(this))
                 .addParams("ScoreType", "Sleep")
-                .addParams("token",CacheUtils.getToken(this))
+                .addParams("token", CacheUtils.getToken(this))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -179,10 +222,10 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         Calendar c = Calendar.getInstance();
         int week = c.get(Calendar.DAY_OF_WEEK);
         //从1开始 1为周天
-        if(week==1){
+        if (week == 1) {
             return mSleepWeek.get(6);
-        }else {
-            return  mSleepWeek.get(week);
+        } else {
+            return mSleepWeek.get(week);
         }
     }
 

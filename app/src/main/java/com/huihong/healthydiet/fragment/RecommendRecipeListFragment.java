@@ -203,10 +203,9 @@ public class RecommendRecipeListFragment extends Fragment {
                         ivType.setImageResource(R.mipmap.up);
                     }
                 });
-                mListPopupWindow.setForceIgnoreOutsideTouch(true);
+                mListPopupWindow.setForceIgnoreOutsideTouch(false);
             }
             ivType.setImageResource(R.mipmap.down);
-            mListPopupWindow.show();
         }
 
     }
@@ -295,10 +294,9 @@ public class RecommendRecipeListFragment extends Fragment {
             case R.id.layoutType04:
                 GroupBy = SCREEN_TYPE_TYPE;
                 tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                if (mListPopupWindow != null && mListPopupWindow.isShowing()) {
-                    mListPopupWindow.dismiss();
-                } else {
-                    showListPopup(layoutType04);
+                showListPopup(layoutType04);
+                if (mListPopupWindow != null && !mListPopupWindow.isShowing()) {
+                    mListPopupWindow.show();
                 }
                 break;
         }

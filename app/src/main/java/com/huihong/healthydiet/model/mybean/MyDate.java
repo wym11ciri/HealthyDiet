@@ -4,10 +4,11 @@ package com.huihong.healthydiet.model.mybean;
  * Created by zangyi_shuai_ge on 2017/8/4
  */
 
-public class ChartMonth {
+public class MyDate {
     int year;
     int month;
-    int count;
+    int day;
+
 
     public int getYear() {
         return year;
@@ -25,11 +26,13 @@ public class ChartMonth {
         this.month = month;
     }
 
-    public int getCount() {
-        return count;
+    public int getDay() {
+        return day;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setDay(int day) {
+        this.day = day;
     }
+
+
 }

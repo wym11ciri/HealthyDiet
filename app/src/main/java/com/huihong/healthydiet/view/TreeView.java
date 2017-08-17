@@ -57,7 +57,6 @@ public class TreeView extends View {
     private int clickNum = -1;//上次点击的叶子
 
     private boolean isAnimation = false;//是否在执行动画
-    private boolean isRunAlphaAnimation = false;//是否需要执行透明度动画
 
 
     private ValueAnimator animatorFloat;//浮动动画
@@ -101,11 +100,14 @@ public class TreeView extends View {
         animatorFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int f = (int) animation.getAnimatedValue();
-                for (int i = 0; i < mLeafList.size(); i++) {
-                    mLeafList.get(i).setMove(f);
+
+                if(!isAnimation){
+                    int f = (int) animation.getAnimatedValue();
+                    for (int i = 0; i < mLeafList.size(); i++) {
+                        mLeafList.get(i).setMove(f);
+                    }
+                    invalidate();
                 }
-                invalidate();
             }
         });
 
@@ -307,7 +309,6 @@ public class TreeView extends View {
                                 onLeafClickListener.onClick(clickNum);
                             }
 
-                            isRunAlphaAnimation = false;
                             PositionAnimationThread positionAnimationThread = new PositionAnimationThread();
                             positionAnimationThread.start();
                             isAnimation = true;
@@ -325,15 +326,14 @@ public class TreeView extends View {
         public void run() {
 
             for (int i = 0; i < 10; i++) {
-
                 try {
-                    sleep(30);
+                    sleep(20);
                     if (mLeafList != null && clickNum != -1 && clickNum < mLeafList.size()) {
                         float y = mLeafList.get(clickNum).getStartY();
                         mLeafList.get(clickNum).setStartY(y - 20);
+                        LogUtil.i("叶子移动",y+"");
                         postInvalidate();//异步更新
                     }
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEEEEE"
+    android:background="#eeeeee"
     android:orientation="vertical">
 
     <include layout="@layout/title_bar_style" />
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
-        android:background="#ffffff"
+        android:background="@color/color_white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -100,7 +100,6 @@
 
         </LinearLayout>
 
-
     </LinearLayout>
 
     <TextView
@@ -117,6 +116,4 @@
         android:text="下一步"
         android:textColor="#fff"
         android:textSize="18sp" />
-
-
 </LinearLayout>

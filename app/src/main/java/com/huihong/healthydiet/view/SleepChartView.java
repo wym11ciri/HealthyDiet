@@ -113,6 +113,14 @@ public class SleepChartView extends View {
         initData();
     }
 
+    public void  invalidateData(){
+        if(mSleepList!=null){
+            mSleepList.clear();
+            initData();
+            invalidate();
+        }
+    }
+
     //初始化数据
     private void initData() {
         //查询当天是周几
@@ -164,7 +172,7 @@ public class SleepChartView extends View {
                     SleepCache mSleepCache = mSleepCacheList.get(0);
                     mSleepCache.setDraw(true);
                     mSleepList.add(mSleepCache);
-                    LogUtil.i("睡眠记录 起床" + mSleepCache.getGetUpHour() + ":" + mSleepCache.getGetUpMin());
+                    LogUtil.i("睡眠记录 起床 周"+i+"---" + mSleepCache.getGetUpHour() + ":" + mSleepCache.getGetUpMin());
                     LogUtil.i("睡眠记录 睡觉" + mSleepCache.getSleepHour() + ":" + mSleepCache.getSleepHour());
                 } else {
                     LogUtil.i("嘻嘻", "没有数据");
@@ -241,9 +249,14 @@ public class SleepChartView extends View {
             }
         }
         //绘制历史睡眠线
-        for (int i = 0; i < mSleepList.size(); i++) {
+        LogUtil.i("睡眠记录大小"+mSleepList.size());
+        int j=0;
+        for ( int i = mSleepList.size()-1; i >=0 ; i--) {
+
+            LogUtil.i("睡眠记录详细");
             if (mSleepList.get(i).isDraw()) {
                 Time mSleepTime01 = new Time();
+                LogUtil.i("睡眠记录详细"+i+"==="+mSleepList.get(i).getSleepHour());
                 mSleepTime01.setHour(mSleepList.get(i).getSleepHour());
                 mSleepTime01.setMin(mSleepList.get(i).getSleepMin());
 
@@ -251,11 +264,13 @@ public class SleepChartView extends View {
                 mGetUpTime01.setHour(mSleepList.get(i).getGetUpHour());
                 mGetUpTime01.setMin(mSleepList.get(i).getGetUpMin());
 
-                canvas.drawLine(textWidth + screenW_14 * (2 * i + 1), screenH +paddingTop- getLineHeight(mSleepTime01, mGetUpTime01),
-                        textWidth + screenW_14 * (2 * i + 1), screenH +paddingTop , paintSleep);
+                canvas.drawLine(textWidth + screenW_14 * (2 * j + 1), screenH +paddingTop- getLineHeight(mSleepTime01, mGetUpTime01),
+                        textWidth + screenW_14 * (2 * j + 1), screenH +paddingTop , paintSleep);
 //                canvas.drawLine(textWidth + screenW_14 * (2 * i + 1), getSleepLineY(mSleepTime01) - getLineHeight(mSleepTime01, mGetUpTime01), textWidth + screenW_14 * (2 * i + 1), getSleepLineY(mSleepTime01) , paintSleep);
             }
+            j++;
         }
+
 
 
 //        //画2根限制线
@@ -327,7 +342,7 @@ public class SleepChartView extends View {
     //获得限制线的Y坐标
     public float getLineHeight(Time sleepTime, Time getUpTime) {
         int dAllMin = MyUtils.getTimeDifferenceMin(sleepTime, getUpTime);
-        return (float) (screenH-(dAllMin / (24 * 60.00000)) * screenH);
+        return (float) ((dAllMin / (24 * 60.000)) * screenH);
     }
 
     public float getSleepH(SleepCache mSleep, boolean isGetSleep) {

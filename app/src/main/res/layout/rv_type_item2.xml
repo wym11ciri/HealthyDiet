@@ -12,5 +12,4 @@
         android:layout_height="15dp"
         android:src="@mipmap/temperament_1" />
 
-
 </LinearLayout>

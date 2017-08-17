@@ -35,12 +35,10 @@
 
         <TextView
             android:id="@+id/tvConstitution"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:text="嘻嘻嘻"
             android:textColor="#FE0E0E"
             android:textSize="30sp" />
 
@@ -57,14 +55,10 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="嘻嘻嘻"
                 android:textColor="#666666"
                 android:textSize="16sp" />
         </ScrollView>
-
-
     </LinearLayout>
-
     <TextView
         android:id="@+id/tvGoHome"
         android:layout_width="match_parent"

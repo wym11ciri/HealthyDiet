@@ -213,10 +213,12 @@ public class RecommendNearbyListFragment extends Fragment {
                         ivType.setImageResource(R.mipmap.up);
                     }
                 });
-                mListPopupWindow.setForceIgnoreOutsideTouch(true);
+                mListPopupWindow.setForceIgnoreOutsideTouch(false);
+//                mListPopupWindow.setModal(false);
+//                mListPopupWindow.ou
             }
             ivType.setImageResource(R.mipmap.down);
-            mListPopupWindow.show();
+
         }
 
     }
@@ -304,10 +306,10 @@ public class RecommendNearbyListFragment extends Fragment {
             case R.id.layoutType04:
                 GroupBy = SCREEN_TYPE_TYPE;
                 tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                if (mListPopupWindow != null && mListPopupWindow.isShowing()) {
-                    mListPopupWindow.dismiss();
-                } else {
-                    showListPopup(layoutType04);
+                //点的时候初始化
+                showListPopup(layoutType04);
+                if (mListPopupWindow != null && !mListPopupWindow.isShowing()) {
+                    mListPopupWindow.show();
                 }
                 break;
         }

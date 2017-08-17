@@ -125,6 +125,20 @@ public class MotionFragment extends Fragment {
         return mView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        boolean isFirstOpen = CacheUtils.isFirstOpen(getActivity());
+
+        if (isFirstOpen) {
+//            StepCount stepCount = new StepCount();//步数清0
+//            stepCount.setStepCount(0);
+//            stepCount.setTime(0);
+//            CacheUtils.putStepCount(getActivity(), stepCount);
+//            CacheUtils.setRunState(getActivity(), "OFF");
+        }
+    }
+
     private void setLayoutCircle() {
         tvDistance = (TextView) mView.findViewById(R.id.tvDistance);
         mStepCount = CacheUtils.getStepCount(getActivity());

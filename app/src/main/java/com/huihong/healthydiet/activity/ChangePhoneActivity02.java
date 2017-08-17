@@ -127,9 +127,7 @@ public class ChangePhoneActivity02 extends BaseTitleActivity2 {
                     if (mCode.length() < 5) {
                         Toast.makeText(this, "请输入正确的验证码", Toast.LENGTH_SHORT).show();
                     } else {
-
                         modifyUserPhone(mPhone, mCode);
-
                     }
                 }
                 break;
@@ -148,11 +146,13 @@ public class ChangePhoneActivity02 extends BaseTitleActivity2 {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.i("修改密码第二部", response);
+                        LogUtil.i("修改密码第二步", response);
                         Gson gson = new Gson();
                         HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
                         if (mHttpBaseInfo.getHttpCode() == 200) {
                             ActivityCollector.finishAll();
+                            SPUtils.put(ChangePhoneActivity02.this, "isDoSimpleTest", false);
+                            SPUtils.put(ChangePhoneActivity02.this, "isLogin", false);
                             Intent mIntent = new Intent(ChangePhoneActivity02.this, LoginActivity.class);
                             startActivity(mIntent);
                         } else {
@@ -179,19 +179,25 @@ public class ChangePhoneActivity02 extends BaseTitleActivity2 {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        codeTimer.start();
+
                         LogUtil.i("获取验证码", response);
 
-                    }
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if(mHttpBaseInfo.getHttpCode()==200){
+                            codeTimer.start();
+                        }else {
+                            tvGetCode.setClickable(true);
+                        }
+                        Toast.makeText(ChangePhoneActivity02.this, mHttpBaseInfo.getMessage(), Toast.LENGTH_SHORT).show();
 
+                    }
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("获取验证码", e.toString());
                         tvGetCode.setClickable(true);
                     }
                 });
-
-
     }
 
     public static boolean isMobileNO(String mobiles) {

@@ -31,10 +31,11 @@ import okhttp3.Call;
 
 /**
  * Created by zangyi_shuai_ge on 2017/8/11
- * 修改手机号码
+ * 修改手机号码 第一步
  */
 
 public class ChangePhoneActivity01 extends BaseTitleActivity2 {
+
     @BindView(R.id.etPhone)
     EditText etPhone;
     @BindView(R.id.etCode)
@@ -55,12 +56,12 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setTitle("修改手机号码");
-//        etPhone.setHint("请输入已绑定手机号");
+
         etPhone.setText(CacheUtils.getPhone(ChangePhoneActivity01.this));
         etPhone.setEnabled(false);
         etPhone.setFocusable(false);
-
         tvButton.setText("下一步");
+
         codeTimer = new CountDownTimer(60000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -92,7 +93,7 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
                 break;
             case R.id.tvButton:
                 String mPhone = etPhone.getText().toString().trim();
-                String mCode = etPhone.getText().toString().trim();
+                String mCode = etCode.getText().toString().trim();
 
                 if (!isMobileNO(mPhone)) {
                     Toast.makeText(this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
@@ -100,10 +101,7 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
                     if (mCode.length() < 5) {
                         Toast.makeText(this, "请输入正确的验证码", Toast.LENGTH_SHORT).show();
                     } else {
-
                         verificationCode(mPhone,mCode);
-                        go2Activity2(ChangePhoneActivity01.this, ChangePhoneActivity02.class);
-                        finishActivity();
                     }
                 }
                 break;
@@ -111,6 +109,7 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
     }
 
     private void verificationCode(String mPhone, String mCode) {
+        tvButton.setClickable(false);
 
         Map<String, String> map = new HashMap<>();
         map.put("VerificaCode",mCode);
@@ -132,11 +131,13 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
                         }else {
                             Toast.makeText(ChangePhoneActivity01.this, mHttpBaseInfo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
+                        tvButton.setClickable(true);
                     }
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("手机验证01",e.toString());
+                        tvButton.setClickable(true);
                     }
                 });
 
@@ -156,8 +157,15 @@ public class ChangePhoneActivity01 extends BaseTitleActivity2 {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        codeTimer.start();
-                        LogUtil.i("获取验证码", response);
+
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if(mHttpBaseInfo.getHttpCode()==200){
+                            codeTimer.start();
+                        }else {
+                            tvGetCode.setClickable(true);
+                        }
+                        Toast.makeText(ChangePhoneActivity01.this, mHttpBaseInfo.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

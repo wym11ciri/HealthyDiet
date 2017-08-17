@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
@@ -76,7 +77,7 @@ public class RestaurantLikeFragment extends Fragment {
             mLRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
                 @Override
                 public void onLoadMore() {
-
+                    getInfo(num);
                 }
             });
 
@@ -93,7 +94,7 @@ public class RestaurantLikeFragment extends Fragment {
         map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
         map.put("CoordY", MyApplication.Latitude+"");
         map.put("CoordX", MyApplication.Longitude+"");
-        map.put("pageNum", pageNum+"");
+        map.put("PageNo", pageNum+"");
         HttpUtils.sendHttpAddToken(getActivity()
                 , AppUrl.USER_PREFERENCE_REST
                 , map
@@ -107,15 +108,20 @@ public class RestaurantLikeFragment extends Fragment {
                         int code = mUserPreferenceRest.getHttpCode();
                         if (code == 200) {
                             num++;
-                            layoutNoData.setVisibility(View.GONE);
-                            recommendList.clear();
+//                            layoutNoData.setVisibility(View.GONE);
+//                            recommendList.clear();
                             List<RestaurantInfo> mListData = mUserPreferenceRest.getListData();
                             recommendList.addAll(mListData);
                             mLRecyclerViewAdapter.notifyDataSetChanged();
                         } else {
                             String message = mUserPreferenceRest.getMessage();
+//                            layoutNoData.setVisibility(View.VISIBLE);
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                        }
+                        if(recommendList.size()>0){
+                            layoutNoData.setVisibility(View.GONE);
+                        }else {
                             layoutNoData.setVisibility(View.VISIBLE);
-//                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     }
 

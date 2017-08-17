@@ -33,6 +33,7 @@ import com.huihong.healthydiet.model.gsonbean.GetClickScore;
 import com.huihong.healthydiet.model.gsonbean.GetScoreList;
 import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
 import com.huihong.healthydiet.model.gsonbean.UserScoreInfo;
+import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
 import com.huihong.healthydiet.model.httpmodel.LeafInfo;
 import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
 import com.huihong.healthydiet.model.httpmodel.RankInfo;
@@ -133,6 +134,8 @@ public class MyFragment extends Fragment {
             }
         });
 
+
+        //叶子的点击事件
         mTreeView.setOnLeafClickListener(new OnLeafClickListener() {
             @Override
             public void onClick(int pos) {
@@ -193,12 +196,10 @@ public class MyFragment extends Fragment {
                 break;
         }
 
-        mTreeView.setLevels(i);
-
 
     }
 
-    private AlertDialog  dialog;
+    private AlertDialog dialog;
 
     private void getIntegral() {
         Map<String, String> map = new HashMap<>();
@@ -217,7 +218,9 @@ public class MyFragment extends Fragment {
                             tvCurrentScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getCurrent_Score(), 1));
                             tvNextScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getNext_Score(), 1));
                             if (mRankInfo.getCurrent_Lv() > levels) {
-                              AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                                mTreeView.setLevels(mRankInfo.getCurrent_Lv());
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setMessage("恭喜你！升级啦");
                                 builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
                                     @Override
@@ -225,7 +228,7 @@ public class MyFragment extends Fragment {
                                         dialog.dismiss();
                                     }
                                 });
-                                dialog=builder.create();
+                                dialog = builder.create();
                                 dialog.show();
                             }
                             levels = mRankInfo.getCurrent_Lv();
@@ -244,6 +247,8 @@ public class MyFragment extends Fragment {
 
     }
 
+
+    //点击叶子获取积分
     private void getScore(String listId) {
         Map<String, String> map = new HashMap<>();
         map.put("ScoreIds", listId);
@@ -255,9 +260,14 @@ public class MyFragment extends Fragment {
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtil.i("点击获取积分", response);
-                        getScoreList();
-                        getIntegral();
-
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if (mHttpBaseInfo.getHttpCode() == 200) {
+                            //刷一下积分获取列表
+                            getScoreList();
+                            //获取等级信息
+                            getIntegral();
+                        }
                     }
 
                     @Override

@@ -2,9 +2,11 @@ package com.huihong.healthydiet.cache.sp;
 
 import android.content.Context;
 
+import com.huihong.healthydiet.model.mybean.MyDate;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.model.mybean.StepCount;
 import com.huihong.healthydiet.model.mybean.Time;
+import com.huihong.healthydiet.utils.DateUtil;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.widget.WeekSelectTextView;
@@ -148,15 +150,15 @@ public class CacheUtils {
     //保存步数
     public static void putStepCount(Context mContext, StepCount stepCount) {
 
-         int mStepCount=stepCount.getStepCount();
-         int mTime=stepCount.getTime();
-         float mDistance=stepCount.getDistance();
+        int mStepCount = stepCount.getStepCount();
+        int mTime = stepCount.getTime();
+        float mDistance = stepCount.getDistance();
 
         SPUtils.put(mContext, "stepCount", mStepCount);
         SPUtils.put(mContext, "stepTime", mTime);
         SPUtils.put(mContext, "stepDistance", mDistance);
 
-        LogUtil.i("保存步数"+"stepCount="+mStepCount+"stepTime="+mTime);
+        LogUtil.i("保存步数" + "stepCount=" + mStepCount + "stepTime=" + mTime);
     }
 
     //获得当前行走的步数
@@ -221,27 +223,28 @@ public class CacheUtils {
         SPUtils.put(mContext, "getUpMin", min);
     }
 
-    public static void setGetUpTime(Context mContext,Time time) {
+    public static void setGetUpTime(Context mContext, Time time) {
         SPUtils.put(mContext, "getUpHour", time.getHour());
         SPUtils.put(mContext, "getUpMin", time.getMin());
-        LogUtil.i("闹钟起床"+time.getHour()+":"+time.getMin());
+        LogUtil.i("闹钟起床" + time.getHour() + ":" + time.getMin());
     }
-    public static void setSleepTime(Context mContext,Time time) {
+
+    public static void setSleepTime(Context mContext, Time time) {
         SPUtils.put(mContext, "sleepHour", time.getHour());
         SPUtils.put(mContext, "sleepMin", time.getMin());
-        LogUtil.i("闹钟睡眠"+time.getHour()+":"+time.getMin());
+        LogUtil.i("闹钟睡眠" + time.getHour() + ":" + time.getMin());
     }
 
     public static Time getGetUpTime(Context mContext) {
 
         Time time = new Time();
         int hour = (int) SPUtils.get(mContext, "getUpHour", 0);
-        int min=(int) SPUtils.get(mContext, "getUpMin", 0);
+        int min = (int) SPUtils.get(mContext, "getUpMin", 0);
 
         time.setHour(hour);
         time.setMin(min);
 
-        LogUtil.i("闹钟获得起床",hour+":"+min);
+        LogUtil.i("闹钟获得起床", hour + ":" + min);
 
         return time;
     }
@@ -250,21 +253,70 @@ public class CacheUtils {
 
         Time time = new Time();
         int hour = (int) SPUtils.get(mContext, "sleepHour", 0);
-        int min=(int) SPUtils.get(mContext, "sleepMin", 0);
+        int min = (int) SPUtils.get(mContext, "sleepMin", 0);
 
         time.setHour(hour);
         time.setMin(min);
-        LogUtil.i("闹钟获得睡眠",hour+":"+min);
+        LogUtil.i("闹钟获得睡眠", hour + ":" + min);
         return time;
     }
 
     public static void setLevels(Context mContext, int levels) {
         SPUtils.put(mContext, "levels", levels);
     }
-    public static   int getLevels(Context mContext) {
 
-        int a= (int) SPUtils.get(mContext,"levels",1);
-        return  a;
+    public static int getLevels(Context mContext) {
+
+        int a = (int) SPUtils.get(mContext, "levels", 1);
+        return a;
+    }
+
+    //设置提前时长的类型
+    public static void setLeadTimeType(Context mContext, String type) {
+        SPUtils.put(mContext, "LeadTimeType", type);
+    }
+
+    public static String getLeadTimeType(Context mContext) {
+        return (String) SPUtils.get(mContext, "LeadTimeType", "1");
+    }
+
+    //判断App是不是今天第一次打开
+    public static boolean isFirstOpen(Context mContext) {
+        //获得今天的时间
+        String nowDay = String.valueOf(DateUtil.getYear()) + ":" + String.valueOf(DateUtil.getMonth()) + ":" + String.valueOf(DateUtil.getDay()) + "";
+
+
+        String cacheDay = (String) SPUtils.get(mContext, "appFirstOpen", "");
+        String zzz = nowDay + "YES";
+        LogUtil.i("判断字符串是否一样", zzz + "====" + cacheDay + zzz.equals(cacheDay));
+        if (zzz.equals(cacheDay)) {
+            LogUtil.i("判断字符串是否一样", zzz + "====" + cacheDay + zzz.equals(cacheDay));
+            return true;
+        } else {
+            LogUtil.i("判断字符串是否一样", zzz + "====" + cacheDay + zzz.equals(cacheDay));
+            SPUtils.put(mContext, "appFirstOpen", zzz);
+            return false;
+        }
+    }
+
+
+    //设置闹铃的日期
+    public static void setGetUpDate(Context mContext) {
+        int year = DateUtil.getYear();
+        int month = DateUtil.getMonth();
+        int day = DateUtil.getDay();
+
+        SPUtils.put(mContext, "GetUpDateYear", year);
+        SPUtils.put(mContext, "GetUpDateMonth", month);
+        SPUtils.put(mContext, "GetUpDateDay", day);
+    }
+
+    public static MyDate getGetUpDate(Context mContext) {
+        MyDate myDate = new MyDate();
+        myDate.setDay((int) SPUtils.get(mContext, "GetUpDateDay", 1));
+        myDate.setMonth((int) SPUtils.get(mContext, "GetUpDateMonth", 1));
+        myDate.setYear((int) SPUtils.get(mContext, "GetUpDateYear", 2016));
+        return myDate;
     }
 
 }

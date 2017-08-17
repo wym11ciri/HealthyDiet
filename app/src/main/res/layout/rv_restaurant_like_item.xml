@@ -10,8 +10,8 @@
     <com.huihong.healthydiet.view.SwipeMenuView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        >
+        android:layout_alignParentTop="true">
+
         <LinearLayout
             android:id="@+id/layoutMain"
             android:layout_width="match_parent"
@@ -123,10 +123,10 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_marginRight="4dp"
                         android:layout_width="13dp"
                         android:layout_height="13dp"
                         android:layout_gravity="center"
+                        android:layout_marginRight="4dp"
                         android:src="@mipmap/restaurant_3_1" />
 
 
@@ -161,34 +161,34 @@
 
 
                     <TextView
-                        android:singleLine="true"
                         android:id="@+id/address"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="6dp"
                         android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
                         android:text="拱墅区祥园路28号 29号29号29号29号"
                         android:textColor="#5E5E5E"
                         android:textSize="12sp" />
 
 
-
                     <LinearLayout
                         android:layout_width="30dp"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="2dp"
                             android:layout_marginTop="2dp"
                             android:background="#A9A9A9" />
+
                         <View
                             android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="1dp"/>
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
 
 
                         <ImageView
@@ -217,12 +217,12 @@
     </com.huihong.healthydiet.view.SwipeMenuView>
 
 
-
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:layout_alignParentBottom="true"
         android:background="#EEEEEE" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"

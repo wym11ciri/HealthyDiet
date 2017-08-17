@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.model.mybean.Time;
+import com.huihong.healthydiet.utils.common.LogUtil;
 
 /**
  * Created by zangyi_shuai_ge on 2017/8/10
@@ -122,6 +123,7 @@ public class MyUtils {
         if(mHour>=24){
             mHour=mHour-24;
         }
+        LogUtil.i("相差几个小时"+mHour);
         return mHour*60+mMin;
     }
 }

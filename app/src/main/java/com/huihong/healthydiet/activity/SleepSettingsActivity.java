@@ -114,6 +114,9 @@ public class SleepSettingsActivity extends BaseTitleActivity {
 
     //初始化睡觉前多久闹铃
     private void initSleepTime() {
+
+        nowChooseTime = CacheUtils.getLeadTimeType(SleepSettingsActivity.this);
+
         layoutTime01 = (LinearLayout) findViewById(R.id.layoutTime01);
         layoutTime02 = (LinearLayout) findViewById(R.id.layoutTime02);
         layoutTime03 = (LinearLayout) findViewById(R.id.layoutTime03);
@@ -126,7 +129,7 @@ public class SleepSettingsActivity extends BaseTitleActivity {
 
 
         //从缓存中去取设置的提前提醒类型
-        nowChooseTime = (String) SPUtils.get(SleepSettingsActivity.this, "nowChooseTime", "1");
+
         ivTime01.setImageResource(R.mipmap.circle_00009);
         ivTime02.setImageResource(R.mipmap.circle_00009);
         ivTime03.setImageResource(R.mipmap.circle_00009);
@@ -155,6 +158,7 @@ public class SleepSettingsActivity extends BaseTitleActivity {
                     case R.id.layoutTime01:
                         ivTime01.setImageResource(R.mipmap.circle_00008);
                         nowChooseTime = "1";
+
                         break;
                     case R.id.layoutTime02:
                         ivTime02.setImageResource(R.mipmap.circle_00008);
@@ -169,6 +173,7 @@ public class SleepSettingsActivity extends BaseTitleActivity {
                         nowChooseTime = "4";
                         break;
                 }
+                CacheUtils.setLeadTimeType(SleepSettingsActivity.this, nowChooseTime);
             }
         };
         layoutTime01.setOnClickListener(timeOnClickListener);

@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.SleepSettingsActivity;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.CircleListener;
+import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.SwitchListener;
 import com.huihong.healthydiet.model.mybean.Time;
 import com.huihong.healthydiet.utils.MyUtils;
@@ -58,6 +60,15 @@ public class SleepFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_sleep, null);
             initUI();
+            MainActivity.mainActivity.setItemOnClickListenerSleep(new ItemOnClickListener() {
+                @Override
+                public void onClick() {
+                    if(mSleepChartView!=null){
+                        mSleepChartView.invalidateData();
+                    }
+
+                }
+            });
         }
         return mView;
     }

@@ -56,7 +56,12 @@ public class DateUtil {
     public static int getDay() {
         return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
-
+    public static int getHour() {
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+    }
+    public static int getMin() {
+        return Calendar.getInstance().get(Calendar.MINUTE);
+    }
     /**
      * 得到当前月第一天在其周的位置
      *
