@@ -202,6 +202,7 @@ public class RecommendNearbyListFragment extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         tvType04.setText(mScreenTypeList.get(position).getTypeValue());
                         GroupBy = SCREEN_TYPE_TYPE;
+                        tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
                         TypeValue = mScreenTypeList.get(position).getId() + "";
                         mListPopupWindow.dismiss();
                         getInfo(num,true);
@@ -284,7 +285,7 @@ public class RecommendNearbyListFragment extends Fragment {
 
         //第4个
         TypeValue = "";
-        tvType04.setText("类型");
+//        tvType04.setText("类型");
         ivType.setImageResource(R.mipmap.up);
 
         switch (view.getId()) {
@@ -304,8 +305,7 @@ public class RecommendNearbyListFragment extends Fragment {
                 getInfo(num,true);
                 break;
             case R.id.layoutType04:
-                GroupBy = SCREEN_TYPE_TYPE;
-                tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
+
                 //点的时候初始化
                 showListPopup(layoutType04);
                 if (mListPopupWindow != null && !mListPopupWindow.isShowing()) {

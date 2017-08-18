@@ -11,6 +11,16 @@ public class StepCount {
     private int time;//运动时长
     private float distance;//运动距离
 
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public int getStepCount() {
         return stepCount;
     }

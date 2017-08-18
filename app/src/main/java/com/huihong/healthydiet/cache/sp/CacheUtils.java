@@ -6,6 +6,7 @@ import com.huihong.healthydiet.model.mybean.MyDate;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.model.mybean.StepCount;
 import com.huihong.healthydiet.model.mybean.Time;
+import com.huihong.healthydiet.utils.CalendarUtils;
 import com.huihong.healthydiet.utils.DateUtil;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -149,27 +150,53 @@ public class CacheUtils {
 
     //保存步数
     public static void putStepCount(Context mContext, StepCount stepCount) {
+        //存步数的时候去判断下 如果得到的时间不是今天
+        String stepDate= (String) SPUtils.get(mContext,"stepDate","");
+        String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
+        assert stepDate != null;
+        if(stepDate.equals(nowDate)){
+            //如果时间相等
+            int mStepCount = stepCount.getStepCount();
+            int mTime = stepCount.getTime();
+            float mDistance = stepCount.getDistance();
 
-        int mStepCount = stepCount.getStepCount();
-        int mTime = stepCount.getTime();
-        float mDistance = stepCount.getDistance();
+            SPUtils.put(mContext, "stepCount", mStepCount);
+            SPUtils.put(mContext, "stepTime", mTime);
+            SPUtils.put(mContext, "stepDistance", mDistance);
+        }else {
+            //如果不相等 清0数据
+            SPUtils.put(mContext, "stepCount", 0);
+            SPUtils.put(mContext, "stepTime", 0);
+            SPUtils.put(mContext, "stepDate", nowDate);
+//            SPUtils.put(mContext, "stepDistance", mDistance);
 
-        SPUtils.put(mContext, "stepCount", mStepCount);
-        SPUtils.put(mContext, "stepTime", mTime);
-        SPUtils.put(mContext, "stepDistance", mDistance);
+        }
 
-        LogUtil.i("保存步数" + "stepCount=" + mStepCount + "stepTime=" + mTime);
     }
 
     //获得当前行走的步数
     public static StepCount getStepCount(Context mContext) {
+
+        String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
         StepCount stepCount = new StepCount();
         int mStepCount = (int) SPUtils.get(mContext, "stepCount", 0);
         int stepTime = (int) SPUtils.get(mContext, "stepTime", 0);
-//        float stepDistance= (float) SPUtils.get(mContext,"stepDistance",0);
-        stepCount.setTime(stepTime);
+        String stepDate= (String) SPUtils.get(mContext, "stepDate", "");
+        //拿数据的时候也判断下
+        assert stepDate != null;
+        if(stepDate.equals(nowDate)){
+            //时间一样直接返回查询到的数据
+            stepCount.setTime(stepTime);
+            stepCount.setStepCount(mStepCount);
+
+        }else {
+            SPUtils.put(mContext, "stepCount", 0);
+            SPUtils.put(mContext, "stepTime", 0);
+            SPUtils.put(mContext, "stepDate", nowDate);
+            stepCount.setTime(0);
 //        stepCount.setDistance(stepDistance);
-        stepCount.setStepCount(mStepCount);
+            stepCount.setStepCount(0);
+        }
         return stepCount;
     }
 

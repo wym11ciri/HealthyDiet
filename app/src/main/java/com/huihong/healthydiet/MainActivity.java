@@ -52,6 +52,9 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 
     private LocationListener locationListener;
 
+
+//    private LoadingDialog loadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +91,9 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 //            SPUtils.put(MainActivity.this, "isFirstzz", false);
 //        }
 
-
-
+//        LoadingDialog.Builder builder = new LoadingDialog.Builder(MainActivity.this);
+//        loadingDialog = builder.create();
+//        loadingDialog.show();
 
     }
 

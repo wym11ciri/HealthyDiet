@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,12 @@ public class LvTagAdapter extends BaseAdapter {
 
     public LvTagAdapter(Context mContext, List<String> mList) {
         this.mContext = mContext;
-        this.mList = mList;
+        if(mList!=null){
+            this.mList = mList;
+
+        }else {
+            this.mList=new ArrayList<>();
+        }
     }
 
     @Override

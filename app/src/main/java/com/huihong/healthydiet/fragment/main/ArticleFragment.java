@@ -143,9 +143,9 @@ public class ArticleFragment extends Fragment {
                             mNum++;
                             //顶部3个TextView
                             GetArticleListInfo.ListData2Bean ListData2Bean = mGetArticleListInfo.getListData2().get(0);
-                            tvTop01.setText("您的体质是" + ListData2Bean.getConstitution());
-                            tvTop02.setText("适合吃" + ListData2Bean.getSuitEat());
-                            tvTop03.setText("尽量少吃" + ListData2Bean.getNotSuitEat());
+                            tvTop01.setText("" + ListData2Bean.getConstitution());
+                            tvTop02.setText("" + ListData2Bean.getSuitEat());
+                            tvTop03.setText("" + ListData2Bean.getNotSuitEat());
                             //刷新列表
                             mList.addAll(mGetArticleListInfo.getListData());
                             mLRecyclerViewAdapter.notifyDataSetChanged();

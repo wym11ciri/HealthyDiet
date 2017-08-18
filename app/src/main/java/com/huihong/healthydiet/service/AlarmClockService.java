@@ -95,7 +95,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         String getUpTime = DateFormattedUtils.formattedDate(mGetUpTime.getHour()) + ":" + DateFormattedUtils.formattedDate(mGetUpTime.getMin());
         String delayType = CacheUtils.getLeadTimeType(this);
         String delaySleepTime = getDelaySleepTime(delayType, mSleepTime);
-//        getUpTime="17:25";
+        getUpTime="17:28";
         LogUtil.i("闹铃 睡觉" + sleepTime + "起床" + getUpTime);
 
         if (getUpTime.equals(nowTime) && isSetWeek()) {
@@ -225,7 +225,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         if (week == 1) {
             return mSleepWeek.get(6);
         } else {
-            return mSleepWeek.get(week);
+            return mSleepWeek.get(week-2);
         }
     }
 

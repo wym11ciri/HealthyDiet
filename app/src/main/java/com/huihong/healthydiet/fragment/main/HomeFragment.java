@@ -498,14 +498,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 mPathList.add(mArticleInfoList.get(i).getTitleImage());
                             }
                             banner.update(mPathList);
-
-
                         } else {
                             String message = mTitlePage.getMessage();
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
-
-
                     }
 
                     @Override
@@ -519,7 +515,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
-        tvAddress.setText(mAddress + "");
+        if (mAddress == null) {
+            tvAddress.setText("定位失败");
+        } else {
+            tvAddress.setText(mAddress + "");
+        }
     }
 
     private void setNearbyInfo(List<RestaurantInfo> mListData) {

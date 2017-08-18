@@ -1,8 +1,12 @@
 package com.huihong.healthydiet.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Shader;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -71,6 +75,9 @@ public class SleepChartView extends View {
 
     private int textWidth;//字的宽度
 
+
+    private Bitmap lineBitmap;
+
     public SleepChartView(Context context) {
         this(context, null);
     }
@@ -109,6 +116,8 @@ public class SleepChartView extends View {
 
         nowGetUpTime = new Time();
         nowSleepTime = new Time();
+
+
 
         initData();
     }
@@ -209,7 +218,11 @@ public class SleepChartView extends View {
 //        setLimitLineH(SleepLimitHour, SleepLimitMin, true);
 //        setLimitLineH(getUpLimitHour, getUpLimitMin, false);
 
-
+        Bitmap bt1 = BitmapFactory.decodeResource(getResources(), R.mipmap.line_horizontal);
+        lineBitmap = Bitmap.createScaledBitmap(bt1, (int) screenW/30, 2, false);
+        bt1.recycle();
+        BitmapShader bitmapShader = new BitmapShader(lineBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        paintNormal.setShader(bitmapShader);
 
         setLimitLine(CacheUtils.getSleepTime(mContext),CacheUtils.getGetUpTime(mContext));
 
@@ -240,12 +253,15 @@ public class SleepChartView extends View {
 
 
         //绘制刻度线
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 6; i++) {
             //给刻度线加上限制
             float height = unitHeight * i + paddingTop;
             if (height <=  screenH+paddingBottom && height >= screenH - lineH+paddingBottom) {
                 //刻度线
-                canvas.drawLine(textWidth, unitHeight * i + paddingTop, screenW + textWidth, unitHeight * i + paddingTop, paintNormal);
+//                canvas.drawLine(textWidth, unitHeight * i + paddingTop, screenW + textWidth, unitHeight * i + paddingTop, paintNormal);
+
+               //起点 终点
+                canvas.drawRect(textWidth, unitHeight * i + paddingTop, screenW + textWidth+2, unitHeight * i + paddingTop+2,paintNormal);
             }
         }
         //绘制历史睡眠线

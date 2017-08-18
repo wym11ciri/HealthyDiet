@@ -121,6 +121,7 @@ public class MyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_my, null);
         unbinder = ButterKnife.bind(this, mView);
+        setTreeView(levels);
         mTreeView.setCustomViewOnSizeChangedListener(new CustomViewOnSizeChangedListener() {
             @Override
             public void OnSizeChanged() {
@@ -218,8 +219,6 @@ public class MyFragment extends Fragment {
                             tvCurrentScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getCurrent_Score(), 1));
                             tvNextScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getNext_Score(), 1));
                             if (mRankInfo.getCurrent_Lv() > levels) {
-                                mTreeView.setLevels(mRankInfo.getCurrent_Lv());
-
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setMessage("恭喜你！升级啦");
                                 builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
@@ -231,11 +230,14 @@ public class MyFragment extends Fragment {
                                 dialog = builder.create();
                                 dialog.show();
                             }
-                            levels = mRankInfo.getCurrent_Lv();
-                            CacheUtils.setLevels(getActivity(), levels);
-                            setTreeView(levels);
-                        }
 
+                            if(levels!=mRankInfo.getCurrent_Lv()){
+                                mTreeView.setLevels(mRankInfo.getCurrent_Lv());
+                                levels = mRankInfo.getCurrent_Lv();
+                                CacheUtils.setLevels(getActivity(), levels);
+                                setTreeView(levels);
+                            }
+                        }
                     }
 
                     @Override
