@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,11 @@ public class RvTypeAdapter extends RecyclerView.Adapter<RvTypeAdapter.RvTypeView
     }
 
     public RvTypeAdapter(Context pContext, List<String> pList) {
-        mList = pList;
+        if(pList!=null){
+            mList = pList;
+        }else {
+            mList = new ArrayList<>();
+        }
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
     }

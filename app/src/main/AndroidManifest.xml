@@ -80,6 +80,7 @@
         <activity android:name=".activity.DietRecordActivity"/>
         <activity android:name=".activity.ArticleActivity"/>
         <activity android:name=".activity.TestSimpleResultActivity"/>
+        <activity android:name=".activity.OrderDetailsActivity"/>
 
 
         <service

@@ -106,6 +106,7 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesAdapter.RvRe
             public void onClick(View v) {
                 Intent mIn = new Intent(mContext, RecipesDetailsActivity.class);
                 mIn.putExtra("RecipeId", mList.get(position).getId() + "");
+                mIn.putExtra("isFromRest", true);
                 mContext.startActivity(mIn);
             }
         });

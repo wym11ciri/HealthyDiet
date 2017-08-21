@@ -1,12 +1,10 @@
 package com.huihong.healthydiet.fragment.main;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -37,13 +35,14 @@ import com.huihong.healthydiet.activity.RecommendListActivity;
 import com.huihong.healthydiet.activity.SearchResultActivity;
 import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
-import com.huihong.healthydiet.adapter.RvRecordAdapter;
+import com.huihong.healthydiet.adapter.RvRecordHomePageAdapter;
 import com.huihong.healthydiet.cache.litepal.SearchHistory;
 import com.huihong.healthydiet.fragment.NearbyFragment;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.model.gsonbean.TitlePage;
 import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
+import com.huihong.healthydiet.model.httpmodel.OrderDetailsInfo;
 import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
 import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 import com.huihong.healthydiet.utils.MyUtils;
@@ -54,6 +53,7 @@ import com.huihong.healthydiet.widget.GlideImageLoader;
 import com.joooonho.SelectableRoundedImageView;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
+import com.zuoni.dialog.picker.dialog.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,44 +81,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ViewPager vpNearby;
     private NearbyFragmentPagerAdapter mNearbyFragmentPagerAdapter;
     private List<Fragment> nearbyList;
-
-
     //推荐饮食
     private RecyclerView rvRecommend;
     private RvRecommendAdapter mRvRecommendAdapter;
     private List<RecipeInfo> recommendList;
-
     //饮食记录
     private RecyclerView rvRecord;
-    private List<String> recordList;
-    private RvRecordAdapter mRvRecordAdapter;
+    private List<OrderDetailsInfo> recordList;
+    private RvRecordHomePageAdapter mRvRecordHomePageAdapter;
 
     //3个跳转按钮
     private LinearLayout layoutNearby, layoutRecommend, layoutRecord;
-
     private SwipeRefreshLayout layoutRefresh;
-
-
     private NearbyFragment nearbyFragmentRight;
     private NearbyFragment nearbyFragmentLeft;
     private NearbyFragment nearbyFragmentMiddle;
-
-
     private String mAddress;
     private boolean isFirst = true;
-
     //大图推荐饮食
     private TextView tvRecommendName, tvConstitutionPercentage, tvRecommendPrice;
     private SelectableRoundedImageView ivRecommend;
-
     //搜索
     private EditText etSearch;
-
-
     private TextView tvRecord;
-
-
-    private ProgressDialog progressDialog;
+    //    private ProgressDialog progressDialog;
+    private LoadingDialog loadingDialog;
 
 
     @Nullable
@@ -128,6 +115,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_home, null);
             unbinder = ButterKnife.bind(this, mView);
+            LoadingDialog.Builder builder = new LoadingDialog.Builder(getActivity());
+            builder.setMessage("定位中...");
+            loadingDialog = builder.create();
+
             initUI();
 //            getHomePageInfo();
             MainActivity.mainActivity.setLocationListener(new LocationListener() {
@@ -136,14 +127,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     if (isReLocation) {
                         mAddress = address;
                         getHomePageInfo();
-
                     }
                 }
             });
-
         }
-
-
         return mView;
     }
 
@@ -179,10 +166,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private AlertDialog locationDialog;
 
     private void initUI() {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("定位中...");
-        progressDialog.show();
-        progressDialog.setCancelable(true);
+//        progressDialog = new ProgressDialog(getActivity());
+//        progressDialog.setMessage("定位中...");
+//        progressDialog.show();
+//        progressDialog.setCancelable(true);
+        loadingDialog.show();
         tvRecord = (TextView) mView.findViewById(R.id.tvRecord);
         tvAddress = (TextView) mView.findViewById(R.id.tvAddress);
 
@@ -204,8 +192,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MainActivity.mainActivity.locationService.start();
-                        progressDialog.setMessage("正在定位...");
-                        progressDialog.show();
+//                        progressDialog.setMessage("正在定位...");
+//                        progressDialog.show();
+                        loadingDialog.show();
                     }
                 });
                 builder.setNegativeButton("知道了", new DialogInterface.OnClickListener() {
@@ -282,20 +271,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rvRecord = (RecyclerView) mView.findViewById(R.id.rvRecord);
         rvRecord.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recordList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            recordList.add("麦当劳" + i);
-        }
-        mRvRecordAdapter = new RvRecordAdapter(getActivity(), recordList);
-        rvRecord.setAdapter(mRvRecordAdapter);
-//
-//
-//        lvRecord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                jumpActivity(PayActivity.class);
-//            }
-//        });
-
+        mRvRecordHomePageAdapter = new RvRecordHomePageAdapter(getActivity(), recordList);
+        rvRecord.setAdapter(mRvRecordHomePageAdapter);
     }
 
     //饮食推荐
@@ -412,9 +389,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.layoutRecord:
                 Intent mIntent = new Intent(getActivity(), DietRecordActivity.class);
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), tvRecord, "tvTitle");
-                startActivity(mIntent, options.toBundle());
-
+//                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), tvRecord, "tvTitle");
+//                startActivity(mIntent, options.toBundle());
+                startActivity(mIntent);
                 break;
         }
 
@@ -445,9 +422,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
+                        if (loadingDialog.isShowing()) {
+                            loadingDialog.dismiss();
                         }
+
                         layoutRefresh.setRefreshing(false);
                         LogUtil.i("首页数据", response);
                         Gson gson = new Gson();
@@ -479,6 +457,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                     public void onClick(View v) {
                                         Intent mIn = new Intent(getActivity(), RecipesDetailsActivity.class);
                                         mIn.putExtra("RecipeId", mListData2.get(0).getId() + "");
+                                        mIn.putExtra("isFromRest", false);
                                         startActivity(mIn);
                                     }
                                 });
@@ -498,6 +477,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 mPathList.add(mArticleInfoList.get(i).getTitleImage());
                             }
                             banner.update(mPathList);
+
+                            recordList.clear();
+                            recordList.addAll(mTitlePage.getListData4());
+                            mRvRecordHomePageAdapter.notifyDataSetChanged();
+
+
                         } else {
                             String message = mTitlePage.getMessage();
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -506,8 +491,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
+                        if (loadingDialog.isShowing()) {
+                            loadingDialog.dismiss();
                         }
                         LogUtil.i("首页数据", e.toString());
                         if (layoutRefresh != null) {

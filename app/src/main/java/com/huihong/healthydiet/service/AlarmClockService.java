@@ -95,14 +95,14 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         String getUpTime = DateFormattedUtils.formattedDate(mGetUpTime.getHour()) + ":" + DateFormattedUtils.formattedDate(mGetUpTime.getMin());
         String delayType = CacheUtils.getLeadTimeType(this);
         String delaySleepTime = getDelaySleepTime(delayType, mSleepTime);
-        getUpTime="17:28";
+//        getUpTime="17:28";
         LogUtil.i("闹铃 睡觉" + sleepTime + "起床" + getUpTime);
 
         if (getUpTime.equals(nowTime) && isSetWeek()) {
             //时间是到了需要判断星期
             //当前为起床闹铃播放闹铃
             player.start();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_get_up, null);
             Button button = (Button) view.findViewById(R.id.tvGetUp);
             button.setText("起床");
@@ -126,7 +126,8 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                     mSleepCache.saveOrUpdate("year = ? and month = ? and day = ?", zz.get(0) + "", zz.get(1) + "", zz.get(2) + "");
 
                     if (player.isPlaying()) {
-                        player.stop();
+                        player.pause();
+                        player.seekTo(0);
                     }
                     dialog.dismiss();
                 }
@@ -145,7 +146,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
             rt.play();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_get_up, null);
             Button button = (Button) view.findViewById(R.id.tvGetUp);
             button.setText("睡觉");

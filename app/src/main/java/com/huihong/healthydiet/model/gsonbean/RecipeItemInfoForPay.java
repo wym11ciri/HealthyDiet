@@ -11,18 +11,8 @@ import java.util.List;
 public class RecipeItemInfoForPay extends HttpBaseInfo{
 
 
-    /**
-     * HttpCode : 200
-     * Message :
-     * ListData : [{"id":8,"name":"食谱6","ConstitutionPercentage":30,"Constitution":["气虚质","阴虚质","痰湿质"],"Tags":["清蒸"],"images":["http://106.14.218.31:8081/img//recipe//recipe8-198144654.jpg","http://106.14.218.31:8081/img//recipe//recipe8-198197843.jpg"],"price":"22.00","sales":22}]
-     * ListData2 : [{"id":99,"name":"餐厅8","titleImage":"http://106.14.218.31:8081/img//restaurant//restaurant99-19823844.jpg","address":"杭州市拱墅区杭州微盘信息技术有限公司","phone":"18857120152","distance":0}]
-     */
-
-
     private List<ListDataBean> ListData;
     private List<ListData2Bean> ListData2;
-
-
 
     public List<ListDataBean> getListData() {
         return ListData;
@@ -42,14 +32,15 @@ public class RecipeItemInfoForPay extends HttpBaseInfo{
 
     public static class ListDataBean {
         /**
-         * id : 8
-         * name : 食谱6
-         * ConstitutionPercentage : 30
-         * Constitution : ["气虚质","阴虚质","痰湿质"]
-         * Tags : ["清蒸"]
-         * images : ["http://106.14.218.31:8081/img//recipe//recipe8-198144654.jpg","http://106.14.218.31:8081/img//recipe//recipe8-198197843.jpg"]
-         * price : 22.00
-         * sales : 22
+         * id : 6
+         * name : 食谱5
+         * ConstitutionPercentage : 0
+         * Constitution : ["特禀质","血瘀质","气虚质"]
+         * Tags : ["红烧"]
+         * images : ["http://106.14.218.31:8081/img//recipe//recipe-201708181705200.jpg","http://106.14.218.31:8081/img//recipe//recipe-201708181705201.jpg","http://106.14.218.31:8081/img//recipe//recipe-201708181705202.jpg"]
+         * price : 1.00
+         * sales : 2
+         * RestaurantId : 100
          */
 
         private int id;
@@ -57,6 +48,7 @@ public class RecipeItemInfoForPay extends HttpBaseInfo{
         private int ConstitutionPercentage;
         private String price;
         private int sales;
+        private int RestaurantId;
         private List<String> Constitution;
         private List<String> Tags;
         private List<String> images;
@@ -101,6 +93,14 @@ public class RecipeItemInfoForPay extends HttpBaseInfo{
             this.sales = sales;
         }
 
+        public int getRestaurantId() {
+            return RestaurantId;
+        }
+
+        public void setRestaurantId(int RestaurantId) {
+            this.RestaurantId = RestaurantId;
+        }
+
         public List<String> getConstitution() {
             return Constitution;
         }
@@ -128,10 +128,11 @@ public class RecipeItemInfoForPay extends HttpBaseInfo{
 
     public static class ListData2Bean {
         /**
-         * id : 99
-         * name : 餐厅8
-         * titleImage : http://106.14.218.31:8081/img//restaurant//restaurant99-19823844.jpg
-         * address : 杭州市拱墅区杭州微盘信息技术有限公司
+         * id : 100
+         * name : 餐厅9
+         * titleImage : http://106.14.218.31:8081/img//restaurant//restaurant100-19812692.jpg
+         * address : 杭州市拱墅区杭州运河广告产业大厦
+         * category : 5
          * phone : 18857120152
          * distance : 0
          */
@@ -140,6 +141,7 @@ public class RecipeItemInfoForPay extends HttpBaseInfo{
         private String name;
         private String titleImage;
         private String address;
+        private String category;
         private String phone;
         private int distance;
 
@@ -173,6 +175,14 @@ public class RecipeItemInfoForPay extends HttpBaseInfo{
 
         public void setAddress(String address) {
             this.address = address;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
         }
 
         public String getPhone() {

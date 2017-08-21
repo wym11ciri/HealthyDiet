@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,8 +9,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.huihong.healthydiet.R;
-
-import butterknife.ButterKnife;
 
 
 /**
@@ -31,13 +30,17 @@ public abstract class BaseTitleActivity extends BaseActivity {
     public RelativeLayout layoutHead;
 
     private TextView tvRight;
-
+    private  Context mContext;
+    public Context getContext() {
+        return mContext;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(setLayoutId());
-        ButterKnife.bind(this);
+        mContext=this;
+//        ButterKnife.bind(this);
 
 
 //        layoutHead = (RelativeLayout) findViewById(R.id.layoutHead);

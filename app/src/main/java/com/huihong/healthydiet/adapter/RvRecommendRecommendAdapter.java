@@ -87,6 +87,8 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
             public void onClick(View v) {
                 Intent mIntent = new Intent(mContext, RecipesDetailsActivity.class);
                 mIntent.putExtra("RecipeId", mList.get(position).getId() + "");
+                mIntent.putExtra("isFromRest", false);
+
                 mContext.startActivity(mIntent);
             }
         });

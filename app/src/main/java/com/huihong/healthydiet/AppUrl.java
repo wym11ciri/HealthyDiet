@@ -55,4 +55,11 @@ public class AppUrl {
     public static final String UPLOAD_IMAGE = BASE_URL + "API/User/UploadImage";//上传头像
     public static final String UploadUserHeadImage = BASE_URL + "API/User/UploadUserHeadImage";
     public static final String LOGIN = BASE_URL + "API/User/Login";//登录
+
+
+    //订单
+    public static final String ORDER_INFO = BASE_URL + "api/Orders/OrderInfo";
+    public static final String ORDER_LIST = BASE_URL + "api/Orders/OrderList";
+
+
 }

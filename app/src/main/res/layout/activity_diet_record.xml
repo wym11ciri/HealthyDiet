@@ -5,27 +5,43 @@
     android:orientation="vertical">
 
     <include layout="@layout/title_bar_style" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#EDEDED" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
+        <com.github.jdsjlzx.recyclerview.LRecyclerView
+            android:id="@+id/rvDietRecord"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        <ImageView
+        <LinearLayout
+            android:id="@+id/layoutNoMoreData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:src="@mipmap/no_more_data" />
-
-        <TextView
             android:layout_marginTop="5dp"
-            android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no_more_date" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/no_more_data" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/no_more_date"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
 
 </LinearLayout>

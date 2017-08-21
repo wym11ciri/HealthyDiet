@@ -217,7 +217,8 @@ public class SleepFragment extends Fragment {
                         //获取12小时制的 hour
                         int hour = (int) (mAngle / 30);
                         //获取分钟
-                        int b = (int) mAngle % 30;//获得分
+                        double b =  mAngle % 30;//获得分
+                        LogUtil.i("取余"+b);
                         int min = (int) (60 * (b / 30.0001));
                         if (isSleepAfter) {
                             hour = hour + 12;
@@ -248,7 +249,7 @@ public class SleepFragment extends Fragment {
                         //获取12小时制的 hour
                         int hour = (int) (mAngle / 30);
                         //获取分钟
-                        int b = (int) mAngle % 30;//获得分
+                        double b = mAngle % 30;//获得分
                         int min = (int) (60 * (b / 30.0001));
                         if (isGetUpAfter) {
                             hour = hour + 12;

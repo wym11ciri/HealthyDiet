@@ -25,6 +25,7 @@ import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
+import com.zuoni.dialog.picker.dialog.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,11 +65,19 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
     RvRecipesAdapter mRvRecommendAdapter;
     List<RecipeListInfoByDRId.ListDataBean> recommendList;
 
+
+
+    private LoadingDialog loadingDialog;
+
+
     @Override
     public void initUI() {
         ButterKnife.bind(this);
         id = getIntent().getIntExtra("id", 0);
-
+        LoadingDialog.Builder builder=new LoadingDialog.Builder(getContext());
+        builder.setMessage("载入中...");
+        loadingDialog=builder.create();
+        loadingDialog.show();
 
         setTitle("餐厅详情");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -111,11 +120,12 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("接口，餐厅详情下面部分" + e);
-                        Toast.makeText(RestaurantDetailsActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
+                        loadingDialog.dismiss();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        loadingDialog.dismiss();
                         LogUtil.i("接口，餐厅详情下面部分" + response);
                         Gson gson = new Gson();
                         RecipeListInfoByDRId mRecipeListInfoByDRId = gson.fromJson(response, RecipeListInfoByDRId.class);
@@ -183,12 +193,13 @@ public class RestaurantDetailsActivity extends BaseTitleActivity {
                 , new HttpUtilsListener() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        loadingDialog.dismiss();
                         LogUtil.i("接口，餐厅详情上面部分" + e);
-                        Toast.makeText(RestaurantDetailsActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        loadingDialog.dismiss();
                         LogUtil.i("接口，餐厅详情上面部分" + response);
                         Gson gson = new Gson();
                         GetRestaurantInfoById mGetRestaurantInfoById = gson.fromJson(response, GetRestaurantInfoById.class);

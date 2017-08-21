@@ -14,6 +14,7 @@
         android:background="#fff">
 
         <LinearLayout
+            android:id="@+id/layoutGoRest"
             android:layout_width="70dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"

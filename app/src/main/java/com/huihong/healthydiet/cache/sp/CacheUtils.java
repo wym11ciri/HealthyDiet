@@ -153,6 +153,7 @@ public class CacheUtils {
         //存步数的时候去判断下 如果得到的时间不是今天
         String stepDate= (String) SPUtils.get(mContext,"stepDate","");
         String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
+
         assert stepDate != null;
         if(stepDate.equals(nowDate)){
             //如果时间相等
@@ -218,7 +219,19 @@ public class CacheUtils {
     }
 
     public static String getRunState(Context mContext) {
-        return (String) SPUtils.get(mContext, "RunState", "OFF");
+        //先判断是不是当天第一次打开
+        String lastDate= (String) SPUtils.get(mContext,"lastDate","");
+        String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
+
+        if(lastDate.equals(nowDate)){
+            return (String) SPUtils.get(mContext, "RunState", "OFF");
+        }else {
+            SPUtils.put(mContext,"RunState","OFF");
+            SPUtils.put(mContext,"lastDate",nowDate);
+            return "OFF";
+        }
+
+
     }
 
     //闹铃状态

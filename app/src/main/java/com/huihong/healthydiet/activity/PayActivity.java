@@ -17,12 +17,13 @@ import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.adapter.RvPhotoAdapter;
 import com.huihong.healthydiet.adapter.RvTagAdapter;
 import com.huihong.healthydiet.adapter.RvTypeAdapter2;
-import com.huihong.healthydiet.model.gsonbean.RecipeItemInfoForPay;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.model.gsonbean.RecipeItemInfoForPay;
 import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
+import com.zuoni.dialog.picker.dialog.LoadingDialog;
 import com.zuoni.dialog.picker.pickerdialog.DataPickerDateDialog;
 import com.zuoni.dialog.picker.pickerdialog.TimePickerDialog;
 
@@ -51,6 +52,7 @@ public class PayActivity extends BaseTitleActivity {
     private String payMoney = "-1";
     private String payTime = "";
     private String paName = "";
+    private LoadingDialog loadingDialog;
 
     @Override
     public int setLayoutId() {
@@ -59,6 +61,10 @@ public class PayActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
+        LoadingDialog.Builder builder =new LoadingDialog.Builder( getContext());
+        builder.setMessage("载入中...");
+        loadingDialog=builder.create();
+        loadingDialog.show();
         setTitle("支付");
         tvName = (TextView) findViewById(R.id.tvName);
         tvPrice = (TextView) findViewById(R.id.tvPrice);
@@ -157,11 +163,12 @@ public class PayActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("接口，支付详情", e + "");
-
+loadingDialog.dismiss();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
+                        loadingDialog.dismiss();
                         LogUtil.i("接口，支付详情", response + "");
                         Gson gson = new Gson();
                         RecipeItemInfoForPay mRecipeItemInfoForPay = gson.fromJson(response, RecipeItemInfoForPay.class);

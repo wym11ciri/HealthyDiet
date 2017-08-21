@@ -1,5 +1,6 @@
 package com.huihong.healthydiet.activity.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,12 +21,15 @@ public abstract class BaseTitleActivity2 extends BaseActivity {
     private ImageView ivTitleRight;
     private LinearLayout layoutTitleRight;
     private TextView tvTitleText;
+    private Context mContext;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(setLayoutId());
+        mContext = this;
         initTitleBarUI();
         layoutTitleLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +37,12 @@ public abstract class BaseTitleActivity2 extends BaseActivity {
                 finishActivity();
             }
         });
+
+        getContext();
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 
     private void initTitleBarUI() {
@@ -117,8 +127,6 @@ public abstract class BaseTitleActivity2 extends BaseActivity {
     public void onBackPressed() {
         finishActivity();
     }
-
-
 
 
 }

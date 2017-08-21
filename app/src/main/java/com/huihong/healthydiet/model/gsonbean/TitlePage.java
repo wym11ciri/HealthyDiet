@@ -2,6 +2,7 @@ package com.huihong.healthydiet.model.gsonbean;
 
 import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
 import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
+import com.huihong.healthydiet.model.httpmodel.OrderDetailsInfo;
 import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
 import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 
@@ -12,7 +13,6 @@ import java.util.List;
  */
 
 public class TitlePage extends HttpBaseInfo {
-
 
     /**
      * Message : null
@@ -26,7 +26,7 @@ public class TitlePage extends HttpBaseInfo {
     private List<RestaurantInfo> ListData;
     private List<RecipeInfo> ListData2;
     private List<ArticleInfo> ListData3;
-    private List<?> ListData4;
+    private List<OrderDetailsInfo> ListData4;
 
 
 
@@ -54,16 +54,11 @@ public class TitlePage extends HttpBaseInfo {
         this.ListData3 = ListData3;
     }
 
-    public List<?> getListData4() {
+    public List<OrderDetailsInfo> getListData4() {
         return ListData4;
     }
 
-    public void setListData4(List<?> ListData4) {
+    public void setListData4(List<OrderDetailsInfo> ListData4) {
         this.ListData4 = ListData4;
     }
-
-
-
-
-
 }

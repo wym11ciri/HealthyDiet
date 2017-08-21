@@ -19,6 +19,7 @@ import com.huihong.healthydiet.mInterface.CircleListener;
 import com.huihong.healthydiet.model.mybean.Time;
 import com.huihong.healthydiet.model.mybean.TouchCircle;
 import com.huihong.healthydiet.utils.common.DensityUtils;
+import com.huihong.healthydiet.utils.common.LogUtil;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/14
@@ -219,6 +220,7 @@ public class TimeSelectView extends View {
                     //反三角函数求角度
                     double a = Math.atan2(getY2, getX2);//给的是弧度
                     float mAngle = (float) (360 * a / (2 * TouchCircle.PI));//弧度转角度
+                    LogUtil.i("角度"+mAngle);
                     if (isStart) {
                         startCircle.setAngle(mAngle);
                     } else {

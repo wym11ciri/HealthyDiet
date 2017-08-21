@@ -11,16 +11,8 @@ import java.util.List;
 
 public class RecipeItemInfo extends HttpBaseInfo{
 
-    /**
-     * HttpCode : 200
-     * Message :
-     * ListData : [{"id":4,"name":"食谱5","foodRecipe":[{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodId":4,"FoodName":"鸡肉","FoodWeight":"3g","WhetherLike":0},{"FoodId":50,"FoodName":"牛肉","FoodWeight":"4g","WhetherLike":0}]}],"ConstitutionPercentage":75,"Constitution":["特禀质","气虚质","阴虚质"],"Tags":["清蒸","红烧"],"images":["http://106.14.218.31:8081/img//recipe//recipe4-19823844.jpg","http://106.14.218.31:8081/img//recipe//recipe4-19834101.jpg"],"price":"11.00"}]
-     */
-
 
     private List<ListDataBean> ListData;
-
-
 
     public List<ListDataBean> getListData() {
         return ListData;
@@ -32,20 +24,22 @@ public class RecipeItemInfo extends HttpBaseInfo{
 
     public static class ListDataBean {
         /**
-         * id : 4
-         * name : 食谱5
-         * foodRecipe : [{"RecipeId":3,"RecipeItemName":"配菜","ListFood":[{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]},{"RecipeId":1,"RecipeItemName":"主食","ListFood":[{"FoodId":4,"FoodName":"鸡肉","FoodWeight":"3g","WhetherLike":0},{"FoodId":50,"FoodName":"牛肉","FoodWeight":"4g","WhetherLike":0}]}]
-         * ConstitutionPercentage : 75
-         * Constitution : ["特禀质","气虚质","阴虚质"]
-         * Tags : ["清蒸","红烧"]
-         * images : ["http://106.14.218.31:8081/img//recipe//recipe4-19823844.jpg","http://106.14.218.31:8081/img//recipe//recipe4-19834101.jpg"]
-         * price : 11.00
+         * id : 8
+         * name : 食谱7
+         * foodRecipe : [{"RecipeId":5,"RecipeItemName":"水果","ListFood":[{"FoodId":35,"FoodName":"青菜","FoodWeight":"555g","WhetherLike":2}]}]
+         * ConstitutionPercentage : 30
+         * Constitution : ["气虚质","阴虚质","痰湿质"]
+         * Tags : ["清蒸"]
+         * images : ["http://106.14.218.31:8081/img//recipe//recipe-201708181705420.jpg","http://106.14.218.31:8081/img//recipe//recipe-201708181705421.jpg","http://106.14.218.31:8081/img//recipe//recipe-201708181705422.jpg"]
+         * price : 1.00
+         * RestaurantId : 91
          */
 
         private int id;
         private String name;
         private int ConstitutionPercentage;
         private String price;
+        private int RestaurantId;
         private List<FoodRecipeBean> foodRecipe;
         private List<String> Constitution;
         private List<String> Tags;
@@ -83,6 +77,14 @@ public class RecipeItemInfo extends HttpBaseInfo{
             this.price = price;
         }
 
+        public int getRestaurantId() {
+            return RestaurantId;
+        }
+
+        public void setRestaurantId(int RestaurantId) {
+            this.RestaurantId = RestaurantId;
+        }
+
         public List<FoodRecipeBean> getFoodRecipe() {
             return foodRecipe;
         }
@@ -117,9 +119,9 @@ public class RecipeItemInfo extends HttpBaseInfo{
 
         public static class FoodRecipeBean {
             /**
-             * RecipeId : 3
-             * RecipeItemName : 配菜
-             * ListFood : [{"FoodId":35,"FoodName":"青菜","FoodWeight":"1g","WhetherLike":2},{"FoodId":54,"FoodName":"萝卜","FoodWeight":"2g","WhetherLike":0}]
+             * RecipeId : 5
+             * RecipeItemName : 水果
+             * ListFood : [{"FoodId":35,"FoodName":"青菜","FoodWeight":"555g","WhetherLike":2}]
              */
 
             private int RecipeId;
@@ -154,7 +156,7 @@ public class RecipeItemInfo extends HttpBaseInfo{
                 /**
                  * FoodId : 35
                  * FoodName : 青菜
-                 * FoodWeight : 1g
+                 * FoodWeight : 555g
                  * WhetherLike : 2
                  */
 

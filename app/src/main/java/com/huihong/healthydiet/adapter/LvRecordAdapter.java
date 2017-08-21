@@ -47,7 +47,7 @@ public class LvRecordAdapter extends BaseAdapter {
 
         ViewHolder mHolder;
         if (mView == null) {
-            mView = LayoutInflater.from(mContext).inflate(R.layout.lv_record_item, null);
+            mView = LayoutInflater.from(mContext).inflate(R.layout.rv_record_home_page_item, null);
             mHolder = new ViewHolder(mView);
             mView.setTag(mHolder);
         } else {
