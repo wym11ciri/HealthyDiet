@@ -66,7 +66,6 @@ public class SleepFragment extends Fragment {
                     if(mSleepChartView!=null){
                         mSleepChartView.invalidateData();
                     }
-
                 }
             });
         }

@@ -23,6 +23,8 @@ public class RegisterSuccessfulActivity extends BaseTitleActivity {
     public void initUI() {
         setTitle("注册");
         tvGoSimpleTest= (TextView) findViewById(R.id.tvGoSimpleTest);
+        //点击 跳转到简易版测试界面
+        //销毁当前界面
         tvGoSimpleTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

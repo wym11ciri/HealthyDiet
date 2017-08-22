@@ -36,13 +36,13 @@ public class MyUtils {
         if (type.equals("平和质")) {
             ivConstitution.setImageResource(R.mipmap.temperament_1);
         } else if (type.equals("气郁质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_2);
+            ivConstitution.setImageResource(R.mipmap.temperament_3);
         } else if (type.equals("阴虚质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_8);
+            ivConstitution.setImageResource(R.mipmap.temperament_9);
         } else if (type.equals("痰湿质")) {
             ivConstitution.setImageResource(R.mipmap.temperament_5);
         } else if (type.equals("阳虚质")) {
-            ivConstitution.setImageResource(R.mipmap.temperament_9);
+            ivConstitution.setImageResource(R.mipmap.temperament_8);
         } else if (type.equals("特禀质")) {
             ivConstitution.setImageResource(R.mipmap.temperament_6);
         } else if (type.equals("湿热质")) {

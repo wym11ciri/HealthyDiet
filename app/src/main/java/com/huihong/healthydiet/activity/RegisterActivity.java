@@ -14,8 +14,10 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.model.gsonbean.MailRegister;
 import com.huihong.healthydiet.model.gsonbean.SendMail;
+import com.huihong.healthydiet.model.mybean.AccountPassword;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -36,16 +38,11 @@ import static com.zhy.http.okhttp.OkHttpUtils.post;
 public class RegisterActivity extends BaseTitleActivity {
 
     private TextView tvRegister;
-
     private EditText etPhone;
     private EditText etPassword, etPassword2;
     private EditText etCode;
-
-
     private TextView tvGetCode;//获取验证码
     private CountDownTimer codeTimer;//验证码倒计时
-
-
     private ImageView ivEye;//查看密码
 
     @Override
@@ -55,15 +52,12 @@ public class RegisterActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
-        setTitle("注册");
-
+        setTitle("注 册");
         initGetCodeButton();//设置获取验证码按钮
         etPassword = (EditText) findViewById(R.id.etPassword);
         etPassword2 = (EditText) findViewById(R.id.etPassword2);
         etPhone = (EditText) findViewById(R.id.etPhone);
         etCode = (EditText) findViewById(R.id.etCode);
-
-
         ivEye = (ImageView) findViewById(R.id.ivEye);
         ivEye.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -80,8 +74,6 @@ public class RegisterActivity extends BaseTitleActivity {
                 return true;
             }
         });
-
-
         //注册按钮
         tvRegister = (TextView) findViewById(R.id.tvRegister);
         tvRegister.setOnClickListener(new View.OnClickListener() {
@@ -109,20 +101,22 @@ public class RegisterActivity extends BaseTitleActivity {
                                     Toast.makeText(RegisterActivity.this, "密码与确认密码不一致", Toast.LENGTH_SHORT).show();
                                 }
                             }
-
                         }
-
-
                     }
                 }
-
             }
         });
-
     }
 
-    //注册按钮
-    private void register(final String phone, String code, String password) {
+    /**
+     * 注册按钮
+     * 注册成功了需要保存
+     * UserId
+     * 用户的 账号  密码
+     * <p>
+     * UserId用户下一步的测试使用
+     */
+    private void register(final String phone, String code, final  String password) {
 
         tvRegister.setClickable(false);
         post()
@@ -147,14 +141,28 @@ public class RegisterActivity extends BaseTitleActivity {
                         int code = mMailRegister.getHttpCode();
                         if (code == 200) {
                             //注册成功
-                            SPUtils.put(RegisterActivity.this,"phone",phone);
+
+                            //保存手机号 密码
+                            SPUtils.put(RegisterActivity.this, "phone", phone);
+                            SPUtils.put(getContext(), "password", etPassword.getText().toString().trim());
+
+                            //保存账号密码
+                            AccountPassword accountPassword=new AccountPassword();
+                            accountPassword.setPassword(password);
+                            accountPassword.setAccount(phone);
+                            CacheUtils.setAccountPassword(getContext(),accountPassword);
+                            //保存UserId
+                            CacheUtils.setUserId(getContext(), mMailRegister.getListData().get(0).getUserId());
+
+                            //注册成功跳转到注册成功界面
                             Intent mIntent = new Intent(RegisterActivity.this, RegisterSuccessfulActivity.class);
                             startActivity(mIntent);
                             setResult(200);
+
+                            //销毁当前注册界面
                             finish();
                             overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
-                            String Message = mMailRegister.getMessage();
-                            Toast.makeText(RegisterActivity.this, Message, Toast.LENGTH_SHORT).show();
+
                         } else {
                             String Message = mMailRegister.getMessage();
                             Toast.makeText(RegisterActivity.this, Message, Toast.LENGTH_SHORT).show();
@@ -173,7 +181,6 @@ public class RegisterActivity extends BaseTitleActivity {
             public void onClick(View v) {
                 String sPhone = etPhone.getText().toString().trim();
                 if (isMobileNO(sPhone)) {
-
                     getCode(sPhone);//获取验证码
                 } else {
                     Toast.makeText(RegisterActivity.this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
@@ -221,7 +228,6 @@ public class RegisterActivity extends BaseTitleActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        tvGetCode.setClickable(true);
                         LogUtil.i("接口，获取验证码" + response);
                         Gson gson = new Gson();
                         SendMail mSendMail = gson.fromJson(response, SendMail.class);

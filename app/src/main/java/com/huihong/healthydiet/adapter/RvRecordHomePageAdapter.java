@@ -79,25 +79,17 @@ public class RvRecordHomePageAdapter extends RecyclerView.Adapter<RvRecordViewHo
         LvOrderDetailsTypeAdapter lvOrderDetailsTypeAdapter =new LvOrderDetailsTypeAdapter(mContext,mList.get(position).getConstitution());
         holder.lvType.setAdapter(lvOrderDetailsTypeAdapter);
 
-
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
-
         holder.tvName.setText(mList.get(position).getRecipeName());
 
         holder.tvRestaurantName.setText(mList.get(position).getRestaurantName());
 
-        holder.tvTime.setText(mList.get(position).getOrderTime());
+        String time=mList.get(position).getOrderTime();
+        time=time.replace("T"," ");
+        holder.tvTime.setText(time);
 
         holder.tvPrice.setText("￥ "+mList.get(position).getOrderPrice());
 
+        //跳转支付界面
         holder.tvGetAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +99,7 @@ public class RvRecordHomePageAdapter extends RecyclerView.Adapter<RvRecordViewHo
             }
         });
 
+        //跳转订单详情界面
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,15 +131,9 @@ class RvRecordViewHolder extends RecyclerView.ViewHolder {
 
     TextView tvName, tvTitle,tvRestaurantName,tvTime,tvPrice,tvMaterial;
     LinearLayout mLinearLayout;
-
-    RecyclerView rvArticleTag;
     SelectableRoundedImageView ivHead;
-
-
     TextView tvGetAgain;
-
     View viewLine;
-
     RelativeLayout layoutMain;
     HorizontalListView lvType;
 
@@ -157,14 +144,10 @@ class RvRecordViewHolder extends RecyclerView.ViewHolder {
         tvGetAgain= (TextView) itemView.findViewById(R.id.tvGetAgain);
         layoutMain= (RelativeLayout) itemView.findViewById(R.id.layoutMain);
         lvType= (HorizontalListView) itemView.findViewById(R.id.lvType);
-
         tvName= (TextView) itemView.findViewById(R.id.tvName);
         tvRestaurantName= (TextView) itemView.findViewById(R.id.tvRestaurantName);
         tvTime= (TextView) itemView.findViewById(R.id.tvTime);
         tvPrice= (TextView) itemView.findViewById(R.id.tvPrice);
         tvMaterial= (TextView) itemView.findViewById(R.id.tvMaterial);
-//        rvArticleTag = (RecyclerView) itemView.findViewById(R.id.rvArticleTag);
-//        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-//        mLinearLayout= (LinearLayout) itemView.findViewById(R.id.mLinearLayout);
     }
 }

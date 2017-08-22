@@ -242,7 +242,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center_vertical|right"
-                android:text="一般"
                 android:textColor="#989898"
                 android:textSize="16sp"
                 android:textStyle="bold" />

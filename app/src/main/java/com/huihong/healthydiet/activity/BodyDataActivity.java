@@ -108,10 +108,10 @@ public class BodyDataActivity extends BaseTitleActivity {
             public void onClick(View v) {
 
                 List<String> datas = new ArrayList<>();
-                datas.add("Ⅰ");
-                datas.add("Ⅱ");
-                datas.add("Ⅲ");
-                datas.add("Ⅳ");
+                datas.add("Ⅰ级");
+                datas.add("Ⅱ级");
+                datas.add("Ⅲ级");
+                datas.add("Ⅳ级");
                 DataPickerSingleDialog.Builder builder = new DataPickerSingleDialog.Builder(BodyDataActivity.this);
                 builder.setData(datas);
                 builder.setOnDataSelectedListener(new OnSingleDataSelectedListener() {

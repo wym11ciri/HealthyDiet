@@ -3,6 +3,7 @@ package com.huihong.healthydiet.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
@@ -67,13 +68,14 @@ public class DietRecordActivity extends BaseTitleActivity2 {
         rvDietRecord.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-
+                getInfo(num,false);
             }
         });
 
         rvDietRecord.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
+                num=1;
                 getInfo(1,true);
             }
         });
@@ -95,12 +97,20 @@ public class DietRecordActivity extends BaseTitleActivity2 {
                         LogUtil.i("饮食记录列表",response);
                         Gson gson = new Gson();
                         OrderList mOrderList = gson.fromJson(response, OrderList.class);
-                        if(needClear){
-                            mList.clear();
+                        if(mOrderList.getHttpCode()==200){
+                            num++;
+                            if(needClear){
+                                mList.clear();
+                            }
+                            mList.addAll(mOrderList.getListData());
+                            mLRecyclerViewAdapter.notifyDataSetChanged();
                         }
 
-                        mList.addAll(mOrderList.getListData());
-                        mLRecyclerViewAdapter.notifyDataSetChanged();
+                        if(mList.size()==0){
+                            layoutNoMoreData.setVisibility(View.VISIBLE);
+                        }else {
+                            layoutNoMoreData.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override

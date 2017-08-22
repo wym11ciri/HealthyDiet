@@ -37,17 +37,22 @@ import com.huihong.healthydiet.adapter.NearbyFragmentPagerAdapter;
 import com.huihong.healthydiet.adapter.RvRecommendAdapter;
 import com.huihong.healthydiet.adapter.RvRecordHomePageAdapter;
 import com.huihong.healthydiet.cache.litepal.SearchHistory;
+import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.fragment.NearbyFragment;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.model.gsonbean.TitlePage;
+import com.huihong.healthydiet.model.gsonbean.UserScoreInfo;
 import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
 import com.huihong.healthydiet.model.httpmodel.OrderDetailsInfo;
+import com.huihong.healthydiet.model.httpmodel.RankInfo;
 import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
 import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
 import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
+import com.huihong.healthydiet.utils.common.ValueUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
 import com.huihong.healthydiet.widget.GlideImageLoader;
 import com.joooonho.SelectableRoundedImageView;
@@ -75,6 +80,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.ivAlarm)
     ImageView ivAlarm;
     Unbinder unbinder;
+    @BindView(R.id.tvCurrentName)
+    TextView tvCurrentName;
+    @BindView(R.id.tvNextScore)
+    TextView tvNextScore;
+    @BindView(R.id.tvRunState)
+    TextView tvRunState;
+    Unbinder unbinder1;
     private View mView;
 
     //附近餐厅
@@ -127,6 +139,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     if (isReLocation) {
                         mAddress = address;
                         getHomePageInfo();
+                    }
+                }
+            });
+
+            getIntegral();
+            String state=  CacheUtils.getRunState(getContext());
+            if(state.equals("OFF")){
+                tvRunState.setText("尚未开始运动");
+            }else {
+                tvRunState.setText("今日已进行有氧运动");
+            }
+            MainActivity.mainActivity.setHomePageItemOnClickListener(new ItemOnClickListener() {
+                @Override
+                public void onClick() {
+                    getIntegral();
+                  String state=  CacheUtils.getRunState(getContext());
+                    if(state.equals("OFF")){
+                        tvRunState.setText("尚未开始运动");
+                    }else {
+                        tvRunState.setText("今日已进行有氧运动");
                     }
                 }
             });
@@ -548,5 +580,34 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @OnClick(R.id.ivAlarm)
     public void onViewClicked() {
+    }
+
+    private void getIntegral() {
+        Map<String, String> map = new HashMap<>();
+        map.put("UserId", SPUtils.get(getActivity(), "UserId", 0) + "");
+        HttpUtils.sendHttpAddToken(getActivity(), AppUrl.USER_SCORE_INFO
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("获取积分", response);
+                        Gson gson = new Gson();
+                        UserScoreInfo mUserScoreInfo = gson.fromJson(response, UserScoreInfo.class);
+                        if (mUserScoreInfo.getHttpCode() == 200) {
+                            RankInfo mRankInfo = mUserScoreInfo.getModel1();
+                            tvCurrentName.setText(mRankInfo.getCurrent_Name());
+//                            tvCurrentScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getCurrent_Score(), 1));
+                            tvNextScore.setText(ValueUtils.getDoubleValueString(mRankInfo.getNext_Score(), 1));
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("获取积分", e.toString());
+                    }
+                });
+
+
     }
 }

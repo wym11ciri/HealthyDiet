@@ -2,6 +2,8 @@ package com.huihong.healthydiet.cache.sp;
 
 import android.content.Context;
 
+import com.huihong.healthydiet.model.mybean.AccountPassword;
+import com.huihong.healthydiet.model.mybean.LevelInfo;
 import com.huihong.healthydiet.model.mybean.MyDate;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.model.mybean.StepCount;
@@ -120,7 +122,7 @@ public class CacheUtils {
     //返回睡眠星期
     public static List<Boolean> getSleepWeek(Context mContext) {
 
-        String weekValueString = (String) SPUtils.get(mContext, "weekValueString", "0,0,0,0,0,0,0,");
+        String weekValueString = (String) SPUtils.get(mContext, "weekValueString", "1,1,1,1,1,0,0,");
 
         List<Boolean> mList = new ArrayList<>();
         assert weekValueString != null;
@@ -151,11 +153,11 @@ public class CacheUtils {
     //保存步数
     public static void putStepCount(Context mContext, StepCount stepCount) {
         //存步数的时候去判断下 如果得到的时间不是今天
-        String stepDate= (String) SPUtils.get(mContext,"stepDate","");
-        String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
+        String stepDate = (String) SPUtils.get(mContext, "stepDate", "");
+        String nowDate = CalendarUtils.getYear() + "-" + CalendarUtils.getMonth() + "-" + CalendarUtils.getDay();
 
         assert stepDate != null;
-        if(stepDate.equals(nowDate)){
+        if (stepDate.equals(nowDate)) {
             //如果时间相等
             int mStepCount = stepCount.getStepCount();
             int mTime = stepCount.getTime();
@@ -164,7 +166,7 @@ public class CacheUtils {
             SPUtils.put(mContext, "stepCount", mStepCount);
             SPUtils.put(mContext, "stepTime", mTime);
             SPUtils.put(mContext, "stepDistance", mDistance);
-        }else {
+        } else {
             //如果不相等 清0数据
             SPUtils.put(mContext, "stepCount", 0);
             SPUtils.put(mContext, "stepTime", 0);
@@ -178,19 +180,19 @@ public class CacheUtils {
     //获得当前行走的步数
     public static StepCount getStepCount(Context mContext) {
 
-        String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
+        String nowDate = CalendarUtils.getYear() + "-" + CalendarUtils.getMonth() + "-" + CalendarUtils.getDay();
         StepCount stepCount = new StepCount();
         int mStepCount = (int) SPUtils.get(mContext, "stepCount", 0);
         int stepTime = (int) SPUtils.get(mContext, "stepTime", 0);
-        String stepDate= (String) SPUtils.get(mContext, "stepDate", "");
+        String stepDate = (String) SPUtils.get(mContext, "stepDate", "");
         //拿数据的时候也判断下
         assert stepDate != null;
-        if(stepDate.equals(nowDate)){
+        if (stepDate.equals(nowDate)) {
             //时间一样直接返回查询到的数据
             stepCount.setTime(stepTime);
             stepCount.setStepCount(mStepCount);
 
-        }else {
+        } else {
             SPUtils.put(mContext, "stepCount", 0);
             SPUtils.put(mContext, "stepTime", 0);
             SPUtils.put(mContext, "stepDate", nowDate);
@@ -220,14 +222,14 @@ public class CacheUtils {
 
     public static String getRunState(Context mContext) {
         //先判断是不是当天第一次打开
-        String lastDate= (String) SPUtils.get(mContext,"lastDate","");
-        String nowDate= CalendarUtils.getYear()+"-"+CalendarUtils.getMonth()+"-"+CalendarUtils.getDay();
+        String lastDate = (String) SPUtils.get(mContext, "lastDate", "");
+        String nowDate = CalendarUtils.getYear() + "-" + CalendarUtils.getMonth() + "-" + CalendarUtils.getDay();
 
-        if(lastDate.equals(nowDate)){
+        if (lastDate.equals(nowDate)) {
             return (String) SPUtils.get(mContext, "RunState", "OFF");
-        }else {
-            SPUtils.put(mContext,"RunState","OFF");
-            SPUtils.put(mContext,"lastDate",nowDate);
+        } else {
+            SPUtils.put(mContext, "RunState", "OFF");
+            SPUtils.put(mContext, "lastDate", nowDate);
             return "OFF";
         }
 
@@ -242,7 +244,7 @@ public class CacheUtils {
 
     //获得闹铃状态
     public static boolean isOpenAlarm(Context mContext) {
-        return (boolean) SPUtils.get(mContext, "isOpenAlarm", false);
+        return (boolean) SPUtils.get(mContext, "isOpenAlarm", true);
     }
 
     //运动记录缓存
@@ -357,6 +359,49 @@ public class CacheUtils {
         myDate.setMonth((int) SPUtils.get(mContext, "GetUpDateMonth", 1));
         myDate.setYear((int) SPUtils.get(mContext, "GetUpDateYear", 2016));
         return myDate;
+    }
+
+    //获取等级信息
+    public static void putLevelInfo(Context mContext, LevelInfo mLevelInfo) {
+        String currentScore = mLevelInfo.getCurrentScore();
+        String nextScore = mLevelInfo.getNextScore();
+        String currentName = mLevelInfo.getCurrentName();
+        int currentLv = mLevelInfo.getCurrentLv();
+
+        SPUtils.put(mContext, "currentScore", currentScore);
+        SPUtils.put(mContext, "nextScore", nextScore);
+        SPUtils.put(mContext, "currentName", currentName);
+        SPUtils.put(mContext, "currentLv", currentLv);
+    }
+
+    public static LevelInfo getLevelInfo(Context mContext) {
+        LevelInfo levelInfo = new LevelInfo();
+        String currentScore = (String) SPUtils.get(mContext, "currentScore", "0");
+        String nextScore = (String) SPUtils.get(mContext, "nextScore", "0");
+        String currentName = (String) SPUtils.get(mContext, "currentName", "");
+        int currentLv = (int) SPUtils.get(mContext, "currentLv", 1);
+        return levelInfo;
+    }
+
+
+    //设置用户账号密码
+
+    public static void setAccountPassword(Context mContext, AccountPassword accountPassword) {
+        String account = accountPassword.getAccount();
+        String password = accountPassword.getPassword();
+        SPUtils.put(mContext,"UserAccount",account);
+        SPUtils.put(mContext,"UserPassword",password);
+        LogUtil.i("存取账号密码",account+"=="+password);
+    }
+
+    public static AccountPassword getAccountPassword(Context mContext) {
+        AccountPassword accountPassword=new AccountPassword();
+        String password= (String) SPUtils.get(mContext,"UserPassword","");
+        String account= (String) SPUtils.get(mContext,"UserAccount","");
+        LogUtil.i("获得账号密码",account+"=="+password);
+        accountPassword.setAccount(account);
+        accountPassword.setPassword(password);
+        return  accountPassword;
     }
 
 }

@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
     private ItemOnClickListener itemOnClickListenerSleep;
     private ItemOnClickListener itemOnClickListener03;
     private ItemOnClickListener itemOnClickListener04;
-    private ItemOnClickListener itemOnClickListener05;
+    private ItemOnClickListener itemOnClickListenerHome;
 
     //设置监听
     public void setItemOnClickListener01(ItemOnClickListener itemOnClickListener01) {
@@ -155,8 +155,8 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
         this.itemOnClickListener04 = itemOnClickListener04;
     }
 
-    public void setItemOnClickListener05(ItemOnClickListener itemOnClickListener05) {
-        this.itemOnClickListener05 = itemOnClickListener05;
+    public void setHomePageItemOnClickListener(ItemOnClickListener itemOnClickListener05) {
+        this.itemOnClickListenerHome = itemOnClickListener05;
     }
 
 
@@ -380,9 +380,9 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 ivTab03.setImageResource(R.mipmap.logo_1);
                 mViewPager.setCurrentItem(2, false);
                 tvTab03.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
-//                if (itemOnClickListener04 != null) {
-//                    itemOnClickListener04.onClick();
-//                }
+                if (itemOnClickListenerHome != null) {
+                    itemOnClickListenerHome.onClick();
+                }
 
                 break;
             case R.id.layoutTab04:
@@ -399,8 +399,8 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
                 mViewPager.setCurrentItem(4, false);
                 tvTab05.setTextColor(getResources().getColor(R.color.tab_bottom_text_select));
 
-                if (itemOnClickListener05 != null) {
-                    itemOnClickListener05.onClick();
+                if (itemOnClickListenerHome != null) {
+                    itemOnClickListenerHome.onClick();
                 }
                 break;
         }

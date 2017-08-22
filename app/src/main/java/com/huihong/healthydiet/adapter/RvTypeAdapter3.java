@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.utils.MyUtils;
 
 import java.util.List;
 
@@ -52,25 +53,26 @@ public class RvTypeAdapter3 extends RecyclerView.Adapter<RvTypeAdapter3.RvTypeVi
     @Override
     public void onBindViewHolder(final RvTypeViewHolder holder, int position) {
         String type = mList.get(position);
-        if (type.equals("平和质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_1);
-        } else if (type.equals("气郁质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_2);
-        } else if (type.equals("阴虚质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_8);
-        } else if (type.equals("痰湿质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_5);
-        } else if (type.equals("阳虚质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_9);
-        } else if (type.equals("特禀质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_6);
-        } else if (type.equals("湿热质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_4);
-        } else if (type.equals("气虚质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_2);
-        } else if (type.equals("血瘀质")) {
-            holder.ivType.setImageResource(R.mipmap.temperament_7);
-        }
+        MyUtils.setImageViewType(holder.ivType,type);
+//        if (type.equals("平和质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_1);
+//        } else if (type.equals("气郁质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_2);
+//        } else if (type.equals("阴虚质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_8);
+//        } else if (type.equals("痰湿质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_5);
+//        } else if (type.equals("阳虚质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_9);
+//        } else if (type.equals("特禀质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_6);
+//        } else if (type.equals("湿热质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_4);
+//        } else if (type.equals("气虚质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_2);
+//        } else if (type.equals("血瘀质")) {
+//            holder.ivType.setImageResource(R.mipmap.temperament_7);
+//        }
     }
 
     @Override

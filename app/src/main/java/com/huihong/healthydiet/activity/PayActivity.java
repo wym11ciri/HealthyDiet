@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import com.huihong.healthydiet.adapter.RvTagAdapter;
 import com.huihong.healthydiet.adapter.RvTypeAdapter2;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.model.gsonbean.RecipeItemInfoForPay;
+import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
 import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -61,9 +63,9 @@ public class PayActivity extends BaseTitleActivity {
 
     @Override
     public void initUI() {
-        LoadingDialog.Builder builder =new LoadingDialog.Builder( getContext());
+        LoadingDialog.Builder builder = new LoadingDialog.Builder(getContext());
         builder.setMessage("载入中...");
-        loadingDialog=builder.create();
+        loadingDialog = builder.create();
         loadingDialog.show();
         setTitle("支付");
         tvName = (TextView) findViewById(R.id.tvName);
@@ -90,14 +92,63 @@ public class PayActivity extends BaseTitleActivity {
         layoutPayOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIntent = new Intent(PayActivity.this, PayOnlineActivity.class);
-                mIntent.putExtra("payMoney", payMoney);
-                mIntent.putExtra("payName", paName);
-                mIntent.putExtra("payTime", tvTimeSelect.getText().toString().trim());
-                mIntent.putExtra("RecipeId", RecipeId);
-                startActivity(mIntent);
+                String time=tvTimeSelect.getText().toString().trim();
+                if(time.equals("")){
+                    Toast.makeText(PayActivity.this, "请选择到店时间", Toast.LENGTH_SHORT).show();
+                }else {
+                    Intent mIntent = new Intent(PayActivity.this, PayOnlineActivity.class);
+                    mIntent.putExtra("payMoney", payMoney);
+                    mIntent.putExtra("payName", paName);
+                    mIntent.putExtra("payTime", tvTimeSelect.getText().toString().trim());
+                    mIntent.putExtra("RecipeId", RecipeId);
+                    startActivity(mIntent);
+                }
+
             }
         });
+        LinearLayout layoutPayOutline = (LinearLayout) findViewById(R.id.layoutPayOutline);
+        layoutPayOutline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String time=tvTimeSelect.getText().toString().trim();
+                if(time.equals("")){
+                    Toast.makeText(PayActivity.this, "请选择到店时间", Toast.LENGTH_SHORT).show();
+                }else {
+                    payOutLine();
+                }
+            }
+        });
+    }
+
+    private void payOutLine() {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("RecipeId", RecipeId);
+        map.put("atshoptime",tvTimeSelect.getText().toString().trim());
+
+        HttpUtils.sendHttpAddToken(getContext(), AppUrl.PAY_AT_SHOP_ORDER
+                , map
+                , new HttpUtilsListener() {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.i("到店支付", response);
+                        Gson gson = new Gson();
+                        HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
+                        if(mHttpBaseInfo.getHttpCode()==200){
+                            Toast.makeText(PayActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }else {
+                            Toast.makeText(PayActivity.this, mHttpBaseInfo.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.i("到店支付", e.toString());
+                    }
+                });
+
+
     }
 
 
@@ -141,7 +192,7 @@ public class PayActivity extends BaseTitleActivity {
             public void onTimeSelected(int[] times) {
                 chooseHour = times[0];
                 chooseMin = times[1];
-                tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日" + chooseHour + ":" + chooseMin);
+                tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
             }
         });
         builder.canCancel(false);
@@ -163,7 +214,7 @@ public class PayActivity extends BaseTitleActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("接口，支付详情", e + "");
-loadingDialog.dismiss();
+                        loadingDialog.dismiss();
                     }
 
                     @Override
@@ -204,7 +255,7 @@ loadingDialog.dismiss();
                                 tvSales.setText("本月销量" + mListDataBean.getSales() + "份");
                                 //设置匹配度
                                 int percentage = mListDataBean.getConstitutionPercentage();
-                                MyUtils.setTextViewColor(tvConstitutionPercentage,percentage,PayActivity.this);
+                                MyUtils.setTextViewColor(tvConstitutionPercentage, percentage, PayActivity.this);
                                 tvConstitutionPercentage.setText(percentage + "%");
 
 

@@ -47,6 +47,8 @@
                     android:src="@mipmap/home_3" />
 
                 <TextView
+
+                    android:id="@+id/tvCurrentName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -63,6 +65,7 @@
                     android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/tvNextScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4"
@@ -98,6 +101,7 @@
                     android:src="@mipmap/home_4" />
 
                 <TextView
+                    android:id="@+id/tvRunState"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"

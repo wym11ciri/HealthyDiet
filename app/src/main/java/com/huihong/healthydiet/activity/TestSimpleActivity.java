@@ -97,6 +97,8 @@ public class TestSimpleActivity extends BaseTitleActivity {
     }
 
     //基础版问卷提交
+    //传入UserId  把结果保存在Userid里
+    //由于已经提交过问卷了 所以再调用登录接口后 体质不会等于null了所有这里不需要去保存状态
     private void submitQuestion() {
 
         String a = "";
@@ -134,8 +136,6 @@ public class TestSimpleActivity extends BaseTitleActivity {
                             String message = mGetSubmitExpressQuestion.getMessage();
                             Toast.makeText(TestSimpleActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
-
-
                     }
                 });
 

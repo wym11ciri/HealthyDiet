@@ -35,7 +35,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_indicator_view);
+        setContentView(R.layout.layout_wechat_pay_result);
 
     }
 }

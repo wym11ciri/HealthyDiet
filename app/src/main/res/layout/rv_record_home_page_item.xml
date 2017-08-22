@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutMain"
     android:layout_width="match_parent"
     android:layout_height="86dp"
-    android:background="#ffffff"
-    android:id="@+id/layoutMain"
+    android:background="@color/color_white"
     android:gravity="center">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="#fff"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:orientation="horizontal">
 
         <com.joooonho.SelectableRoundedImageView
             android:id="@+id/ivHead"
@@ -49,19 +49,19 @@
 
                 <TextView
                     android:id="@+id/tvName"
-                    android:gravity="center"
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:textColor="#333333"
                     android:textSize="14sp" />
 
-             <com.huihong.healthydiet.widget.HorizontalListView
-                 android:id="@+id/lvType"
-                 android:layout_gravity="center"
-                 android:layout_width="0dp"
-                 android:layout_weight="3"
-                 android:layout_height="20dp"/>
+                <com.huihong.healthydiet.widget.HorizontalListView
+                    android:id="@+id/lvType"
+                    android:layout_width="0dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3" />
 
                 <View
                     android:layout_width="0dp"
@@ -73,7 +73,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="¥ 25"
                     android:textColor="#FE531F"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -87,7 +86,6 @@
                 android:id="@+id/tvMaterial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="生姜30g,红糖50g，鸡蛋2个"
                 android:textColor="#636363"
                 android:textSize="10sp" />
 
@@ -105,7 +103,6 @@
                     android:id="@+id/tvRestaurantName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="吉野家"
                     android:textColor="#636363"
                     android:textSize="10sp" />
 
@@ -118,7 +115,6 @@
                     android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2017年6月29日 15:50:00"
                     android:textColor="#636363"
                     android:textSize="10sp" />
 

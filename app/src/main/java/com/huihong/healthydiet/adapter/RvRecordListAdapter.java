@@ -93,7 +93,10 @@ public class RvRecordListAdapter extends RecyclerView.Adapter<RvRecordViewHolder
 
         holder.tvRestaurantName.setText(mList.get(position).getRestaurantName());
 
-        holder.tvTime.setText(mList.get(position).getOrderTime());
+        String time=mList.get(position).getOrderTime();
+        time=time.replace("T"," ");
+        holder.tvTime.setText(time);
+
 
         holder.tvPrice.setText("￥ "+mList.get(position).getOrderPrice());
 

@@ -11,19 +11,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <com.github.jdsjlzx.recyclerview.LRecyclerView
             android:id="@+id/rvIntegralRecord"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/ivTest"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layoutNoMoreData"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:src="@mipmap/no_more_data" />
+            android:orientation="vertical">
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/no_more_data" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="没有更多数据啦~"
+               android:textSize="12sp" />
+
+        </LinearLayout>
 
 
     </RelativeLayout>

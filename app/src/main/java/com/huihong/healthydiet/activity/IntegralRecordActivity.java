@@ -3,7 +3,7 @@ package com.huihong.healthydiet.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
@@ -32,6 +32,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 
+
+
+
 /**
  * Created by zangyi_shuai_ge on 2017/7/27
  * 积分记录界面
@@ -40,8 +43,9 @@ import okhttp3.Call;
 public class IntegralRecordActivity extends BaseTitleActivity2 {
     @BindView(R.id.rvIntegralRecord)
     LRecyclerView rvIntegralRecord;
-    @BindView(R.id.ivTest)
-    ImageView ivTest;
+    @BindView(R.id.layoutNoMoreData)
+    LinearLayout layoutNoMoreData;
+
     private List<IntegralDate> mIntegralDateList;
     private LRecyclerViewAdapter mLRecyclerViewAdapter;
 
@@ -124,15 +128,12 @@ public class IntegralRecordActivity extends BaseTitleActivity2 {
                                 mIntegralDateList.add(mIntegralDate);
                             }
                             mLRecyclerViewAdapter.notifyDataSetChanged();
-
-                            if(mIntegralDateList.size()==0){
-                                ivTest.setVisibility(View.VISIBLE);
-                            }else {
-                                ivTest.setVisibility(View.GONE);
-                            }
-
                         }
-
+                        if (mIntegralDateList.size() == 0) {
+                            layoutNoMoreData.setVisibility(View.VISIBLE);
+                        } else {
+                            layoutNoMoreData.setVisibility(View.GONE);
+                        }
 
                     }
 

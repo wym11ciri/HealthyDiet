@@ -70,7 +70,6 @@ public class MyFragment extends Fragment {
     ImageView iv03;
     @BindView(R.id.iv04)
     ImageView iv04;
-    Unbinder unbinder;
     @BindView(R.id.mTreeView)
     TreeView mTreeView;
     @BindView(R.id.tvCurrentName)
@@ -83,14 +82,12 @@ public class MyFragment extends Fragment {
     RecyclerView rvIntegral;
     @BindView(R.id.ivTree)
     ImageView ivTree;
-
+    Unbinder unbinder;
     private View mView;
 
+
     private boolean treeView = false;
-
     int levels = 1;
-
-
     private LinearLayout layoutSettings;
     private LinearLayout layoutBodyData, layoutMajorTest;
     private LinearLayout layoutLike;
@@ -98,14 +95,10 @@ public class MyFragment extends Fragment {
     private RvIntegralAdapter rvIntegralAdapter;
     private ImageView ivSetting;
     private LinearLayout layoutIntegralRecord;
-
-
     private List<GetScoreList.ListDataBean> mListDataBean;
-
     //个人信息
     private TextView tvAge, tvName, tvSex, tvHeight, tvWeight;
     private ImageView ivConstitution;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,7 +107,6 @@ public class MyFragment extends Fragment {
         levels = CacheUtils.getLevels(getActivity());
         getPersonalInfo();
     }
-
 
     @Nullable
     @Override
@@ -130,8 +122,6 @@ public class MyFragment extends Fragment {
                 getLeafInfo();
                 getScoreList();
                 getIntegral();
-
-
             }
         });
 
@@ -157,7 +147,6 @@ public class MyFragment extends Fragment {
                         }
                         break;
                 }
-
             }
         });
 
@@ -231,7 +220,7 @@ public class MyFragment extends Fragment {
                                 dialog.show();
                             }
 
-                            if(levels!=mRankInfo.getCurrent_Lv()){
+                            if (levels != mRankInfo.getCurrent_Lv()) {
                                 mTreeView.setLevels(mRankInfo.getCurrent_Lv());
                                 levels = mRankInfo.getCurrent_Lv();
                                 CacheUtils.setLevels(getActivity(), levels);
@@ -511,6 +500,4 @@ public class MyFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
-
-
 }
