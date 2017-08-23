@@ -1,6 +1,7 @@
 package com.huihong.healthydiet.cache.sp;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.huihong.healthydiet.model.mybean.AccountPassword;
 import com.huihong.healthydiet.model.mybean.LevelInfo;
@@ -404,4 +405,7 @@ public class CacheUtils {
         return  accountPassword;
     }
 
+    private void printLog(String message){
+        Log.i("SharedPreferences\n",message);
+    }
 }

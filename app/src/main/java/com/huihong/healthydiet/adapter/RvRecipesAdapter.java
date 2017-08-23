@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.model.gsonbean.RecipeListInfoByDRId;
-import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -32,12 +31,6 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesAdapter.RvRe
     private LayoutInflater mInflater;
     private Context mContext;
     private List<RecipeListInfoByDRId.ListDataBean> mList;
-
-    private ItemOnClickListener mItemOnClickListener;
-
-    public void setItemOnClickListener(ItemOnClickListener pItemOnClickListener) {
-        mItemOnClickListener = pItemOnClickListener;
-    }
 
 
     public RvRecipesAdapter(Context pContext, List<RecipeListInfoByDRId.ListDataBean> pList) {
@@ -91,15 +84,6 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesAdapter.RvRe
         holder.rvFoodRecipe.setLayoutManager(linearLayoutManager2);
         holder.rvFoodRecipe.setAdapter(new RvFoodRecipeAdapter(mContext, mFoodRecipe));
 
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
 
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override

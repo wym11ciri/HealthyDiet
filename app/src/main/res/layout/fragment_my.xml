@@ -1,250 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#eeeeee"
-        android:orientation="vertical">
-
-        <View
-            android:id="@+id/fake_status_bar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/status_bar_view_height"
-            android:background="#73C5FF" />
-
-        <include layout="@layout/my_fragment_head" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginTop="5dp"
-            android:background="#ffffff"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/layoutMajorTest"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/mine_1" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="专业版测试"
-                    android:textColor="#666666"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="#eeeeee" />
-
-            <LinearLayout
-                android:id="@+id/layoutLike"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="37dp"
-                    android:layout_height="37dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/mine_2" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="个人偏好"
-                    android:textColor="#666666"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="#eeeeee" />
-
-            <LinearLayout
-                android:id="@+id/layoutBodyData"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="36dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@mipmap/mine_3" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="身体数据"
-                    android:textColor="#666666"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_marginTop="4dp">
-
-            <ImageView
-                android:id="@+id/ivTree"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@mipmap/tree_1" />
-
-            <com.huihong.healthydiet.view.TreeView
-                android:id="@+id/mTreeView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </FrameLayout>
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@color/color_white"
-            android:gravity="left|center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginBottom="6dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="6dp"
-                android:src="@mipmap/lv" />
-
-            <TextView
-                android:id="@+id/tvCurrentName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLength="6"
-                android:text="生龙活虎"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
+            android:background="#eeeeee"
+            android:orientation="vertical">
 
             <View
-                android:layout_width="1dp"
-                android:layout_height="14dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="#eeeeee" />
+                android:id="@+id/fake_status_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/status_bar_view_height"
+                android:background="#73C5FF" />
+
+            <include layout="@layout/my_fragment_head" />
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center|left"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="5dp"
+                android:background="#ffffff"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="积分"
-                    android:textColor="#676767"
-                    android:textSize="14sp" />
+                <LinearLayout
+                    android:id="@+id/layoutMajorTest"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvCurrentScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="652"
-                    android:textColor="#2F9406"
-                    android:textSize="14sp" />
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@mipmap/mine_1" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="专业版测试"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:text="升级还需"
-                    android:textColor="#676767"
-                    android:textSize="16sp" />
+                    android:layout_marginRight="5dp"
+                    android:background="#eeeeee" />
 
-                <TextView
-                    android:id="@+id/tvNextScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4"
-                    android:textColor="#C83045"
-                    android:textSize="14sp" />
+                <LinearLayout
+                    android:id="@+id/layoutLike"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:singleLine="true"
-                    android:text="积分"
-                    android:textColor="#676767"
-                    android:textSize="14sp" />
+                    <ImageView
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@mipmap/mine_2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="个人偏好"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="#eeeeee" />
+
+                <LinearLayout
+                    android:id="@+id/layoutBodyData"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="36dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@mipmap/mine_3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="身体数据"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
 
             </LinearLayout>
 
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_marginTop="4dp">
+
+                <ImageView
+                    android:id="@+id/ivTree"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/tree_1" />
+
+                <com.huihong.healthydiet.view.TreeView
+                    android:id="@+id/mTreeView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
             <LinearLayout
-                android:id="@+id/layoutIntegralRecord"
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical|right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@color/color_white"
+                android:gravity="left|center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:src="@mipmap/back_right" />
+                    android:layout_marginTop="6dp"
+                    android:src="@mipmap/lv" />
+
+                <TextView
+                    android:id="@+id/tvCurrentName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLength="6"
+                    android:text="生龙活虎"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#eeeeee" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="积分"
+                        android:textColor="#676767"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="652"
+                        android:textColor="#2F9406"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="升级还需"
+                        android:textColor="#676767"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvNextScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4"
+                        android:textColor="#C83045"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:singleLine="true"
+                        android:text="积分"
+                        android:textColor="#676767"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutIntegralRecord"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|right"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@mipmap/back_right" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="123dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvIntegral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="123dp">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvIntegral"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
-
-
+</android.support.v4.widget.SwipeRefreshLayout>

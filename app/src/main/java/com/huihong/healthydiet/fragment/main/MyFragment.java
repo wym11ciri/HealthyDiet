@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -82,7 +83,10 @@ public class MyFragment extends Fragment {
     RecyclerView rvIntegral;
     @BindView(R.id.ivTree)
     ImageView ivTree;
+    @BindView(R.id.layoutRefresh)
+    SwipeRefreshLayout layoutRefresh;
     Unbinder unbinder;
+
     private View mView;
 
 
@@ -153,6 +157,15 @@ public class MyFragment extends Fragment {
         initUI();
         initPersonalUI();
 
+        layoutRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mTreeView.setLevels(levels);
+                getLeafInfo();
+                getScoreList();
+                getIntegral();
+            }
+        });
 
         return mView;
     }
@@ -199,6 +212,7 @@ public class MyFragment extends Fragment {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
+                        layoutRefresh.setRefreshing(false);
                         LogUtil.i("获取积分", response);
                         Gson gson = new Gson();
                         UserScoreInfo mUserScoreInfo = gson.fromJson(response, UserScoreInfo.class);
@@ -232,6 +246,7 @@ public class MyFragment extends Fragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.i("获取积分", e.toString());
+                        layoutRefresh.setRefreshing(false);
                     }
                 });
 

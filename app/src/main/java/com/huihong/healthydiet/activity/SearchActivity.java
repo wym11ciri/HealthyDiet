@@ -115,10 +115,7 @@ public class SearchActivity extends BaseActivity {
                 search();
             }
         });
-
-
         getHotSearchInfo();
-
     }
 
     private void search() {

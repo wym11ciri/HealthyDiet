@@ -93,7 +93,6 @@ public class ChangePasswordActivity extends BaseTitleActivity2 {
                 if (old.length() < 6) {
                     Toast.makeText(this, "旧密码过短或未输入，请重新输入", Toast.LENGTH_SHORT).show();
                 } else {
-
                     if (new1.length() < 6) {
                         Toast.makeText(this, "新密码过短或未输入，请重新输入", Toast.LENGTH_SHORT).show();
                     } else {
@@ -132,9 +131,9 @@ public class ChangePasswordActivity extends BaseTitleActivity2 {
                         if (mHttpBaseInfo.getHttpCode() == 200) {
                             SPUtils.put(ChangePasswordActivity.this, "isLogin", false);
                             ActivityCollector.finishAll();//销毁所有界面
+                            //跳转到登录界面
                             Intent mIntent = new Intent(ChangePasswordActivity.this, LoginActivity.class);
                             startActivity(mIntent);
-
                         }else {
                             tvChangeWord.setClickable(true);
                         }

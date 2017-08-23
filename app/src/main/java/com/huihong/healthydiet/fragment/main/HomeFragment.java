@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     TextView tvNextScore;
     @BindView(R.id.tvRunState)
     TextView tvRunState;
-    Unbinder unbinder1;
+
     private View mView;
 
     //附近餐厅

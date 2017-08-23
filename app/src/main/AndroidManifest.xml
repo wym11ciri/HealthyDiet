@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <!--闹铃弹出系统Dialog-->
+    <!-- 闹铃弹出系统Dialog -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!--百度地图-->
+    <!-- 百度地图 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -22,6 +22,11 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -30,64 +35,60 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2"/>
+                <action android:name="com.baidu.location.service_v2.2" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="O825eovBkI8hGCE2j3Syn9zlYtyE5cop" />  <!--http://lbsyun.baidu.com/apiconsole/key-->
-
+            android:value="O825eovBkI8hGCE2j3Syn9zlYtyE5cop" /> <!-- http://lbsyun.baidu.com/apiconsole/key -->
 
         <activity android:name=".activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activity.RecommendListActivity" />
         <activity android:name=".activity.RestaurantDetailsActivity" />
         <activity android:name=".activity.RecipesDetailsActivity" />
         <activity android:name=".activity.PayActivity" />
         <activity android:name=".activity.SleepSettingsActivity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".activity.RegisterActivity"/>
-        <activity android:name=".activity.RegisterSuccessfulActivity"/>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.RegisterSuccessfulActivity" />
         <activity android:name=".activity.SettingsActivity" />
-        <activity android:name=".activity.SearchActivity"/>
-        <activity android:name=".activity.BodyDataActivity"/>
-        <activity android:name=".activity.PersonalPreferenceActivity"/>
-        <activity android:name=".activity.SearchResultActivity"/>
-        <activity android:name=".activity.PayOnlineActivity"/>
-        <activity android:name=".activity.TestMajorActivity"/>
+        <activity android:name=".activity.SearchActivity" />
+        <activity android:name=".activity.BodyDataActivity" />
+        <activity android:name=".activity.PersonalPreferenceActivity" />
+        <activity android:name=".activity.SearchResultActivity" />
+        <activity android:name=".activity.PayOnlineActivity" />
+        <activity android:name=".activity.TestMajorActivity" />
         <activity android:name=".activity.IntegralRecordActivity" />
-        <activity android:name=".activity.RestPasswordActivity"/>
-        <activity android:name=".activity.ArticleDetailsActivity"/>
-        <activity android:name=".activity.TestSimpleActivity"/>
-        <activity android:name=".activity.LoginActivity"/>
-        <activity android:name=".activity.ChangePasswordActivity"/>
-
-        <activity android:name=".activity.ChangePhoneActivity01"/>
-        <activity android:name=".activity.ChangePhoneActivity02"/>
-
-        <activity android:name=".activity.DietRecordActivity"/>
-        <activity android:name=".activity.ArticleActivity"/>
-        <activity android:name=".activity.TestSimpleResultActivity"/>
-        <activity android:name=".activity.OrderDetailsActivity"/>
-
+        <activity android:name=".activity.RestPasswordActivity" />
+        <activity android:name=".activity.ArticleDetailsActivity" />
+        <activity android:name=".activity.TestSimpleActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.ChangePasswordActivity" />
+        <activity android:name=".activity.ChangePhoneActivity01" />
+        <activity android:name=".activity.ChangePhoneActivity02" />
+        <activity android:name=".activity.DietRecordActivity" />
+        <activity android:name=".activity.ArticleActivity" />
+        <activity android:name=".activity.TestSimpleResultActivity" />
+        <activity android:name=".activity.OrderDetailsActivity" />
 
         <service
             android:name=".service.AlarmClockService"
             android:priority="1000">
             <intent-filter>
-                <!-- 系统启动完成后会调用-->
+
+                <!-- 系统启动完成后会调用 -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
@@ -97,12 +98,12 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </service>
-
         <service
             android:name=".service.StepService"
             android:priority="1001">
             <intent-filter>
-                <!-- 系统启动完成后会调用-->
+
+                <!-- 系统启动完成后会调用 -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
@@ -112,37 +113,34 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </service>
-
 
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <activity
             android:name="com.alipay.sdk.app.H5AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <activity
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
-
+            android:launchMode="singleTop" />
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
 
-      <!--友盟-->
+        <!-- 友盟 -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="598ab3e2b27b0a5e0d001a1a" >
-        </meta-data>
+            android:value="598ab3e2b27b0a5e0d001a1a"></meta-data>
+
+
     </application>
 
 </manifest>

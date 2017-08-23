@@ -57,7 +57,6 @@ public class SettingsActivity extends TakePhotoActivity {
     TextView tvPhone;
 
 
-
     private BottomGetPhotoDialog bottomGetPhotoDialog;
     private TakePhoto takePhoto;//照片选择器
     private SelectableRoundedImageView ivHead;
@@ -84,7 +83,7 @@ public class SettingsActivity extends TakePhotoActivity {
         ActivityCollector.addActivity(this);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
-        progressDialog=new ProgressDialog(SettingsActivity.this);
+        progressDialog = new ProgressDialog(SettingsActivity.this);
         progressDialog.setCancelable(false);
 
         personalInfo = CacheUtils.getPersonalInfo(SettingsActivity.this);
@@ -95,10 +94,11 @@ public class SettingsActivity extends TakePhotoActivity {
 
     String name;
     LinearLayout layoutRight;
+
     //初始化头部
     private void initTopBar() {
 
-         layoutRight = (LinearLayout) findViewById(R.id.layoutTopRight);
+        layoutRight = (LinearLayout) findViewById(R.id.layoutTopRight);
         LinearLayout layoutLeft = (LinearLayout) findViewById(R.id.layoutLeft);
 
         layoutLeft.setOnClickListener(new View.OnClickListener() {
@@ -113,8 +113,8 @@ public class SettingsActivity extends TakePhotoActivity {
             @Override
             public void onClick(View v) {
                 name = etName.getText().toString().trim();
-                if(name.equals("")){
-                    name=etName.getHint().toString().trim();
+                if (name.equals("")) {
+                    name = etName.getHint().toString().trim();
                 }
 
                 if (name.equals("")) {

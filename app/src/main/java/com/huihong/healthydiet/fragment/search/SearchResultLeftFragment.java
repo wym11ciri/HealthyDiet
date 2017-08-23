@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
@@ -45,6 +46,8 @@ public class SearchResultLeftFragment extends Fragment {
 
     private String searchText = "";
 
+    private LinearLayout layoutNoMoreData;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class SearchResultLeftFragment extends Fragment {
     }
 
     private void initUI() {
+        layoutNoMoreData= (LinearLayout) mView.findViewById(R.id.layoutNoMoreData);
         initRecyclerView();
     }
 
@@ -129,6 +133,13 @@ public class SearchResultLeftFragment extends Fragment {
 
                             mLRecyclerViewAdapter.notifyDataSetChanged();
                         }
+
+                        if(mListData.size()+mListData2.size()==0){
+                            layoutNoMoreData.setVisibility(View.VISIBLE);
+                        }else {
+                            layoutNoMoreData.setVisibility(View.GONE);
+                        }
+
                     }
 
                     @Override
