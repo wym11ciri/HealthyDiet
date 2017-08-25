@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -54,7 +56,7 @@ import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.ValueUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
-import com.huihong.healthydiet.widget.GlideImageLoader;
+import com.huihong.healthydiet.widget.banner.GlideImageLoader;
 import com.joooonho.SelectableRoundedImageView;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -119,6 +121,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //    private ProgressDialog progressDialog;
     private LoadingDialog loadingDialog;
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String address = (String) msg.obj;
+            if (address == null) {
+                tvAddress.setText("定位失败");
+            } else {
+                tvAddress.setText(address);
+            }
+
+        }
+    };
+
 
     @Nullable
     @Override
@@ -144,20 +160,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             });
 
             getIntegral();
-            String state=  CacheUtils.getRunState(getContext());
-            if(state.equals("OFF")){
+            String state = CacheUtils.getRunState(getContext());
+            if (state.equals("OFF")) {
                 tvRunState.setText("尚未开始运动");
-            }else {
+            } else {
                 tvRunState.setText("今日已进行有氧运动");
             }
             MainActivity.mainActivity.setHomePageItemOnClickListener(new ItemOnClickListener() {
                 @Override
                 public void onClick() {
                     getIntegral();
-                  String state=  CacheUtils.getRunState(getContext());
-                    if(state.equals("OFF")){
+                    String state = CacheUtils.getRunState(getContext());
+                    if (state.equals("OFF")) {
                         tvRunState.setText("尚未开始运动");
-                    }else {
+                    } else {
                         tvRunState.setText("今日已进行有氧运动");
                     }
                 }
@@ -532,11 +548,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
-        if (mAddress == null) {
-            tvAddress.setText("定位失败");
-        } else {
-            tvAddress.setText(mAddress + "");
-        }
+        Message message = Message.obtain();
+        message.obj = mAddress;
+        handler.sendMessage(message);
+
     }
 
     private void setNearbyInfo(List<RestaurantInfo> mListData) {

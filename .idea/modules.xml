@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialog-picker/dialog-picker.iml" filepath="$PROJECT_DIR$/dialog-picker/dialog-picker.iml" />
       <module fileurl="file://$PROJECT_DIR$/gallery/gallery.iml" filepath="$PROJECT_DIR$/gallery/gallery.iml" />
-      <module fileurl="file://$PROJECT_DIR$/loading/loading.iml" filepath="$PROJECT_DIR$/loading/loading.iml" />
     </modules>
   </component>
 </project>

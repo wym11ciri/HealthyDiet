@@ -22,7 +22,24 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                //这里修改apk文件名
+//                def fileName = outputFile.name.replace("app","${defaultConfig.applicationId }_${defaultConfig.versionName}_${releaseTime() }")
+                def fileName = outputFile.name.replace("app", "修身_"+buildType.name+"_${releaseTime() }")
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+
 }
+
+static def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')

@@ -24,7 +24,7 @@ import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
-import com.huihong.healthydiet.widget.PageIndicator;
+import com.huihong.healthydiet.widget.expand.PageIndicator;
 import com.joooonho.SelectableRoundedImageView;
 import com.zuoni.dialog.picker.dialog.LoadingDialog;
 
@@ -157,7 +157,7 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 
 
                                 //画廊下面的指示器
-                                mPageIndicator = (com.huihong.healthydiet.widget.PageIndicator) findViewById(R.id.PageIndicator);
+                                mPageIndicator = (PageIndicator) findViewById(R.id.PageIndicator);
                                 mPageIndicator.setViewPager(gallery);//给ViewPager设置指示器
                                 mPageIndicator.setIndicatorType(PageIndicator.IndicatorType.CIRCLE);
                                 //设置标题
@@ -165,22 +165,25 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
                                 //获取材料列表
                                 List<MaterialInfo> MaterialInfoList = new ArrayList<>();
                                 List<RecipeItemInfo.ListDataBean.FoodRecipeBean> mFoodRecipe = mListDataBean.getFoodRecipe();
-                                for (int i = 0; i < mFoodRecipe.size(); i++) {
-                                    String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
-                                    List<RecipeItemInfo.ListDataBean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
-                                    for (int j = 0; j < getListFood.size(); j++) {
-                                        MaterialInfo materialInfo = new MaterialInfo();
-                                        if (j == 0) {
-                                            materialInfo.setRecipeItemName(RecipeItemName);
-                                        } else {
-                                            materialInfo.setRecipeItemName("");
+                                if(mFoodRecipe!=null){
+                                    for (int i = 0; i < mFoodRecipe.size(); i++) {
+                                        String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
+                                        List<RecipeItemInfo.ListDataBean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
+                                        for (int j = 0; j < getListFood.size(); j++) {
+                                            MaterialInfo materialInfo = new MaterialInfo();
+                                            if (j == 0) {
+                                                materialInfo.setRecipeItemName(RecipeItemName);
+                                            } else {
+                                                materialInfo.setRecipeItemName("");
+                                            }
+                                            materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
+                                            materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
+                                            materialInfo.setId(getListFood.get(j).getFoodId());
+                                            MaterialInfoList.add(materialInfo);
                                         }
-                                        materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
-                                        materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
-                                        materialInfo.setId(getListFood.get(j).getFoodId());
-                                        MaterialInfoList.add(materialInfo);
                                     }
                                 }
+
 
                                 rvMaterial = (RecyclerView) findViewById(R.id.rvMaterial);
                                 mRvMaterialAdapter = new RvMaterialAdapter(RecipesDetailsActivity.this, MaterialInfoList);

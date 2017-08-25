@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,12 @@ public class RvTagAdapter extends RecyclerView.Adapter<RvTagViewHolder> {
 
 
     public RvTagAdapter(Context pContext, List<String> pList) {
-        mList = pList;
+        if(pList==null){
+            mList=new ArrayList<>();
+        }else {
+            mList = pList;
+
+        }
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
     }

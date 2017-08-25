@@ -24,7 +24,7 @@ import com.huihong.healthydiet.model.gsonbean.HotSearch;
 import com.huihong.healthydiet.cache.litepal.SearchHistory;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener2;
-import com.huihong.healthydiet.utils.FlowLayoutManager;
+import com.huihong.healthydiet.widget.FlowLayoutManager;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;

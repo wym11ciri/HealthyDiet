@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.utils;
+package com.huihong.healthydiet.widget;
 
 import android.app.Activity;
 import android.content.Context;

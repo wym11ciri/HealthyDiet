@@ -11,6 +11,7 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.utils.MyUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,11 @@ public class RvTypeAdapter2 extends RecyclerView.Adapter<RvTypeAdapter2.RvTypeVi
 
 
     public RvTypeAdapter2(Context pContext, List<String> pList) {
-        mList = pList;
+        if(pList==null){
+            mList=new ArrayList<>();
+        }else {
+            mList=new ArrayList<>();
+        }
         mContext = pContext;
         mInflater = LayoutInflater.from(mContext);
     }
