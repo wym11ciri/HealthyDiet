@@ -21,7 +21,7 @@ import java.util.List;
  * 日期选择器
  */
 public class DataPickerDateDialog extends Dialog {
-
+    //设置最小年份
     private static final int MIN_YEAR = 1870;
     private Params params;
 

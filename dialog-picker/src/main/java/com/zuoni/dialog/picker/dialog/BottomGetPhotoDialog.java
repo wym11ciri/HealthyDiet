@@ -48,9 +48,10 @@ public class BottomGetPhotoDialog extends Dialog {
         }
 
         public BottomGetPhotoDialog create() {
-            BottomGetPhotoDialog dialog = new BottomGetPhotoDialog(context, params.shadow ? R.style.Theme_Light_NoTitle_Dialog : R.style.Theme_Light_NoTitle_NoShadow_Dialog);
-            View view = LayoutInflater.from(context).inflate(R.layout.bottom_get_photo_dialog, null);
+            BottomGetPhotoDialog dialog = new BottomGetPhotoDialog(context, params.shadow ?
+                    R.style.Theme_Light_NoTitle_Dialog : R.style.Theme_Light_NoTitle_NoShadow_Dialog);
 
+            View view = LayoutInflater.from(context).inflate(R.layout.bottom_get_photo_dialog, null);
             Button btGetPhoto = (Button) view.findViewById(R.id.btGetPhoto);
             Button btTakePhoto = (Button) view.findViewById(R.id.btTakePhoto);
 

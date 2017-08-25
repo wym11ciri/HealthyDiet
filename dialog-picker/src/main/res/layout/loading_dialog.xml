@@ -11,11 +11,16 @@
         android:background="@drawable/loading_dialog_bg"
         android:orientation="vertical">
 
-        <app.dinus.com.loadingdrawable.LoadingView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+        <com.zuoni.dialog.picker.progress.ProgressWheel
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            app:loading_renderer="LevelLoadingRenderer" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            app:matProg_barColor="#ffffff"
+            app:matProg_barWidth="3dp"
+            app:matProg_fillRadius="true"
+            app:matProg_progressIndeterminate="true" />
 
         <TextView
             android:id="@+id/tvMessage"
