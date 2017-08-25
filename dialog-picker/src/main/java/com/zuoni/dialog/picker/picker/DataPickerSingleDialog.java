@@ -1,4 +1,4 @@
-package com.zuoni.dialog.picker.pickerdialog;
+package com.zuoni.dialog.picker.picker;
 
 import android.app.Dialog;
 import android.content.Context;
