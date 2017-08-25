@@ -15,7 +15,7 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
-import com.huihong.healthydiet.widget.HorizontalListView;
+import com.huihong.healthydiet.widget.expand.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;

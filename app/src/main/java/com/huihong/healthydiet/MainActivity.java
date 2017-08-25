@@ -28,7 +28,7 @@ import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.service.AlarmClockService;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
-import com.huihong.healthydiet.widget.MyViewPager;
+import com.huihong.healthydiet.widget.expand.MyViewPager;
 import com.yanzhenjie.alertdialog.AlertDialog;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;

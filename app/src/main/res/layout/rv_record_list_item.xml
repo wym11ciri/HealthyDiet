@@ -53,7 +53,7 @@
                     android:textColor="#333333"
                     android:textSize="16sp" />
 
-                <com.huihong.healthydiet.widget.HorizontalListView
+                <com.huihong.healthydiet.widget.expand.HorizontalListView
                     android:id="@+id/lvType"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"

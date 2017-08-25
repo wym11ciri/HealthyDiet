@@ -38,7 +38,7 @@
                     android:layout_marginTop="10dp"
                     app:isShadow="false" />
 
-                <com.huihong.healthydiet.widget.PageIndicator
+                <com.huihong.healthydiet.widget.expand.PageIndicator
                     android:id="@+id/PageIndicator"
                     android:layout_width="wrap_content"
                     android:layout_height="5dp"

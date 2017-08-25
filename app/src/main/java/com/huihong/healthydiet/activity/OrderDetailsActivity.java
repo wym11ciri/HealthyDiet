@@ -79,7 +79,7 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
     private LoadingDialog loadingDialog;
 
 
-    private String OrderId="";
+    private String OrderId = "";
 
     @Override
     public int setLayoutId() {
@@ -94,13 +94,13 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setTitle("订单详情");
-        OrderId=getIntent().getStringExtra("OrderId");
+        OrderId = getIntent().getStringExtra("OrderId");
 
         getInfo();
 
-        LoadingDialog.Builder builder=new LoadingDialog.Builder(getContext());
+        LoadingDialog.Builder builder = new LoadingDialog.Builder(getContext());
         builder.setMessage("载入中...");
-        loadingDialog=builder.create();
+        loadingDialog = builder.create();
         loadingDialog.show();
 
 
@@ -149,14 +149,18 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
                         OrderInfo.Model1Bean mModel1Bean = mOrderInfo.getModel1();
                         if (mModel1Bean != null) {
                             tvFoodName.setText(mModel1Bean.getRecipeName());
-                            RecipeId=mModel1Bean.getRecipeId()+"";
+                            RecipeId = mModel1Bean.getRecipeId() + "";
                             //类型列表
                             typeList.clear();
-                            typeList.addAll(mModel1Bean.getConstitution());
+                            if (mModel1Bean.getConstitution() != null) {
+                                typeList.addAll(mModel1Bean.getConstitution());
+                            }
                             mRvTypeAdapter3.notifyDataSetChanged();
                             //标签列表
                             tagList.clear();
-                            tagList.addAll(mModel1Bean.getTags());
+                            if (mModel1Bean.getTags() != null) {
+                                tagList.addAll(mModel1Bean.getTags());
+                            }
                             mRvTagAdapter.notifyDataSetChanged();
 
                             int percentage = mModel1Bean.getConstitutionPercentage();
@@ -190,23 +194,24 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
                             //材料列表
                             MaterialInfoList.clear();
                             List<OrderInfo.Model1Bean.FoodRecipeBean> mFoodRecipe = mModel1Bean.getFoodRecipe();
-                            for (int i = 0; i < mFoodRecipe.size(); i++) {
-                                String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
-                                List<OrderInfo.Model1Bean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
-                                for (int j = 0; j < getListFood.size(); j++) {
-                                    MaterialInfo materialInfo = new MaterialInfo();
-                                    if (j == 0) {
-                                        materialInfo.setRecipeItemName(RecipeItemName);
-                                    } else {
-                                        materialInfo.setRecipeItemName("");
+                            if (mFoodRecipe != null) {
+                                for (int i = 0; i < mFoodRecipe.size(); i++) {
+                                    String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
+                                    List<OrderInfo.Model1Bean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
+                                    for (int j = 0; j < getListFood.size(); j++) {
+                                        MaterialInfo materialInfo = new MaterialInfo();
+                                        if (j == 0) {
+                                            materialInfo.setRecipeItemName(RecipeItemName);
+                                        } else {
+                                            materialInfo.setRecipeItemName("");
+                                        }
+                                        materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
+                                        materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
+                                        materialInfo.setId(getListFood.get(j).getFoodId());
+                                        MaterialInfoList.add(materialInfo);
                                     }
-                                    materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
-                                    materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
-                                    materialInfo.setId(getListFood.get(j).getFoodId());
-                                    MaterialInfoList.add(materialInfo);
                                 }
                             }
-
                             mRvMaterialAdapter.notifyDataSetChanged();
                             final String mPhone = mModel1Bean.getRestaurantPhone();
 
@@ -235,7 +240,8 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
 
     }
 
-    private String  RecipeId="";
+    private String RecipeId = "";
+
     @OnClick(R.id.tvGetAgain)
     public void onViewClicked() {
         Intent mIn = new Intent(getContext(), PayActivity.class);

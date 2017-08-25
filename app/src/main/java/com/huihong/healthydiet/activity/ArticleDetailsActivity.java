@@ -21,7 +21,7 @@ import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
-import com.huihong.healthydiet.widget.HorizontalListView;
+import com.huihong.healthydiet.widget.expand.HorizontalListView;
 
 import java.util.HashMap;
 import java.util.Map;

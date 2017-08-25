@@ -66,6 +66,7 @@ public class RvRecordListAdapter extends RecyclerView.Adapter<RvRecordViewHolder
         }
 
 
+//        GlideUtils.loadImageView(mContext,mList.get(position).getRecipeImage());
 
         Glide
                 .with(mContext)
@@ -78,16 +79,6 @@ public class RvRecordListAdapter extends RecyclerView.Adapter<RvRecordViewHolder
         LvOrderDetailsTypeAdapter lvOrderDetailsTypeAdapter =new LvOrderDetailsTypeAdapter(mContext,mList.get(position).getConstitution());
         holder.lvType.setAdapter(lvOrderDetailsTypeAdapter);
 
-
-//        holder.tvTime.setText(mList.get(position).getTime());
-//        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mItemOnClickListener!=null){
-//                    mItemOnClickListener.onClick( holder.tvTitle,holder.getAdapterPosition());
-//                }
-//            }
-//        });
 
         holder.tvName.setText(mList.get(position).getRecipeName());
 
@@ -119,11 +110,13 @@ public class RvRecordListAdapter extends RecyclerView.Adapter<RvRecordViewHolder
         });
 
         String cailiao="";
-//        mList.get(position).getFoodRecipe();
-        for (int i = 0; i <mList.get(position).getFoodRecipe().size() ; i++) {
-            OrderDetailsInfo.FoodRecipeBean mFoodRecipeBean=mList.get(position).getFoodRecipe().get(i);
-            cailiao=cailiao+mFoodRecipeBean.getListFood()+",";
+        if( mList.get(position).getFoodRecipe()!=null){
+            for (int i = 0; i <mList.get(position).getFoodRecipe().size() ; i++) {
+                OrderDetailsInfo.FoodRecipeBean mFoodRecipeBean=mList.get(position).getFoodRecipe().get(i);
+                cailiao=cailiao+mFoodRecipeBean.getListFood()+",";
+            }
         }
+
 
         holder.tvMaterial.setText(cailiao);
 

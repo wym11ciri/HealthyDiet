@@ -24,7 +24,7 @@ import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.view.SleepChartView;
 import com.huihong.healthydiet.view.TimeSelectView;
-import com.huihong.healthydiet.widget.SwitchImageView;
+import com.huihong.healthydiet.widget.expand.SwitchImageView;
 
 import java.util.List;
 

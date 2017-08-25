@@ -131,7 +131,7 @@
                         android:layout_gravity="center_vertical"
                         android:src="@mipmap/tag" />
 
-                    <com.huihong.healthydiet.widget.HorizontalListView
+                    <com.huihong.healthydiet.widget.expand.HorizontalListView
                         android:id="@+id/lvTag"
                         android:layout_width="wrap_content"
                         android:layout_height="16dp"

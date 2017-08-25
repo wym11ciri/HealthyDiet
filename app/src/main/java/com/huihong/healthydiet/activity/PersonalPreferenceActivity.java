@@ -13,7 +13,7 @@ import com.huihong.healthydiet.adapter.FragmentPagerAdapter;
 import com.huihong.healthydiet.fragment.like.LikeFragment;
 import com.huihong.healthydiet.fragment.like.RestaurantLikeFragment;
 import com.huihong.healthydiet.fragment.like.UnLikeFragment;
-import com.huihong.healthydiet.widget.MyViewPager;
+import com.huihong.healthydiet.widget.expand.MyViewPager;
 
 import java.util.ArrayList;
 import java.util.List;

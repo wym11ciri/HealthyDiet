@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.widget;
+package com.huihong.healthydiet.widget.expand;
 
 import android.content.Context;
 import android.content.res.TypedArray;

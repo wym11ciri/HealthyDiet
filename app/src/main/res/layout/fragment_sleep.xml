@@ -81,7 +81,7 @@
 
                 </LinearLayout>
 
-                <com.huihong.healthydiet.widget.SwitchImageView
+                <com.huihong.healthydiet.widget.expand.SwitchImageView
                     android:id="@+id/mSwitchImageView"
                     android:layout_width="42dp"
                     android:layout_height="28dp"

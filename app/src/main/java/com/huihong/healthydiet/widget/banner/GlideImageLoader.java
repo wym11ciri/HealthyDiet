@@ -1,13 +1,14 @@
-package com.huihong.healthydiet.widget;
+package com.huihong.healthydiet.widget.banner;
 
 import android.content.Context;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.youth.banner.loader.ImageLoader;
 
-
+/**
+ * 轮播banner 需要用到的一个工具类
+ */
 public class GlideImageLoader extends ImageLoader {
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {

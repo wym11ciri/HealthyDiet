@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.widget;
+package com.huihong.healthydiet.widget.animation;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
@@ -8,6 +8,7 @@ import android.view.animation.Transformation;
 
 /**
  * Created by zangyi_shuai_ge on 2017/8/4
+ * Y轴方向选择
  */
 
 
@@ -17,6 +18,7 @@ public class MyYAnimation extends Animation {
 
     /**
      * 获取坐标，定义动画时间
+     *
      * @param width
      * @param height
      * @param parentWidth
@@ -35,6 +37,7 @@ public class MyYAnimation extends Animation {
 
     /**
      * 旋转的角度设置
+     *
      * @param interpolatedTime
      * @param t
      */
@@ -48,7 +51,7 @@ public class MyYAnimation extends Animation {
         camera.getMatrix(matrix);
         //设置翻转中心点
         matrix.preTranslate(-centerX, -centerY);
-        matrix.postTranslate(centerX,centerY);
+        matrix.postTranslate(centerX, centerY);
         camera.restore();
     }
 }

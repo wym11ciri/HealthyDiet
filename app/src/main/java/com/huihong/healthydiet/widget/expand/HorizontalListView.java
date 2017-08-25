@@ -1,4 +1,4 @@
-package com.huihong.healthydiet.widget;
+package com.huihong.healthydiet.widget.expand;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -16,6 +16,7 @@ import java.util.Queue;
 
 /**
  * Created by zangyi_shuai_ge on 2017/7/24
+ * 水平的ListView
  */
 
 public class HorizontalListView extends AdapterView<ListAdapter> {

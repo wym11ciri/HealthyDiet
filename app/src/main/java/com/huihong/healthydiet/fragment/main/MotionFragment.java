@@ -47,7 +47,7 @@ import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.ValueUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
-import com.huihong.healthydiet.widget.MyYAnimation;
+import com.huihong.healthydiet.widget.animation.MyYAnimation;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

@@ -13,7 +13,7 @@ import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.utils.common.SPUtils;
-import com.huihong.healthydiet.widget.WeekSelectTextView;
+import com.huihong.healthydiet.widget.expand.WeekSelectTextView;
 
 import java.util.ArrayList;
 import java.util.List;
