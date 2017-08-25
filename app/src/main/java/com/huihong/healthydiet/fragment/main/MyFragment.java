@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
@@ -40,6 +39,7 @@ import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
 import com.huihong.healthydiet.model.httpmodel.RankInfo;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.MyUtils;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.ValueUtils;
@@ -337,9 +337,16 @@ public class MyFragment extends Fragment {
 
 
         mListDataBean = new ArrayList<>();
+        //禁止滑动
+        LinearLayoutManager  linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
 
         rvIntegralAdapter = new RvIntegralAdapter(getActivity(), mListDataBean);
-        rvIntegral.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        rvIntegral.setLayoutManager(linearLayoutManager);
         rvIntegral.setAdapter(rvIntegralAdapter);
 
 
@@ -415,11 +422,13 @@ public class MyFragment extends Fragment {
         }
         tvAge.setText(personalInfo.getAge() + "岁");
 
-        Glide.with(getActivity())
-                .load(personalInfo.getHeadImageUrl())
-                .asBitmap()
-                .error(R.mipmap.error_head)
-                .into(ivHead);
+//        Glide.with(getActivity())
+//                .load(personalInfo.getHeadImageUrl())
+//                .asBitmap()
+//                .error(R.mipmap.error_head)
+//                .into(ivHead);
+
+        GlideUtils.loadHeadImageViewAsBitmap(getActivity(),personalInfo.getHeadImageUrl(),ivHead);
 
         String type = personalInfo.getConstitution();
         ivConstitution.setVisibility(View.VISIBLE);

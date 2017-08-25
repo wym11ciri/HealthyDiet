@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -57,13 +57,13 @@ public class RvDetailRecipesAdapter extends RecyclerView.Adapter<RvDetailRecipes
     public void onBindViewHolder(final RvDetailRecipesViewHolder holder, int position) {
 //        holder.tvName.setText(mList.get(position));
 
-        Glide
-                .with(mContext)
-                .load(mList.get(position))
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into( holder.ivHead);
-
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position))
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into( holder.ivHead);
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position),holder.ivHead);
 
 //
 //      List<String> zz=new ArrayList<>();

@@ -10,10 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
 import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.huihong.healthydiet.widget.expand.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
 
@@ -62,13 +62,13 @@ public class RvArticleAdapter extends RecyclerView.Adapter<RvArticleAdapter.RvAr
     public void onBindViewHolder(final RvArticleViewHolder holder, final int position) {
 
 
-        Glide
-                .with(mContext)
-                .load(mList.get(position).getTitleImage())
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into(holder.ivHead);
-
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position).getTitleImage())
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into(holder.ivHead);
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position).getTitleImage(),holder.ivHead);
         holder.tvClickCount.setText(mList.get(position).getCilckCount() + "");
         holder.tvLoveCount.setText(mList.get(position).getLoveCount() + "");
         holder.tvTitle.setText(mList.get(position).getTitle());

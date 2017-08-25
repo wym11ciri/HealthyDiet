@@ -12,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.model.gsonbean.RecipeListInfoByDRId;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -56,14 +56,14 @@ public class RvRecipesAdapter extends RecyclerView.Adapter<RvRecipesAdapter.RvRe
     @Override
     public void onBindViewHolder(final RvRecipesViewHolder holder, final int position) {
 
-
-        Glide
-                .with(mContext)
-                .load(mList.get(position).getTitleImage())
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into(holder.ivHead);
-
+//
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position).getTitleImage())
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into(holder.ivHead);
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position).getTitleImage(),holder.ivHead);
 
         holder.tvName.setText(mList.get(position).getName());
         holder.tvPrice.setText(mList.get(position).getPrice());

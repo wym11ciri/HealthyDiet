@@ -22,7 +22,14 @@ public class GlideUtils {
                 .error(R.mipmap.error_photo)
                 .into(mImageView);
     }
-
+    public static void loadHeadImageView(Context mContext, String path, ImageView mImageView) {
+        Glide.with(mContext)
+                .load(path)
+                .crossFade()
+                .placeholder(R.mipmap.error_head)
+                .error(R.mipmap.error_head)
+                .into(mImageView);
+    }
     /**
      * 由于一些自定义ImageView 需要转化为Bitmap才能显示
      */
@@ -32,10 +39,19 @@ public class GlideUtils {
                 .asBitmap()
                 .placeholder(R.mipmap.error_photo)
                 .error(R.mipmap.error_photo)
+                .animate(R.anim.glide_anim_alpha)
                 .into(mImageView);
     }
 
-
+    public static void loadHeadImageViewAsBitmap(Context mContext, String path, ImageView mImageView) {
+        Glide.with(mContext)
+                .load(path)
+                .asBitmap()
+                .placeholder(R.mipmap.error_head)
+                .error(R.mipmap.error_head)
+                .animate(R.anim.glide_anim_alpha)
+                .into(mImageView);
+    }
     //设置跳过内存缓存
     public static void loadImageViewCache(Context mContext, String path, ImageView mImageView) {
         Glide.with(mContext)

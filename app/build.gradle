@@ -28,7 +28,7 @@ android {
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 //这里修改apk文件名
 //                def fileName = outputFile.name.replace("app","${defaultConfig.applicationId }_${defaultConfig.versionName}_${releaseTime() }")
-                def fileName = outputFile.name.replace("app", "修身_"+buildType.name+"_${releaseTime() }")
+                def fileName = outputFile.name.replace("app", "修身_"+"${defaultConfig.versionName}"+"_${releaseTime() }")
                 output.outputFile = new File(outputFile.parent, fileName)
             }
         }

@@ -1,5 +1,7 @@
 package com.huihong.healthydiet.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,8 +63,14 @@ public class PayActivity extends BaseTitleActivity {
         return R.layout.activity_pay;
     }
 
+//    RecyclerView rvArticleType;
+//    private RvTypeAdapter2 mAdapter;
+//    private List<String> mList;
+
     @Override
     public void initUI() {
+
+
         LoadingDialog.Builder builder = new LoadingDialog.Builder(getContext());
         builder.setMessage("载入中...");
         loadingDialog = builder.create();
@@ -92,10 +100,10 @@ public class PayActivity extends BaseTitleActivity {
         layoutPayOnline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String time=tvTimeSelect.getText().toString().trim();
-                if(time.equals("")){
+                String time = tvTimeSelect.getText().toString().trim();
+                if (time.equals("")) {
                     Toast.makeText(PayActivity.this, "请选择到店时间", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Intent mIntent = new Intent(PayActivity.this, PayOnlineActivity.class);
                     mIntent.putExtra("payMoney", payMoney);
                     mIntent.putExtra("payName", paName);
@@ -110,10 +118,10 @@ public class PayActivity extends BaseTitleActivity {
         layoutPayOutline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String time=tvTimeSelect.getText().toString().trim();
-                if(time.equals("")){
+                String time = tvTimeSelect.getText().toString().trim();
+                if (time.equals("")) {
                     Toast.makeText(PayActivity.this, "请选择到店时间", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     payOutLine();
                 }
             }
@@ -124,7 +132,7 @@ public class PayActivity extends BaseTitleActivity {
 
         Map<String, String> map = new HashMap<>();
         map.put("RecipeId", RecipeId);
-        map.put("atshoptime",tvTimeSelect.getText().toString().trim());
+        map.put("atshoptime", tvTimeSelect.getText().toString().trim());
 
         HttpUtils.sendHttpAddToken(getContext(), AppUrl.PAY_AT_SHOP_ORDER
                 , map
@@ -134,10 +142,10 @@ public class PayActivity extends BaseTitleActivity {
                         LogUtil.i("到店支付", response);
                         Gson gson = new Gson();
                         HttpBaseInfo mHttpBaseInfo = gson.fromJson(response, HttpBaseInfo.class);
-                        if(mHttpBaseInfo.getHttpCode()==200){
+                        if (mHttpBaseInfo.getHttpCode() == 200) {
                             Toast.makeText(PayActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
                             finish();
-                        }else {
+                        } else {
                             Toast.makeText(PayActivity.this, mHttpBaseInfo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -201,6 +209,7 @@ public class PayActivity extends BaseTitleActivity {
 
     }
 
+    AlertDialog alertDialog;
     private void getInfo() {
 
 
@@ -228,11 +237,15 @@ public class PayActivity extends BaseTitleActivity {
                             if (mRecipeItemInfoForPay.getListData().size() > 0) {
                                 RecipeItemInfoForPay.ListDataBean mListDataBean = mRecipeItemInfoForPay.getListData().get(0);
                                 //设置类型
-                                LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(PayActivity.this);
-                                linearLayoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
-                                RecyclerView rvArticleType = (RecyclerView) findViewById(R.id.rvType);
-                                rvArticleType.setLayoutManager(linearLayoutManager1);
-                                rvArticleType.setAdapter(new RvTypeAdapter2(PayActivity.this, mListDataBean.getConstitution()));
+                                RecyclerView    rvArticleType = (RecyclerView) findViewById(R.id.rvType);
+                                rvArticleType.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                                rvArticleType.setAdapter(new RvTypeAdapter2(getContext(), mListDataBean.getConstitution()));
+
+//                                LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(PayActivity.this);
+//                                linearLayoutManager3.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+
+//                                rvArticleType.setAdapter(new RvTypeAdapter2(PayActivity.this, mListDataBean.getConstitution()));
                                 //设置标签
                                 RecyclerView rvArticleTag = (RecyclerView) findViewById(R.id.rvArticleTag);
                                 LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(PayActivity.this);
@@ -291,6 +304,20 @@ public class PayActivity extends BaseTitleActivity {
                             }
 
 
+                        }else if (mRecipeItemInfoForPay.getHttpCode() == 302) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setMessage(mRecipeItemInfoForPay.getMessage());
+                            builder.setTitle("提示");
+                            builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    alertDialog.dismiss();
+                                    finish();
+                                }
+                            });
+                            builder.setCancelable(false);
+                            alertDialog=builder.create();
+                            alertDialog.show();
                         }
 
                     }

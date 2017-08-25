@@ -13,7 +13,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +87,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     TextView tvNextScore;
     @BindView(R.id.tvRunState)
     TextView tvRunState;
+    @BindView(R.id.layoutRecordMain)
+    LinearLayout layoutRecordMain;
+
 
     private View mView;
 
@@ -179,6 +181,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
+
         return mView;
     }
 
@@ -317,7 +320,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void initRecord() {
         rvRecord = (RecyclerView) mView.findViewById(R.id.rvRecord);
-        rvRecord.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        //禁止滑动
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        rvRecord.setLayoutManager(linearLayoutManager);
         recordList = new ArrayList<>();
         mRvRecordHomePageAdapter = new RvRecordHomePageAdapter(getActivity(), recordList);
         rvRecord.setAdapter(mRvRecordHomePageAdapter);
@@ -327,7 +337,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void initRecommend() {
         rvRecommend = (RecyclerView) mView.findViewById(R.id.rvRecommend);
         recommendList = new ArrayList<>();
-        rvRecommend.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), 2) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        rvRecommend.setLayoutManager(mGridLayoutManager);
         mRvRecommendAdapter = new RvRecommendAdapter(getActivity(), recommendList);
         rvRecommend.setAdapter(mRvRecommendAdapter);
     }
@@ -366,8 +387,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 ivCircle01.setImageResource(R.mipmap.circle3);
                 ivCircle02.setImageResource(R.mipmap.circle3);
                 ivCircle03.setImageResource(R.mipmap.circle3);
-
-                Log.i("zzz", "pos" + position);
                 if (position == 0) {
                     ivCircle01.setImageResource(R.mipmap.circle2);
                 } else if (position == 1) {
@@ -529,6 +548,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             recordList.clear();
                             recordList.addAll(mTitlePage.getListData4());
                             mRvRecordHomePageAdapter.notifyDataSetChanged();
+                            if(recordList.size()==0){
+                                layoutRecordMain.setVisibility(View.GONE);
+                            }else {
+                                layoutRecordMain.setVisibility(View.VISIBLE);
+                            }
 
 
                         } else {

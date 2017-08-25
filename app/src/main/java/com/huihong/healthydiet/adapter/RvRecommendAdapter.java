@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
 import com.huihong.healthydiet.utils.MyUtils;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -63,12 +63,14 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RvRecommendViewHold
 
         holder.tvName.setText(mList.get(position).getName());
 
-        Glide
-                .with(mContext)
-                .load(mList.get(position).getTitleImage())
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into(holder.ivHead);
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position).getTitleImage())
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into(holder.ivHead);
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position).getTitleImage(),holder.ivHead);
+
 //        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

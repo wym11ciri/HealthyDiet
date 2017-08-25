@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.adapter.RvNearbyAdapter;
 import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
-import com.huihong.healthydiet.utils.common.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +23,7 @@ import java.util.List;
 
 public class NearbyFragment extends Fragment {
     //创造它时候需要传递一个连接进来
-
-
-
-//    public NearbyFragment(List<TitlePage.ListDataBean> mList) {
-//        this.mList = mList;
-//    }
-
-    private View  mView;
+    private View mView;
     private RecyclerView rvNearby;
     private RvNearbyAdapter mAdapter;
     private List<RestaurantInfo> mList;
@@ -39,34 +31,41 @@ public class NearbyFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mList=new ArrayList<>();
-        mAdapter=new RvNearbyAdapter(getActivity(),mList);
+        mList = new ArrayList<>();
+        mAdapter = new RvNearbyAdapter(getActivity(), mList);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LogUtil.i("测试222","onCreateView");
-        if(mView==null){
-            mView=  inflater.inflate(R.layout.fragment_nearby,null);
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_nearby, null);
             initUI();
         }
         return mView;
     }
 
     private void initUI() {
+        rvNearby = (RecyclerView) mView.findViewById(R.id.rvNearby);
+        GridLayoutManager mGridLayoutManager=new GridLayoutManager(getActivity(), 3){
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
 
-        rvNearby= (RecyclerView) mView.findViewById(R.id.rvNearby);
-        rvNearby.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        rvNearby.setLayoutManager(mGridLayoutManager);
         rvNearby.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }
 
 
-    public  void refreshData(List<RestaurantInfo> pListData){
-        if(mList!=null){
-            LogUtil.i("刷新了");
+    public void refreshData(List<RestaurantInfo> pListData) {
+        if (mList != null && pListData != null) {
             mList.clear();
             mList.addAll(pListData);
             mAdapter.notifyDataSetChanged();

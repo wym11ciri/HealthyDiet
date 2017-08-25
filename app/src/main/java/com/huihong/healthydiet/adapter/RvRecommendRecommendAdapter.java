@@ -10,11 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.model.httpmodel.RecipeInfo;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.huihong.healthydiet.widget.expand.HorizontalListView;
 import com.joooonho.SelectableRoundedImageView;
 
@@ -62,13 +62,13 @@ public class RvRecommendRecommendAdapter extends RecyclerView.Adapter<RvRecommen
     @Override
     public void onBindViewHolder(final RvRecommendRecommendViewHolder holder, final int position) {
 //        holder.tvName.setText(mList.get(position));
-        Glide
-                .with(mContext)
-                .load(mList.get(position).getTitleImage())
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into(holder.ivHead);
-
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position).getTitleImage())
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into(holder.ivHead);
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position).getTitleImage(),holder.ivHead);
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
 //        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 //        holder.rvArticleTag.setLayoutManager(linearLayoutManager);

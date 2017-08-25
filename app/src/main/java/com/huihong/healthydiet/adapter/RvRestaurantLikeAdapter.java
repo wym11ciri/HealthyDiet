@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
@@ -22,6 +21,7 @@ import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.model.gsonbean.CustomerLikeOrNot;
 import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
@@ -92,13 +92,15 @@ public class RvRestaurantLikeAdapter extends RecyclerView.Adapter<RvRestaurantLi
             holder.distance.setText("" + distance + "m");
         }
 
+//
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position).getTitleImage())
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into(holder.ivHead);
 
-        Glide
-                .with(mContext)
-                .load(mList.get(position).getTitleImage())
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into(holder.ivHead);
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position).getTitleImage(),holder.ivHead);
 
 
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {

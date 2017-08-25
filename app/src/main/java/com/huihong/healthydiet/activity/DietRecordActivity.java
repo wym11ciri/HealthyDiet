@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.interfaces.OnRefreshListener;
-import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
@@ -21,6 +20,7 @@ import com.huihong.healthydiet.model.httpmodel.OrderDetailsInfo;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
+import com.huihong.healthydiet.widget.expand.LGlideRecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ import okhttp3.Call;
 
 public class DietRecordActivity extends BaseTitleActivity2 {
     @BindView(R.id.rvDietRecord)
-    LRecyclerView rvDietRecord;
+    LGlideRecyclerView rvDietRecord;
     @BindView(R.id.layoutNoMoreData)
     LinearLayout layoutNoMoreData;
 

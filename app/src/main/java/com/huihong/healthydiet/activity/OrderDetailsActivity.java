@@ -1,5 +1,7 @@
 package com.huihong.healthydiet.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -89,6 +91,8 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
     private RvTypeAdapter3 mRvTypeAdapter3;
     private RvTagAdapter mRvTagAdapter;
 
+    AlertDialog alertDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,86 +150,101 @@ public class OrderDetailsActivity extends BaseTitleActivity2 {
                         LogUtil.i("订单详情", response);
                         Gson gson = new Gson();
                         OrderInfo mOrderInfo = gson.fromJson(response, OrderInfo.class);
-                        OrderInfo.Model1Bean mModel1Bean = mOrderInfo.getModel1();
-                        if (mModel1Bean != null) {
-                            tvFoodName.setText(mModel1Bean.getRecipeName());
-                            RecipeId = mModel1Bean.getRecipeId() + "";
-                            //类型列表
-                            typeList.clear();
-                            if (mModel1Bean.getConstitution() != null) {
-                                typeList.addAll(mModel1Bean.getConstitution());
-                            }
-                            mRvTypeAdapter3.notifyDataSetChanged();
-                            //标签列表
-                            tagList.clear();
-                            if (mModel1Bean.getTags() != null) {
-                                tagList.addAll(mModel1Bean.getTags());
-                            }
-                            mRvTagAdapter.notifyDataSetChanged();
+                        if (mOrderInfo.getHttpCode() == 200) {
+                            OrderInfo.Model1Bean mModel1Bean = mOrderInfo.getModel1();
+                            if (mModel1Bean != null) {
+                                tvFoodName.setText(mModel1Bean.getRecipeName());
+                                RecipeId = mModel1Bean.getRecipeId() + "";
+                                //类型列表
+                                typeList.clear();
+                                if (mModel1Bean.getConstitution() != null) {
+                                    typeList.addAll(mModel1Bean.getConstitution());
+                                }
+                                mRvTypeAdapter3.notifyDataSetChanged();
+                                //标签列表
+                                tagList.clear();
+                                if (mModel1Bean.getTags() != null) {
+                                    tagList.addAll(mModel1Bean.getTags());
+                                }
+                                mRvTagAdapter.notifyDataSetChanged();
 
-                            int percentage = mModel1Bean.getConstitutionPercentage();
-                            MyUtils.setTextViewColor(tvConstitutionPercentage, percentage, getContext());
-                            tvConstitutionPercentage.setText(percentage + "%");
+                                int percentage = mModel1Bean.getConstitutionPercentage();
+                                MyUtils.setTextViewColor(tvConstitutionPercentage, percentage, getContext());
+                                tvConstitutionPercentage.setText(percentage + "%");
 
-                            tvPrice.setText("￥" + mModel1Bean.getOrderPrice());
-                            String time = mModel1Bean.getOrderTime();
-                            time = time.replace("T", " ");
-                            tvTime.setText(time);
-                            tvRestaurantName.setText(mModel1Bean.getRestaurantName());
+                                tvPrice.setText("￥" + mModel1Bean.getOrderPrice());
+                                String time = mModel1Bean.getOrderTime();
+                                time = time.replace("T", " ");
+                                tvTime.setText(time);
+                                tvRestaurantName.setText(mModel1Bean.getRestaurantName());
 
-                            //餐厅头像
-                            Glide
-                                    .with(getContext())
-                                    .load(mModel1Bean.getRestaurantImage())
-                                    .asBitmap()
-                                    .error(R.mipmap.error_photo)
-                                    .into(ivRestaurantHead);
+                                //餐厅头像
+                                Glide
+                                        .with(getContext())
+                                        .load(mModel1Bean.getRestaurantImage())
+                                        .asBitmap()
+                                        .error(R.mipmap.error_photo)
+                                        .into(ivRestaurantHead);
 
-                            int distance = mModel1Bean.getRestaurantDistance();
-                            if (distance >= 1000) {
-                                double mDistance = distance / 1000;
-                                tvDistance.setText(mModel1Bean.getRestaurantType() + "  " + mDistance + "km");
-                            } else {
-                                tvDistance.setText(mModel1Bean.getRestaurantType() + "  " + distance + "m");
-                            }
+                                int distance = mModel1Bean.getRestaurantDistance();
+                                if (distance >= 1000) {
+                                    double mDistance = distance / 1000;
+                                    tvDistance.setText(mModel1Bean.getRestaurantType() + "  " + mDistance + "km");
+                                } else {
+                                    tvDistance.setText(mModel1Bean.getRestaurantType() + "  " + distance + "m");
+                                }
 
-                            tvRestaurantAddress.setText(mModel1Bean.getRestaurantAddress());
+                                tvRestaurantAddress.setText(mModel1Bean.getRestaurantAddress());
 
-                            //材料列表
-                            MaterialInfoList.clear();
-                            List<OrderInfo.Model1Bean.FoodRecipeBean> mFoodRecipe = mModel1Bean.getFoodRecipe();
-                            if (mFoodRecipe != null) {
-                                for (int i = 0; i < mFoodRecipe.size(); i++) {
-                                    String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
-                                    List<OrderInfo.Model1Bean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
-                                    for (int j = 0; j < getListFood.size(); j++) {
-                                        MaterialInfo materialInfo = new MaterialInfo();
-                                        if (j == 0) {
-                                            materialInfo.setRecipeItemName(RecipeItemName);
-                                        } else {
-                                            materialInfo.setRecipeItemName("");
+                                //材料列表
+                                MaterialInfoList.clear();
+                                List<OrderInfo.Model1Bean.FoodRecipeBean> mFoodRecipe = mModel1Bean.getFoodRecipe();
+                                if (mFoodRecipe != null) {
+                                    for (int i = 0; i < mFoodRecipe.size(); i++) {
+                                        String RecipeItemName = mFoodRecipe.get(i).getRecipeItemName();//获取名称
+                                        List<OrderInfo.Model1Bean.FoodRecipeBean.ListFoodBean> getListFood = mFoodRecipe.get(i).getListFood();
+                                        for (int j = 0; j < getListFood.size(); j++) {
+                                            MaterialInfo materialInfo = new MaterialInfo();
+                                            if (j == 0) {
+                                                materialInfo.setRecipeItemName(RecipeItemName);
+                                            } else {
+                                                materialInfo.setRecipeItemName("");
+                                            }
+                                            materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
+                                            materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
+                                            materialInfo.setId(getListFood.get(j).getFoodId());
+                                            MaterialInfoList.add(materialInfo);
                                         }
-                                        materialInfo.setFoodInfo(getListFood.get(j).getFoodName() + getListFood.get(j).getFoodWeight());
-                                        materialInfo.setWhetherLike(getListFood.get(j).getWhetherLike());
-                                        materialInfo.setId(getListFood.get(j).getFoodId());
-                                        MaterialInfoList.add(materialInfo);
                                     }
                                 }
-                            }
-                            mRvMaterialAdapter.notifyDataSetChanged();
-                            final String mPhone = mModel1Bean.getRestaurantPhone();
+                                mRvMaterialAdapter.notifyDataSetChanged();
+                                final String mPhone = mModel1Bean.getRestaurantPhone();
 
-                            //拨打电话
-                            ivRestaurantPhone.setOnClickListener(new View.OnClickListener() {
+                                //拨打电话
+                                ivRestaurantPhone.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mPhone));
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                    }
+                                });
+
+                            }
+                        } else if (mOrderInfo.getHttpCode() == 302) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setMessage(mOrderInfo.getMessage());
+                            builder.setTitle("提示");
+                            builder.setPositiveButton("知道啦", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mPhone));
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
+                                public void onClick(DialogInterface dialog, int which) {
+                                    alertDialog.dismiss();
+                                    finish();
                                 }
                             });
-
-
+                            builder.setCancelable(false);
+                            alertDialog=builder.create();
+                            alertDialog.show();
                         }
                     }
 

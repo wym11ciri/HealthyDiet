@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.RestaurantDetailsActivity;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.model.httpmodel.RestaurantInfo;
+import com.huihong.healthydiet.utils.common.GlideUtils;
 import com.joooonho.SelectableRoundedImageView;
 
 import java.util.List;
@@ -78,14 +78,14 @@ public class RvRecommendNearbyAdapter extends RecyclerView.Adapter<RvRecommendNe
         }
 
 
-        Glide
-                .with(mContext)
-                .load(mList.get(position).getTitleImage())
-                .asBitmap()
-                .error(R.mipmap.error_photo)
-                .into(holder.ivHead);
+//        Glide
+//                .with(mContext)
+//                .load(mList.get(position).getTitleImage())
+//                .asBitmap()
+//                .error(R.mipmap.error_photo)
+//                .into(holder.ivHead);
 
-
+        GlideUtils.loadImageViewAsBitmap(mContext,mList.get(position).getTitleImage(),holder.ivHead);
 //        ImageLoderUtil.showImage2(mContext, position, holder.ivHead);
 
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
