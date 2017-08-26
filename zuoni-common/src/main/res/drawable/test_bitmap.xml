@@ -5,7 +5,7 @@
     android:filter="true"
     android:gravity="center"
     android:mipMap="true"
-    android:src="@drawable/line_horizontal"
+    android:src="@drawable/ic_launcher"
     android:tileMode="repeat" />
 
     <!--antialias 开启或关闭抗锯齿-->

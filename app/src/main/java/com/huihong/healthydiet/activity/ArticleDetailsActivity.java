@@ -190,7 +190,6 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
                         LogUtil.i("文章查看", e.toString());
                     }
                 });
-
     }
 
 
@@ -247,7 +246,6 @@ public class ArticleDetailsActivity extends BaseTitleActivity {
     public void onBackPressed() {
 //        super.onBackPressed();
         finishMyActivity();
-
     }
 
     private void finishMyActivity() {

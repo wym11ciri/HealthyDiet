@@ -23,6 +23,7 @@ import com.huihong.healthydiet.adapter.RvTypeAdapter2;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
 import com.huihong.healthydiet.model.gsonbean.RecipeItemInfoForPay;
 import com.huihong.healthydiet.model.httpmodel.HttpBaseInfo;
+import com.huihong.healthydiet.utils.CalendarUtils;
 import com.huihong.healthydiet.utils.MyUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
@@ -200,7 +201,45 @@ public class PayActivity extends BaseTitleActivity {
             public void onTimeSelected(int[] times) {
                 chooseHour = times[0];
                 chooseMin = times[1];
-                tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                //获得当前年月日
+                int nowYear = CalendarUtils.getYear();
+                int nowMonth = CalendarUtils.getMonth();
+                int nowDay = CalendarUtils.getDay();
+                int nowHour = CalendarUtils.getHour();
+                int nowMin = CalendarUtils.getMin();
+
+                if (nowYear > chooseYear) {
+                    errorChoose();
+                } else if (nowYear == chooseYear) {
+                    if (nowMonth > chooseMonth) {
+                        errorChoose();
+                    } else if (nowMonth == chooseMonth) {
+                        if (nowDay > chooseDay) {
+                            errorChoose();
+                        } else if (nowDay == chooseDay) {
+                            if (nowHour > chooseHour) {
+                                errorChoose();
+                            } else if (nowHour == chooseHour) {
+                                if (nowMin > chooseMin) {
+                                    errorChoose();
+                                } else if (nowMin == chooseMin) {
+                                    tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                                } else {
+                                    tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                                }
+                            } else {
+                                tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                            }
+                        } else {
+                            tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                        }
+                    } else {
+                        tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                    }
+                } else {
+                    tvTimeSelect.setText(chooseYear + "年" + chooseMonth + "月" + chooseDay + "日 " + chooseHour + ":" + chooseMin);
+                }
+
             }
         });
         builder.canCancel(false);
@@ -209,7 +248,12 @@ public class PayActivity extends BaseTitleActivity {
 
     }
 
+    private void errorChoose() {
+        Toast.makeText(this, "请选择正确的时间", Toast.LENGTH_SHORT).show();
+    }
+
     AlertDialog alertDialog;
+
     private void getInfo() {
 
 
@@ -237,7 +281,7 @@ public class PayActivity extends BaseTitleActivity {
                             if (mRecipeItemInfoForPay.getListData().size() > 0) {
                                 RecipeItemInfoForPay.ListDataBean mListDataBean = mRecipeItemInfoForPay.getListData().get(0);
                                 //设置类型
-                                RecyclerView    rvArticleType = (RecyclerView) findViewById(R.id.rvType);
+                                RecyclerView rvArticleType = (RecyclerView) findViewById(R.id.rvType);
                                 rvArticleType.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
                                 rvArticleType.setAdapter(new RvTypeAdapter2(getContext(), mListDataBean.getConstitution()));
 
@@ -304,7 +348,7 @@ public class PayActivity extends BaseTitleActivity {
                             }
 
 
-                        }else if (mRecipeItemInfoForPay.getHttpCode() == 302) {
+                        } else if (mRecipeItemInfoForPay.getHttpCode() == 302) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             builder.setMessage(mRecipeItemInfoForPay.getMessage());
                             builder.setTitle("提示");
@@ -316,7 +360,7 @@ public class PayActivity extends BaseTitleActivity {
                                 }
                             });
                             builder.setCancelable(false);
-                            alertDialog=builder.create();
+                            alertDialog = builder.create();
                             alertDialog.show();
                         }
 

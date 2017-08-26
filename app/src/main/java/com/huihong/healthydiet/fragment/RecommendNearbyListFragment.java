@@ -205,13 +205,22 @@ public class RecommendNearbyListFragment extends Fragment {
                         tvType04.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
                         TypeValue = mScreenTypeList.get(position).getId() + "";
                         mListPopupWindow.dismiss();
-                        getInfo(num,true);
+//                        getInfo(num,true);
+                        recyclerView.refresh();
                     }
                 });
+
                 mListPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
                         ivType.setImageResource(R.mipmap.up);
+                        layoutType04.setClickable(false);
+                        layoutType04.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                              layoutType04.setClickable(true);
+                            }
+                        },50);
                     }
                 });
                 mListPopupWindow.setForceIgnoreOutsideTouch(false);
@@ -292,16 +301,19 @@ public class RecommendNearbyListFragment extends Fragment {
             case R.id.tvType01:
                 GroupBy = SCREEN_TYPE_SUIT_ME;
                 tvType01.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                getInfo(num,true);
+//                getInfo(num,true);
+                recyclerView.refresh();
                 break;
             case R.id.tvType02:
                 GroupBy = SCREEN_TYPE_SALES_VOLUME;
                 tvType02.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
-                getInfo(num,true);
+//                getInfo(num,true);
+                recyclerView.refresh();
                 break;
             case R.id.tvType03:
                 GroupBy = SCREEN_TYPE_DISTANCE;
-                tvType03.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
+//                tvType03.setTextColor(getResources().getColor(R.color.recommend_type_text_select));
+                recyclerView.refresh();
                 getInfo(num,true);
                 break;
             case R.id.layoutType04:
