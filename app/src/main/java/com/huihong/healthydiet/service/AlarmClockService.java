@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
@@ -101,7 +102,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
         if (getUpTime.equals(nowTime) && isSetWeek()) {
             //时间是到了需要判断星期
             //当前为起床闹铃播放闹铃
-            player.start();
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
             View view = LayoutInflater.from(this).inflate(R.layout.dialog_get_up, null);
             Button button = (Button) view.findViewById(R.id.tvGetUp);
@@ -124,11 +125,6 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
                     mSleepCache.setSleepHour(ySleepTime.getHour());
                     mSleepCache.setSleepMin(ySleepTime.getMin());
                     mSleepCache.saveOrUpdate("year = ? and month = ? and day = ?", zz.get(0) + "", zz.get(1) + "", zz.get(2) + "");
-
-                    if (player.isPlaying()) {
-                        player.pause();
-                        player.seekTo(0);
-                    }
                     dialog.dismiss();
                 }
             });
@@ -136,10 +132,21 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             TextView tvTime = (TextView) view.findViewById(R.id.tvTime);
             tvTime.setText(getUpTime);
             builder.setView(view);
-            builder.setCancelable(false);
+            builder.setCancelable(true);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (player.isPlaying()) {
+                        player.pause();
+                        player.seekTo(0);
+                    }
+                }
+            });
             dialog = builder.create();
+
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
+            player.start();
         } else if (delaySleepTime.equals(nowTime) && isSetWeek()) {
             //当前为睡觉闹铃 只播放提示声音
 //            player.start();
@@ -162,7 +169,7 @@ public class AlarmClockService extends Service implements MediaPlayer.OnCompleti
             TextView tvTime = (TextView) view.findViewById(R.id.tvTime);
             tvTime.setText(sleepTime);
             builder.setView(view);
-            builder.setCancelable(false);
+            builder.setCancelable(true);
             dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();

@@ -102,7 +102,6 @@ public class IntegralRecordActivity extends BaseTitleActivity2 {
 
     //获取积分列表
     private void getIntegralRecord() {
-        rvIntegralRecord.refreshComplete(1);
 
         Map<String, String> map = new HashMap<>();
         map.put("PageNo", num + "");
@@ -113,6 +112,7 @@ public class IntegralRecordActivity extends BaseTitleActivity2 {
                 , new HttpUtilsListener() {
                     @Override
                     public void onResponse(String response, int id) {
+                        rvIntegralRecord.refreshComplete(1);
                         LogUtil.i("积分列表", response);
                         Gson gson = new Gson();
                         GetScoreList mGetScoreList = gson.fromJson(response, GetScoreList.class);

@@ -90,6 +90,7 @@ public class ArticleFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             RvArticleAdapter mRvRecommendAdapter = new RvArticleAdapter(getActivity(), mList);
             mLRecyclerViewAdapter = new LRecyclerViewAdapter(mRvRecommendAdapter);
+//            recyclerView.setRefreshHeader(new ArrowRefreshHeader(getActivity()));
             recyclerView.setAdapter(mLRecyclerViewAdapter);
             recyclerView.refresh();
 
@@ -114,6 +115,8 @@ public class ArticleFragment extends Fragment {
                     startActivity(mIntent);
                 }
             });
+
+
         }
         return mView;
     }

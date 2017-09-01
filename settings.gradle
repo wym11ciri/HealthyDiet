@@ -1,1 +1,1 @@
-include ':app', ':gallery', ':dialog-picker'
+include ':app', ':gallery', ':dialog-picker', ':zuoni-common'

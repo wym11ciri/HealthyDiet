@@ -9,5 +9,9 @@
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_left_out_activity.xml" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_right_in_activity.xml" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/anim/move_right_out_activity.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_in_left.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_in_right.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_out_left.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/slide_out_right.xml" charset="UTF-8" />
   </component>
 </project>

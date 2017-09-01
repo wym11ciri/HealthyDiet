@@ -26,6 +26,7 @@ import com.huihong.healthydiet.fragment.main.SleepFragment;
 import com.huihong.healthydiet.mInterface.ItemOnClickListener;
 import com.huihong.healthydiet.mInterface.LocationListener;
 import com.huihong.healthydiet.service.AlarmClockService;
+import com.huihong.healthydiet.utils.FileCopyUtil;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.StatusBarUtil;
 import com.huihong.healthydiet.widget.expand.MyViewPager;
@@ -94,6 +95,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener, 
 //        LoadingDialog.Builder builder = new LoadingDialog.Builder(MainActivity.this);
 //        loadingDialog = builder.create();
 //        loadingDialog.show();
+        FileCopyUtil.copyDataBaseToSD(MainActivity.this);
 
     }
 

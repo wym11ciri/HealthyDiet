@@ -67,7 +67,7 @@ public class TimePickerDialog extends Dialog {
             View view = LayoutInflater.from(context).inflate(R.layout.data_picker_time_dialog, null);
 
             final LoopView loopHour = (LoopView) view.findViewById(R.id.loop_hour);
-            loopHour.setArrayList(d(1, 24));
+            loopHour.setArrayList(d(0, 24));
             loopHour.setCurrentItem(12);
             loopHour.setNotLoop();
 

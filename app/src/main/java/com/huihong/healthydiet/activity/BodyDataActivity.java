@@ -1,6 +1,5 @@
 package com.huihong.healthydiet.activity;
 
-import android.app.ProgressDialog;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,10 +10,10 @@ import com.google.gson.Gson;
 import com.huihong.healthydiet.AppUrl;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.base.BaseTitleActivity;
-import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
-import com.huihong.healthydiet.model.gsonbean.SetUserBodyInfo;
 import com.huihong.healthydiet.cache.sp.CacheUtils;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.model.gsonbean.GetUserBodyInfo;
+import com.huihong.healthydiet.model.gsonbean.SetUserBodyInfo;
 import com.huihong.healthydiet.model.httpmodel.PersonalAllInfo;
 import com.huihong.healthydiet.model.mybean.PersonalInfo;
 import com.huihong.healthydiet.utils.StringUtil;
@@ -22,6 +21,7 @@ import com.huihong.healthydiet.utils.common.DateFormattedUtils;
 import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.current.HttpUtils;
+import com.zuoni.dialog.picker.dialog.LoadingDialog;
 import com.zuoni.dialog.picker.mInterface.OnSingleDataSelectedListener;
 import com.zuoni.dialog.picker.picker.DataPickerDateDialog;
 import com.zuoni.dialog.picker.picker.DataPickerSingleDialog;
@@ -54,13 +54,16 @@ public class BodyDataActivity extends BaseTitleActivity {
     private String labInten = "Ⅰ";
     //性别
     private boolean isMan = false;
-    private ProgressDialog mProgressDialog;
+
     private int birthYear = 1994;
     private Calendar mCalendar3;
     private int nowYear;
 
     //个人信息
     private PersonalInfo personalInfo;
+
+
+    private LoadingDialog loadingDialog;
 
     @Override
     public int setLayoutId() {
@@ -71,12 +74,13 @@ public class BodyDataActivity extends BaseTitleActivity {
     public void initUI() {
         setTitle("身体数据");
         personalInfo = CacheUtils.getPersonalInfo(BodyDataActivity.this);
-
-
         mCalendar3 = Calendar.getInstance();
         nowYear = mCalendar3.get(Calendar.YEAR);
-        mProgressDialog = new ProgressDialog(BodyDataActivity.this);
-        mProgressDialog.setMessage("正在获取身体数据");
+
+        LoadingDialog.Builder builder = new LoadingDialog.Builder(getContext());
+        builder.setMessage("加载中...");
+        loadingDialog = builder.create();
+
 
         etWeight = (EditText) findViewById(R.id.etWeight);
         etHeight = (EditText) findViewById(R.id.etHeight);
@@ -91,7 +95,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                 builder.setOnDateSelectedListener(new DataPickerDateDialog.OnDateSelectedListener() {
                     @Override
                     public void onDateSelected(int[] dates) {
-                        tvBirthday.setText(dates[0] + "年" + DateFormattedUtils.formattedDate(dates[1]) + "月" +  DateFormattedUtils.formattedDate(dates[2]) + "日");
+                        tvBirthday.setText(dates[0] + "年" + DateFormattedUtils.formattedDate(dates[1]) + "月" + DateFormattedUtils.formattedDate(dates[2]) + "日");
                         userBirthTime = dates[0] + "-" + dates[1] + "-" + dates[2];
                     }
                 });
@@ -161,12 +165,12 @@ public class BodyDataActivity extends BaseTitleActivity {
                 String height = etHeight.getText().toString().trim();
                 String weight = etWeight.getText().toString().trim();
 
-                if(height.equals("")){
-                    height=etHeight.getHint().toString().trim();
+                if (height.equals("")) {
+                    height = etHeight.getHint().toString().trim();
                 }
 
-                if(weight.equals("")){
-                    weight=etWeight.getHint().toString().trim();
+                if (weight.equals("")) {
+                    weight = etWeight.getHint().toString().trim();
                 }
 
 
@@ -193,9 +197,8 @@ public class BodyDataActivity extends BaseTitleActivity {
 
     //获取身体数据
     private void getPersonalInfo() {
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
+
+        loadingDialog.show();
 
         Map<String, String> map = new HashMap<>();
         map.put("UserId", SPUtils.get(BodyDataActivity.this, "UserId", 0) + "");
@@ -207,14 +210,15 @@ public class BodyDataActivity extends BaseTitleActivity {
                         , new HttpUtilsListener() {
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                mProgressDialog.dismiss();
+                                loadingDialog.dismiss();
                                 finish();
 //                                Toast.makeText(BodyDataActivity.this, R.string.service_error, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onResponse(String response, int id) {
-                                mProgressDialog.dismiss();
+
+
                                 LogUtil.i("接口，获取用户信息" + response);
                                 Gson gson = new Gson();
                                 GetUserBodyInfo mGetUserBodyInfo = gson.fromJson(response, GetUserBodyInfo.class);
@@ -226,7 +230,7 @@ public class BodyDataActivity extends BaseTitleActivity {
 
                                         //设置UI
                                         etHeight.setHint(mInfo.getHeight() + "");
-                                        etWeight.setHint(mInfo.getWeight()+"");
+                                        etWeight.setHint(mInfo.getWeight() + "");
 //                                        etHeight.setText(mInfo.getHeight() + "");
 //                                        etWeight.setText(mInfo.getWeight() + "");
 
@@ -246,7 +250,7 @@ public class BodyDataActivity extends BaseTitleActivity {
                                         int day = mCalendar.get(Calendar.DAY_OF_MONTH);
                                         userBirthTime = year + "-" + month + "-" + day;
                                         birthYear = year;
-                                        tvBirthday.setText(year + "年" + DateFormattedUtils.formattedDate(month) + "月" +  DateFormattedUtils.formattedDate(day)+"日");
+                                        tvBirthday.setText(year + "年" + DateFormattedUtils.formattedDate(month) + "月" + DateFormattedUtils.formattedDate(day) + "日");
                                         if (mInfo.getLabourIntensity() != null) {
                                             labInten = mInfo.getLabourIntensity();
                                             tvLabour.setText(labInten);
@@ -266,6 +270,12 @@ public class BodyDataActivity extends BaseTitleActivity {
                                     Toast.makeText(BodyDataActivity.this, message, Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
+                                etHeight.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loadingDialog.dismiss();
+                                    }
+                                }, 500);
                             }
                         });
     }

@@ -178,8 +178,7 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
 
     //监听竖直方向滑动的偏移量
     @Override
-    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
-                                  RecyclerView.State state) {
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
 
         Log.d("TAG", "totalHeight:" + totalHeight);
         //实际要滑动的距离

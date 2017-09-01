@@ -21,8 +21,7 @@
         android:gravity="center"
         android:text="我是启动界面" />
 
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></Spinner>
+<CheckBox
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
 </LinearLayout>
