@@ -5,12 +5,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.WindowManager;
 
 import com.huihong.healthydiet.MainActivity;
 import com.huihong.healthydiet.R;
 import com.huihong.healthydiet.activity.LoginActivity;
 import com.huihong.healthydiet.activity.base.ActivityCollector;
+import com.huihong.healthydiet.activity.token.TokenErrorActivity;
+import com.huihong.healthydiet.activity.token.TokenErrorActivityCollector;
 import com.huihong.healthydiet.mInterface.HttpUtilsListener;
+import com.huihong.healthydiet.utils.common.LogUtil;
 import com.huihong.healthydiet.utils.common.SPUtils;
 import com.huihong.healthydiet.utils.common.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -34,7 +38,7 @@ public class HttpUtils {
         if (mAlertDialog != null) {
             mAlertDialog.dismiss();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mainActivity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext.getApplicationContext());
         builder.setMessage("您已被挤下线或Token失效,请重新登录");
 
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -52,6 +56,7 @@ public class HttpUtils {
         });
         builder.setCancelable(false);
         mAlertDialog = builder.create();
+        mAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         return mAlertDialog;
 
     }
@@ -90,15 +95,12 @@ public class HttpUtils {
                             if (!activity.isDestroyed()) {
                                 mHttpUtilsListener.onError(call, e, id);
                             }
-
                         }
-
-
                     }
-
 
                     @Override
                     public void onResponse(String response, int id) {
+                        LogUtil.i("数据"+response);
 
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -106,8 +108,16 @@ public class HttpUtils {
 
                             if (HttpCode == 700) {
                                 if (mContext != null) {
-                                    AlertDialog mDialog = getAlertDialog(mContext);
-                                    mDialog.show();
+                                    Activity activity = (Activity) mContext;
+                                    if (!activity.isDestroyed()) {
+                                        TokenErrorActivityCollector.finishAll();
+                                        Intent mIntent=new Intent(mContext, TokenErrorActivity.class);
+                                        mIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                        mIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        mContext.startActivity(mIntent);
+                                    }
+//                                    AlertDialog mDialog = getAlertDialog(mContext);
+//                                    mDialog.show();
                                 }
                             } else {
                                 if (mContext != null) {

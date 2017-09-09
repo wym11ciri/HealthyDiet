@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mShareAPI = UMShareAPI.get(LoginActivity.this);
         setContentView(R.layout.activity_login);
-        StatusBarUtil.setTransparent(this);//设置状态栏沉浸
+        StatusBarUtil.setTranslucent(this);//设置状态栏沉浸
         initUI();
 
     }
@@ -78,7 +78,6 @@ public class LoginActivity extends BaseActivity {
                     if (password.equals("")) {
                         Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     } else {
-
                         passwordLogin(phone, password);
                     }
                 }

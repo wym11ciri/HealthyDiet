@@ -58,9 +58,10 @@
             android:src="@mipmap/tag" />
 
         <android.support.v7.widget.RecyclerView
+            android:layout_gravity="center"
             android:id="@+id/rvTag"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"

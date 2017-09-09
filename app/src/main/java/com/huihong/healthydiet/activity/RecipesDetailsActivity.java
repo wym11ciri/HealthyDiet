@@ -243,5 +243,9 @@ public class RecipesDetailsActivity extends BaseTitleActivity {
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        loadingDialog.dismiss();
+        super.onDestroy();
+    }
 }

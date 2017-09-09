@@ -206,8 +206,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        loadingDialog.dismiss();
         unbinder.unbind();
+        super.onDestroyView();
     }
 
 
@@ -215,6 +216,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //    XBanner mBannerNet;
 
     private AlertDialog locationDialog;
+
 
     private void initUI() {
 //        progressDialog = new ProgressDialog(getActivity());

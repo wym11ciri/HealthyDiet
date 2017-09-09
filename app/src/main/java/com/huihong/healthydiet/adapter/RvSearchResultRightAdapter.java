@@ -2,6 +2,7 @@ package com.huihong.healthydiet.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.huihong.healthydiet.R;
+import com.huihong.healthydiet.activity.ArticleDetailsActivity;
 import com.huihong.healthydiet.activity.RecipesDetailsActivity;
 import com.huihong.healthydiet.mInterface.ArticleItemOnClickListener;
 import com.huihong.healthydiet.model.httpmodel.ArticleInfo;
@@ -293,9 +295,12 @@ public class RvSearchResultRightAdapter extends RecyclerView.Adapter<RecyclerVie
         mHolder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mItemOnClickListener != null) {
-                    mItemOnClickListener.onClick(finalNowPosition);
-                }
+                Intent mIntent = new Intent(mContext, ArticleDetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("info", mList02.get(finalNowPosition));
+                bundle.putInt("pos", finalNowPosition);
+                mIntent.putExtras(bundle);
+                mContext.startActivity(mIntent);
             }
         });
 

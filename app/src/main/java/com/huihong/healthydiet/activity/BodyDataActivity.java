@@ -95,8 +95,12 @@ public class BodyDataActivity extends BaseTitleActivity {
                 builder.setOnDateSelectedListener(new DataPickerDateDialog.OnDateSelectedListener() {
                     @Override
                     public void onDateSelected(int[] dates) {
-                        tvBirthday.setText(dates[0] + "年" + DateFormattedUtils.formattedDate(dates[1]) + "月" + DateFormattedUtils.formattedDate(dates[2]) + "日");
-                        userBirthTime = dates[0] + "-" + dates[1] + "-" + dates[2];
+                        if(dates[0]>=2017){
+                            Toast.makeText(BodyDataActivity.this, "请输入正确的出生年月", Toast.LENGTH_SHORT).show();
+                        }else {
+                            tvBirthday.setText(dates[0] + "年" + DateFormattedUtils.formattedDate(dates[1]) + "月" + DateFormattedUtils.formattedDate(dates[2]) + "日");
+                            userBirthTime = dates[0] + "-" + dates[1] + "-" + dates[2];
+                        }
                     }
                 });
                 mDataPickerDateDialog = builder.create();

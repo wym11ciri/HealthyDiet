@@ -67,7 +67,16 @@ public class RvMaterialAdapter extends RecyclerView.Adapter<RvMaterialAdapter.Rv
         holder.tvFoodInfo.setText(mList.get(position).getFoodInfo());
 
         String RecipeItemName = mList.get(position).getRecipeItemName();
-        holder.tvRecipeItemName.setText(RecipeItemName);
+        if(RecipeItemName.trim().equals("")){
+            holder.tvRecipeItemName.setTextColor(mContext.getResources().getColor(R.color.color_white));
+            holder.tvRecipeItemName.setText("分类");
+        }else {
+            holder.tvRecipeItemName.setTextColor(mContext.getResources().getColor(R.color.black));
+            holder.tvRecipeItemName.setText(RecipeItemName);
+        }
+
+
+
         if (RecipeItemName.trim().equals("")) {
             holder.ivLine.setVisibility(View.INVISIBLE);
         } else {
